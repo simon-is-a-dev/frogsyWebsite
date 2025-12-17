@@ -1,26 +1,716 @@
-@import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary Colors - Based on #016B61 */
+  --color-primary: #016B61;
+  --color-primary-light: #019B8D;
+  --color-primary-dark: #014D45;
+  
+  /* Accent Colors - Complementary teal-blue */
+  --color-accent: #0891b2;
+  --color-accent-light: #06b6d4;
+  --color-accent-dark: #0e7490;
+  
+  /* Neutral Colors - Balanced theme */
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-border: #cbd5e1;
+  --color-text: #1e293b;
+  --color-text-light: #475569;
+  --color-text-muted: #94a3b8;
+  
+  /* Semantic Colors */
+  --color-success: #059669;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
+  --color-info: #0284c7;
+  
+  /* Pain Level Colors (0-10 gradient) */
+  --color-pain-0: #d1fae5;
+  --color-pain-low: #6ee7b7;
+  --color-pain-medium: #fbbf24;
+  --color-pain-high: #f97316;
+  --color-pain-severe: #dc2626;
+  
+  /* Spacing Scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+  
+  /* Font Sizes */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ============================================
+   GLOBAL RESETS & BASE STYLES
+   ============================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-primary-dark);
+  margin-bottom: var(--space-md);
+}
+
+h1 { font-size: var(--text-3xl); }
+h2 { font-size: var(--text-2xl); }
+h3 { font-size: var(--text-xl); }
+h4 { font-size: var(--text-lg); }
+
+p {
+  margin-bottom: var(--space-md);
+}
+
+/* ============================================
+   LAYOUT UTILITIES
+   ============================================ */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-md);
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: var(--space-xs);
+    max-width: 100vw;
+  }
+}
+
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+}
+
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+  }
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+button {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 500;
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Primary Button */
+.btn-primary,
+button:not([class]) {
+  background-color: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent);
+}
+
+.btn-primary:hover:not(:disabled),
+button:not([class]):hover:not(:disabled) {
+  background-color: var(--color-accent-dark);
+  border-color: var(--color-accent-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active:not(:disabled),
+button:not([class]):active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--color-background);
+  border-color: var(--color-primary-light);
+}
+
+/* Icon Button */
+.btn-icon {
+  padding: var(--space-sm);
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.btn-icon:hover:not(:disabled) {
+  background-color: var(--color-background);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* ============================================
+   INPUTS
+   ============================================ */
+input[type="email"],
+input[type="password"],
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  transition: all var(--transition-base);
+  outline: none;
+  width: 100%;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* ============================================
+   PAIN LEVEL SELECTOR
+   ============================================ */
+.pain-level-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin: var(--space-lg) 0;
+  width: 100%;
+}
+
+.pain-row {
+  display: grid;
+  grid-template-columns: repeat(3, 80px);
+  gap: var(--space-sm);
+  justify-content: center;
+}
+
+/* Row 5: Calendar button (full width) */
+.pain-row.pain-actions {
+  margin-top: var(--space-md);
+  grid-template-columns: 1fr;
+  max-width: 100%;
+}
+
+.pain-button {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: var(--text-2xl);
+  border: 2px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.btn-submit {
+  background-color: var(--color-success);
+  border-color: var(--color-success);
+  color: white;
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background-color: #38a169;
+  border-color: #38a169;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-submit:disabled {
+  background-color: var(--color-border);
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.pain-button:hover {
+  border-color: var(--color-accent);
+  transform: scale(1.05);
+}
+
+.pain-button.selected {
+  border-color: var(--color-accent);
+  background-color: var(--color-accent);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+/* Pain level color variations */
+.pain-button[data-level="0"],
+.pain-button[data-level="1"] {
+  --btn-color: var(--color-pain-0);
+}
+
+.pain-button[data-level="2"],
+.pain-button[data-level="3"],
+.pain-button[data-level="4"] {
+  --btn-color: var(--color-pain-low);
+}
+
+.pain-button[data-level="5"],
+.pain-button[data-level="6"] {
+  --btn-color: var(--color-pain-medium);
+}
+
+.pain-button[data-level="7"],
+.pain-button[data-level="8"] {
+  --btn-color: var(--color-pain-high);
+}
+
+.pain-button[data-level="9"],
+.pain-button[data-level="10"] {
+  --btn-color: var(--color-pain-severe);
+}
+
+.pain-button.selected {
+  background-color: var(--btn-color);
+  border-color: var(--btn-color);
+  color: var(--color-text);
+}
+
+/* ============================================
+   CALENDAR STYLES
+   ============================================ */
+.calendar-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.calendar-nav {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .calendar-nav {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.calendar-title {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  margin: 0;
+  order: -1;
+  text-align: left;
+}
+
+@media (min-width: 640px) {
+  .calendar-title {
+    font-size: var(--text-2xl);
+  }
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .calendar-grid {
+    gap: 1px;
+    margin-top: var(--space-md);
+  }
+}
+
+.calendar-day-header {
+  text-align: center;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--color-text-light);
+  padding: var(--space-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-surface);
+  transition: all var(--transition-fast);
+  min-height: 60px;
+  padding: var(--space-xs);
+  position: relative;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .calendar-day {
+    min-height: 45px;
+    padding: 2px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+.calendar-day.empty {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.calendar-day:not(.empty):hover {
+  border-color: var(--color-accent-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.calendar-day-number {
+  font-size: var(--text-sm);
+  color: var(--color-text-light);
+  align-self: flex-start;
+  position: absolute;
+  top: var(--space-xs);
+  left: var(--space-xs);
+}
+
+.calendar-pain-level {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: var(--radius-sm);
+  min-width: 1.25rem;
+  text-align: center;
+  margin: auto;
+}
+
+@media (min-width: 768px) {
+  .calendar-pain-level {
+    font-size: var(--text-base);
+    padding: var(--space-xs) var(--space-sm);
+    min-width: 2rem;
+  }
+}
+
+/* Pain level colors in calendar */
+.pain-level-0,
+.pain-level-1 {
+  background-color: var(--color-pain-0);
+  color: var(--color-text);
+}
+
+.pain-level-2,
+.pain-level-3,
+.pain-level-4 {
+  background-color: var(--color-pain-low);
+  color: var(--color-text);
+}
+
+.pain-level-5,
+.pain-level-6 {
+  background-color: var(--color-pain-medium);
+  color: var(--color-text);
+}
+
+.pain-level-7,
+.pain-level-8 {
+  background-color: var(--color-pain-high);
+  color: white;
+}
+
+.pain-level-9,
+.pain-level-10 {
+  background-color: var(--color-pain-severe);
+  color: white;
+}
+
+/* ============================================
+   LOGIN PAGE
+   ============================================ */
+.login-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.form-label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+/* ============================================
+   MESSAGES
+   ============================================ */
+.error-message {
+  padding: var(--space-md);
+  background-color: #fee;
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-md);
+  color: var(--color-error);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.success-message {
+  padding: var(--space-md);
+  background-color: #efe;
+  border: 1px solid var(--color-success);
+  border-radius: var(--radius-md);
+  color: var(--color-success);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.mt-xs { margin-top: var(--space-xs); }
+.mt-sm { margin-top: var(--space-sm); }
+.mt-md { margin-top: var(--space-md); }
+.mt-lg { margin-top: var(--space-lg); }
+.mt-xl { margin-top: var(--space-xl); }
+
+.mb-xs { margin-bottom: var(--space-xs); }
+.mb-sm { margin-bottom: var(--space-sm); }
+.mb-md { margin-bottom: var(--space-md); }
+.mb-lg { margin-bottom: var(--space-lg); }
+.mb-xl { margin-bottom: var(--space-xl); }
+
+.text-center { text-align: center; }
+.text-muted { color: var(--color-text-muted); }
+.text-light { color: var(--color-text-light); }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-sm { gap: var(--space-sm); }
+.gap-md { gap: var(--space-md); }
+.gap-lg { gap: var(--space-lg); }
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+@media print {
+  @page {
+    margin: 0.5in;
+    size: portrait;
+  }
+  
+  * {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+  
+  body {
+    background-color: white !important;
+  }
+  
+  .container {
+    max-width: 100%;
+    padding: 0;
+    min-height: auto;
+  }
+  
+  .card {
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
+  
+  /* Hide all navigation buttons */
+  .calendar-nav {
+    display: none !important;
+  }
+  
+  .calendar-header {
+    margin-bottom: var(--space-lg);
+  }
+  
+  .calendar-title {
+    font-size: var(--text-3xl);
+    margin-bottom: var(--space-lg);
+    color: #000 !important;
+  }
+  
+  /* Optimize calendar grid for print */
+  .calendar-grid {
+    gap: 2px;
+  }
+  
+  .calendar-day {
+    border: 1px solid #333 !important;
+    min-height: 70px;
+    page-break-inside: avoid;
+  }
+  
+  .calendar-day-number {
+    color: #000 !important;
+  }
+  
+  .calendar-pain-level {
+    font-size: var(--text-base) !important;
+    padding: var(--space-xs) var(--space-sm) !important;
+  }
+  
+  /* Ensure pain level colors print */
+  .pain-level-0,
+  .pain-level-1 {
+    background-color: #d1fae5 !important;
+    color: #000 !important;
+  }
+  
+  .pain-level-2,
+  .pain-level-3,
+  .pain-level-4 {
+    background-color: #9ae6b4 !important;
+    color: #000 !important;
+  }
+  
+  .pain-level-5,
+  .pain-level-6 {
+    background-color: #fbbf24 !important;
+    color: #000 !important;
+  }
+  
+  .pain-level-7,
+  .pain-level-8 {
+    background-color: #f97316 !important;
+    color: white !important;
+  }
+  
+  .pain-level-9,
+  .pain-level-10 {
+    background-color: #dc2626 !important;
+    color: white !important;
+  }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 768px) {
+  .calendar-grid {
+    gap: 2px;
+  }
+  
+  .calendar-day {
+    min-height: 60px;
+  }
 }
