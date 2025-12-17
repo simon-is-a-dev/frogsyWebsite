@@ -9,7 +9,7 @@ interface PainEntry {
   pain_level: number;
 }
 
-export default function Calendar() {
+export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [entries, setEntries] = useState<PainEntry[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
@@ -22,26 +22,24 @@ export default function Calendar() {
       if (user) {
         setUserId(user.id);
       } else {
-        // Redirect to login if not authenticated
-        router.push('/');
+        router.push('/login');
       }
     };
     getUser();
   }, [router]);
 
-  // Fetch pain entries for the visible month
+  // Fetch pain entries
   useEffect(() => {
     if (!userId) return;
 
     const fetchEntries = async () => {
-      const start = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(
-        2,
-        "0"
-      )}-01`;
-      const end = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(
-        2,
-        "0"
-      )}-${new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate()}`;
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth() + 1;
+      
+      const start = `${year}-${String(month).padStart(2, "0")}-01`;
+      // Calculate last day of month
+      const lastDay = new Date(year, month, 0).getDate();
+      const end = `${year}-${String(month).padStart(2, "0")}-${lastDay}`;
 
       const { data, error } = await supabase
         .from("pain_entries")
@@ -51,9 +49,7 @@ export default function Calendar() {
         .lte("pain_date", end)
         .order("pain_date", { ascending: true });
 
-      if (error) {
-        // Silent fail - just don't show entries
-      } else {
+      if (!error && data) {
         setEntries(data as PainEntry[]);
       }
     };
@@ -65,8 +61,6 @@ export default function Calendar() {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
   const nextMonth = () =>
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
-
-  const printMonth = () => window.print();
 
   const getPainForDay = (day: number) => {
     const dayStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(
@@ -86,7 +80,8 @@ export default function Calendar() {
     for (let i = 0; i < startOffset; i++) days.push(null);
 
     for (let i = 1; i <= lastDayOfMonth.getDate(); i++) days.push(i);
-
+    
+    // Fill remaining grid cells
     while (days.length % 7 !== 0) days.push(null);
 
     return days;
@@ -150,7 +145,7 @@ export default function Calendar() {
           <button onClick={nextMonth} className="btn-secondary">
           Next
           </button>
-          <button onClick={printMonth} className="btn-secondary">
+          <button onClick={() => window.print()} className="btn-secondary">
           Print
           </button>
         </div>

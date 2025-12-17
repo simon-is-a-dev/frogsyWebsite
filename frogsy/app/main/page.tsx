@@ -4,12 +4,13 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../supabaseClient";
 
-export default function Main() {
+export default function MainPage() {
   const [painLevel, setPainLevel] = useState<number | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const router = useRouter();
 
   // Get authenticated user
@@ -18,23 +19,22 @@ export default function Main() {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setUserId(user.id);
+        setCheckingAuth(false);
       } else {
-        // Redirect to login if not authenticated
-        router.push('/');
+        router.push("/login");
       }
     };
     getUser();
   }, [router]);
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
+
   const handleSubmit = async () => {
-    // Validate pain level
     if (painLevel === null) {
       setError('Please select a pain level');
-      return;
-    }
-
-    if (painLevel < 0 || painLevel > 10) {
-      setError('Pain level must be between 0 and 10');
       return;
     }
 
@@ -66,10 +66,10 @@ export default function Main() {
 
     if (error) {
       setError('Failed to log pain level. Please try again.');
+      console.error(error);
     } else {
       setSuccess(`Pain level ${painLevel} logged successfully!`);
       setPainLevel(null);
-      // Clear success message after 3 seconds
       setTimeout(() => setSuccess(null), 3000);
     }
   };
@@ -78,7 +78,7 @@ export default function Main() {
     router.push("/calendar");
   };
 
-  if (!userId) {
+  if (checkingAuth) {
     return (
       <div className="container">
         <div className="text-center">Loading...</div>
@@ -89,7 +89,17 @@ export default function Main() {
   return (
     <div className="container">
       <div className="card">
-        <h2>Log Your Pain Level</h2>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <h2>Log Your Pain Level</h2>
+          <button 
+            onClick={handleLogout} 
+            className="btn-secondary" 
+            style={{ fontSize: '0.8rem', padding: '5px 10px' }}
+          >
+            Sign Out
+          </button>
+        </div>
+        
         <p className="text-muted">Select a number from 0 (no pain) to 10 (severe pain)</p>
 
         {error && (
@@ -112,7 +122,6 @@ export default function Main() {
                 key={i}
                 onClick={() => setPainLevel(i)}
                 className={`pain-button ${painLevel === i ? 'selected' : ''}`}
-                data-level={i}
                 disabled={isLoading}
               >
                 {i}
@@ -127,7 +136,6 @@ export default function Main() {
                 key={i}
                 onClick={() => setPainLevel(i)}
                 className={`pain-button ${painLevel === i ? 'selected' : ''}`}
-                data-level={i}
                 disabled={isLoading}
               >
                 {i}
@@ -142,7 +150,6 @@ export default function Main() {
                 key={i}
                 onClick={() => setPainLevel(i)}
                 className={`pain-button ${painLevel === i ? 'selected' : ''}`}
-                data-level={i}
                 disabled={isLoading}
               >
                 {i}
@@ -155,7 +162,6 @@ export default function Main() {
             <button
               onClick={() => setPainLevel(9)}
               className={`pain-button ${painLevel === 9 ? 'selected' : ''}`}
-              data-level={9}
               disabled={isLoading}
             >
               9
@@ -163,7 +169,6 @@ export default function Main() {
             <button
               onClick={() => setPainLevel(10)}
               className={`pain-button ${painLevel === 10 ? 'selected' : ''}`}
-              data-level={10}
               disabled={isLoading}
             >
               10
@@ -178,13 +183,8 @@ export default function Main() {
             </button>
           </div>
 
-          {/* Row 5: Calendar button */}
           <div className="pain-row pain-actions">
-            <button
-              onClick={goToCalendar}
-              className="btn-secondary"
-              disabled={isLoading}
-            >
+            <button onClick={goToCalendar} className="btn-secondary" disabled={isLoading}>
               View Calendar
             </button>
           </div>

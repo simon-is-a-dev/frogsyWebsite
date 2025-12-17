@@ -1,33 +1,38 @@
-"use client"
+"use client";
 
 import { useRef, useState, useEffect } from 'react';
-import { supabase } from './supabaseClient';
-import Main from './main/page';
+import { useRouter } from 'next/navigation'; // Added useRouter
+import { supabase } from '../supabaseClient'; // Adjust path if needed
 
-export default function Login() {
-  const [loggedIn, setLoggedIn] = useState(false);
+export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
-  // Check for existing session on mount
+  // Check for existing session
   useEffect(() => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      setLoggedIn(!!session);
-      setIsLoading(false);
+      if (session) {
+        // Redirect if already logged in
+        router.push('/main'); 
+      } else {
+        setIsLoading(false);
+      }
     };
 
     checkSession();
 
-    // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setLoggedIn(!!session);
+      if (session) {
+        router.push('/main');
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [router]);
 
   const handleLogin = async () => {
     const email = emailRef.current?.value;
@@ -46,12 +51,10 @@ export default function Login() {
       password,
     });
 
-    setIsLoading(false);
-
+    // Note: onAuthStateChange above will handle the redirect if successful
     if (error) {
+      setIsLoading(false);
       setError('Login failed. Please check your credentials.');
-    } else {
-      setLoggedIn(true);
     }
   };
 
@@ -62,8 +65,6 @@ export default function Login() {
       </div>
     );
   }
-
-  if (loggedIn) return <Main />;
 
   return (
     <div className="page-wrapper">

@@ -1,11 +1,6 @@
-import Image from "next/image";
-import Login from "./login";
-
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <Login />;
-
-
-
-
+  // Immediately redirect to login
+  redirect("/login");
 }
