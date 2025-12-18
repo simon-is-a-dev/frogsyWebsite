@@ -1,0 +1,8 @@
+{
+  "builds": [
+    {
+      "src": "frogsy/package.json",
+      "use": "@vercel/next"
+    }
+  ]
+}
