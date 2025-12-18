@@ -1,8 +1,15 @@
 {
+  "version": 2,
   "builds": [
     {
-      "src": "frogsy/package.json",
+      "src": "frogsy/next.config.mjs",
       "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "frogsy/$1"
     }
   ]
 }
