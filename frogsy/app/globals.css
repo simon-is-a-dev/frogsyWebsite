@@ -410,16 +410,36 @@ textarea::placeholder {
 
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: var(--space-sm);
   margin-top: var(--space-lg);
   width: 100%;
+  max-width: 100%;
 }
 
 @media (max-width: 640px) {
   .calendar-grid {
     gap: 1px;
     margin-top: var(--space-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-grid {
+    gap: 1px;
+  }
+
+  .calendar-day {
+    min-height: 40px;
+    padding: 1px;
+  }
+
+  .calendar-day-number {
+    font-size: var(--text-xs);
+  }
+
+  .calendar-pain-level {
+    font-size: var(--text-xs);
   }
 }
 
