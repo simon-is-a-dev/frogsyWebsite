@@ -6,7 +6,6 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Frogsy",
   description: "Frogsy is a platform for tracking your pain levels.",
-  themeColor: "#016B61",
 };
 
 export default function RootLayout({
