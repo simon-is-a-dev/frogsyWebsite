@@ -18,7 +18,7 @@ const painImages: Record<number, string> = {
   10: "/level10.png",
 };
 
-export default function MainPage() {
+function MainPageContent() {
   const [painLevel, setPainLevel] = useState<number | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
@@ -122,7 +122,6 @@ export default function MainPage() {
   }
 
   return (
-    <Suspense fallback={<div className="container"><div className="card">Loading...</div></div>}>
     <div className="container">
       <div className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -257,6 +256,13 @@ export default function MainPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function MainPage() {
+  return (
+    <Suspense fallback={<div className="container"><div className="card">Loading...</div></div>}>
+      <MainPageContent />
     </Suspense>
   );
 }
