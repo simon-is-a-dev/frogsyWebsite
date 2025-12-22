@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "../supabaseClient";
 
@@ -122,6 +122,7 @@ export default function MainPage() {
   }
 
   return (
+    <Suspense fallback={<div className="container"><div className="card">Loading...</div></div>}>
     <div className="container">
       <div className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -256,5 +257,6 @@ export default function MainPage() {
         </div>
       </div>
     </div>
+    </Suspense>
   );
 }
