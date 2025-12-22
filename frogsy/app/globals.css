@@ -440,6 +440,7 @@ textarea::placeholder {
 
   .calendar-pain-level {
     font-size: var(--text-xs);
+    
   }
 }
 
@@ -487,6 +488,21 @@ textarea::placeholder {
   box-shadow: var(--shadow-sm);
 }
 
+.calendar-day.selected {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+}
+
+.calendar-day.disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.calendar-day.disabled:hover {
+  border-color: var(--color-border);
+  box-shadow: none;
+}
+
 .calendar-day-number {
   font-size: var(--text-sm);
   color: var(--color-text-light);
@@ -503,7 +519,7 @@ textarea::placeholder {
   border-radius: var(--radius-sm);
   min-width: 1.25rem;
   text-align: center;
-  margin: auto;
+  margin-top: 22px;
 }
 
 @media (min-width: 768px) {
@@ -511,6 +527,7 @@ textarea::placeholder {
     font-size: var(--text-base);
     padding: var(--space-xs) var(--space-sm);
     min-width: 2rem;
+    
   }
 }
 
@@ -544,6 +561,48 @@ textarea::placeholder {
 .pain-level-10 {
   background-color: var(--color-pain-severe);
   color: white;
+}
+
+/* Calendar logging panel */
+.calendar-log-panel {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.calendar-log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.calendar-log-title {
+  margin: 0;
+}
+
+.selected-date-chip {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.pain-level-grid.compact {
+  max-width: 520px;
+}
+
+.calendar-log-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 /* ============================================

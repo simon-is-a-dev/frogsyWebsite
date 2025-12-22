@@ -1,17 +1,35 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "../supabaseClient";
 
 export default function MainPage() {
   const [painLevel, setPainLevel] = useState<number | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const todayLocal = useMemo(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
+      now.getDate()
+    ).padStart(2, "0")}`;
+  }, []);
+
+  useEffect(() => {
+    const dateParam = searchParams.get("date");
+    if (dateParam) {
+      setSelectedDate(dateParam);
+    } else {
+      setSelectedDate(todayLocal);
+    }
+  }, [searchParams, todayLocal]);
 
   // Get authenticated user
   useEffect(() => {
@@ -47,11 +65,7 @@ export default function MainPage() {
     setSuccess(null);
     setIsLoading(true);
 
-    // Use the device's local date (not UTC) so entries reflect the user's timezone
-    const now = new Date();
-    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
-      now.getDate()
-    ).padStart(2, "0")}`;
+    const targetDate = selectedDate ?? todayLocal;
 
     const { error } = await supabase
       .from("pain_entries")
@@ -59,7 +73,7 @@ export default function MainPage() {
         [
           {
             user_id: userId,
-            pain_date: today,
+            pain_date: targetDate,
             pain_level: painLevel,
           },
         ],
@@ -94,7 +108,14 @@ export default function MainPage() {
     <div className="container">
       <div className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <h2>Log Your Pain Level</h2>
+          <div>
+            <h2>Log Your Pain Level</h2>
+            {selectedDate && (
+              <div className="text-muted" style={{ fontSize: '0.9rem' }}>
+                For date: {new Date(selectedDate).toLocaleDateString()}
+              </div>
+            )}
+          </div>
           <button 
             onClick={handleLogout} 
             className="btn-secondary" 

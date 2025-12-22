@@ -13,7 +13,11 @@ export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [entries, setEntries] = useState<PainEntry[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+  const formatDate = (year: number, month: number, day: number) =>
+    `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
   // Get authenticated user
   useEffect(() => {
@@ -57,6 +61,10 @@ export default function CalendarPage() {
     fetchEntries();
   }, [currentDate, userId]);
 
+  useEffect(() => {
+    setError(null);
+  }, [currentDate]);
+
   const prevMonth = () =>
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
   const nextMonth = () =>
@@ -69,6 +77,27 @@ export default function CalendarPage() {
     )}-${String(day).padStart(2, "0")}`;
     const entry = entries.find(e => e.pain_date === dayStr);
     return entry ? entry.pain_level : null;
+  };
+
+  const isFutureDay = (day: number) => {
+    const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    dayDate.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return dayDate > today;
+  };
+
+  const handleDayClick = (day: number | null) => {
+    if (!day) return;
+    if (isFutureDay(day)) {
+      setError("You can only log pain for today or past dates.");
+      return;
+    }
+
+    const dateStr = formatDate(currentDate.getFullYear(), currentDate.getMonth() + 1, day);
+    setError(null);
+    // Navigate back to main with the selected date so logging happens there
+    router.push(`/main?date=${dateStr}`);
   };
 
   const generateCalendarDays = () => {
@@ -115,10 +144,21 @@ export default function CalendarPage() {
 
           {calendarDays.map((day, idx) => {
             const painLevel = day ? getPainForDay(day) : null;
+            const future = day ? isFutureDay(day) : false;
             return (
               <div
                 key={idx}
-                className={`calendar-day ${!day ? 'empty' : ''}`}
+                className={`calendar-day ${!day ? 'empty' : ''} ${future ? 'disabled' : ''}`}
+                role={day ? "button" : undefined}
+                tabIndex={day ? 0 : undefined}
+                onClick={() => (day && !future ? handleDayClick(day) : undefined)}
+                onKeyDown={(e) => {
+                  if (day && !future && (e.key === "Enter" || e.key === " ")) {
+                    e.preventDefault();
+                    handleDayClick(day);
+                  }
+                }}
+                aria-disabled={future}
               >
                 {day && (
                   <>
