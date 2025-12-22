@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
+import { Press_Start_2P } from "next/font/google";
 import "./globals.css";
+
+const PixelFont = Press_Start_2P({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-pixel",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Frogsy",
@@ -16,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} antialiased`}
+        className={`${PixelFont.variable} antialiased`}
       >
         {children}
       </body>

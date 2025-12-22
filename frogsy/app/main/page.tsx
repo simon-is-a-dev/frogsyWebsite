@@ -4,6 +4,20 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "../supabaseClient";
 
+const painImages: Record<number, string> = {
+  0: "/level0.png",
+  1: "/level1 .png",
+  2: "/level2.png",
+  3: "/level3.png",
+  4: "/level4.png",
+  5: "/level5.png",
+  6: "/level6.png",
+  7: "/level7.png",
+  8: "/level8.png",
+  9: "/level9.png",
+  10: "/level10.png",
+};
+
 export default function MainPage() {
   const [painLevel, setPainLevel] = useState<number | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -96,6 +110,9 @@ export default function MainPage() {
     router.push("/calendar");
   };
 
+  const displayedPainLevel = painLevel ?? 0;
+  const frogImageSrc = painImages[displayedPainLevel];
+
   if (checkingAuth) {
     return (
       <div className="container">
@@ -125,7 +142,7 @@ export default function MainPage() {
           </button>
         </div>
         
-        <p className="text-muted">Select a number from 0 (no pain) to 10 (severe pain)</p>
+    
 
         {error && (
           <div className="error-message mb-md">
@@ -139,79 +156,102 @@ export default function MainPage() {
           </div>
         )}
 
-        <div className="pain-level-grid">
-          {/* Row 1: 0-2 */}
-          <div className="pain-row">
-            {[0, 1, 2].map((i) => (
+        <div className="pain-dial">
+          <div className="frog-display">
+            <div className="frog-display__header">
+              <span className="frog-display__label">Pain level {displayedPainLevel}</span>
+              <span className="frog-display__hint">
+                {painLevel === null ? "Pick a level to preview your frog" : "Tap save to log this level"}
+              </span>
+            </div>
+            <div className="frog-image-frame">
+              <img
+                src={frogImageSrc}
+                alt={`Frog illustration for pain level ${displayedPainLevel}`}
+                className="frog-image"
+              />
+            </div>
+          </div>
+
+          <div className="pain-level-grid" role="group" aria-label="Select pain level">
+            <div className="pain-row">
+              {[0, 1, 2].map((level) => (
+                <button
+                  key={level}
+                  type="button"
+                  onClick={() => setPainLevel(level)}
+                  className={`pain-button ${painLevel === level ? 'selected' : ''}`}
+                  data-level={level}
+                  disabled={isLoading}
+                  aria-pressed={painLevel === level}
+                >
+                  {level}
+                </button>
+              ))}
+            </div>
+
+            <div className="pain-row">
+              {[3, 4, 5].map((level) => (
+                <button
+                  key={level}
+                  type="button"
+                  onClick={() => setPainLevel(level)}
+                  className={`pain-button ${painLevel === level ? 'selected' : ''}`}
+                  data-level={level}
+                  disabled={isLoading}
+                  aria-pressed={painLevel === level}
+                >
+                  {level}
+                </button>
+              ))}
+            </div>
+
+            <div className="pain-row">
+              {[6, 7, 8].map((level) => (
+                <button
+                  key={level}
+                  type="button"
+                  onClick={() => setPainLevel(level)}
+                  className={`pain-button ${painLevel === level ? 'selected' : ''}`}
+                  data-level={level}
+                  disabled={isLoading}
+                  aria-pressed={painLevel === level}
+                >
+                  {level}
+                </button>
+              ))}
+            </div>
+
+            <div className="pain-row">
+              {[9, 10].map((level) => (
+                <button
+                  key={level}
+                  type="button"
+                  onClick={() => setPainLevel(level)}
+                  className={`pain-button ${painLevel === level ? 'selected' : ''}`}
+                  data-level={level}
+                  disabled={isLoading}
+                  aria-pressed={painLevel === level}
+                >
+                  {level}
+                </button>
+              ))}
               <button
-                key={i}
-                onClick={() => setPainLevel(i)}
-                className={`pain-button ${painLevel === i ? 'selected' : ''}`}
-                disabled={isLoading}
+                type="button"
+                onClick={handleSubmit}
+                disabled={painLevel === null || isLoading}
+                className="pain-button btn-submit"
+                title="Submit"
               >
-                {i}
+                {isLoading ? '...' : '✓'}
               </button>
-            ))}
-          </div>
+            </div>
 
-          {/* Row 2: 3-5 */}
-          <div className="pain-row">
-            {[3, 4, 5].map((i) => (
-              <button
-                key={i}
-                onClick={() => setPainLevel(i)}
-                className={`pain-button ${painLevel === i ? 'selected' : ''}`}
-                disabled={isLoading}
-              >
-                {i}
+            <div className="pain-row pain-actions">
+              <button onClick={goToCalendar} className="btn-secondary" disabled={isLoading}>
+                View Calendar
               </button>
-            ))}
-          </div>
-
-          {/* Row 3: 6-8 */}
-          <div className="pain-row">
-            {[6, 7, 8].map((i) => (
-              <button
-                key={i}
-                onClick={() => setPainLevel(i)}
-                className={`pain-button ${painLevel === i ? 'selected' : ''}`}
-                disabled={isLoading}
-              >
-                {i}
-              </button>
-            ))}
-          </div>
-
-          {/* Row 4: 9, 10, Submit */}
-          <div className="pain-row">
-            <button
-              onClick={() => setPainLevel(9)}
-              className={`pain-button ${painLevel === 9 ? 'selected' : ''}`}
-              disabled={isLoading}
-            >
-              9
-            </button>
-            <button
-              onClick={() => setPainLevel(10)}
-              className={`pain-button ${painLevel === 10 ? 'selected' : ''}`}
-              disabled={isLoading}
-            >
-              10
-            </button>
-            <button
-              onClick={handleSubmit}
-              disabled={painLevel === null || isLoading}
-              className="pain-button btn-submit"
-              title="Submit"
-            >
-              {isLoading ? '...' : '✓'}
-            </button>
-          </div>
-
-          <div className="pain-row pain-actions">
-            <button onClick={goToCalendar} className="btn-secondary" disabled={isLoading}>
-              View Calendar
-            </button>
+            </div>
           </div>
         </div>
       </div>
