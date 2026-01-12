@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "../supabaseClient";
+import NotificationManager from "../components/NotificationManager";
 
 const painImages: Record<number, string> = {
   0: "/level0.png",
@@ -140,16 +141,16 @@ function MainPageContent() {
               </div>
             )}
           </div>
-          <button 
-            onClick={handleLogout} 
-            className="btn-secondary" 
+          <button
+            onClick={handleLogout}
+            className="btn-secondary"
             style={{ fontSize: '0.8rem', padding: '5px 10px' }}
           >
             Sign Out
           </button>
         </div>
-        
-    
+
+
 
         {error && (
           <div className="error-message mb-md">
@@ -281,6 +282,8 @@ function MainPageContent() {
             </div>
           </div>
         </div>
+
+        <NotificationManager userId={userId} />
       </div>
     </div>
   );

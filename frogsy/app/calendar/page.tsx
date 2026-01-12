@@ -41,7 +41,7 @@ export default function CalendarPage() {
     const fetchEntries = async () => {
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth() + 1;
-      
+
       const start = `${year}-${String(month).padStart(2, "0")}-01`;
       // Calculate last day of month
       const lastDay = new Date(year, month, 0).getDate();
@@ -117,7 +117,7 @@ export default function CalendarPage() {
     for (let i = 0; i < startOffset; i++) days.push(null);
 
     for (let i = 1; i <= lastDayOfMonth.getDate(); i++) days.push(i);
-    
+
     // Fill remaining grid cells
     while (days.length % 7 !== 0) days.push(null);
 
@@ -184,26 +184,27 @@ export default function CalendarPage() {
         </div>
 
         <div className="calendar-nav mt-lg">
+
           <button onClick={prevMonth} className="btn-secondary">
-          Prev
-          </button>
-          <button onClick={nextMonth} className="btn-secondary">
-          Next
+            Prev
           </button>
 
+
+          <button onClick={nextMonth} className="btn-secondary">
+            Next
+          </button>
+
+
+
           <button onClick={() => router.push("/main")} className="btn-secondary">
-          Back
+            Back
           </button>
+
+
           <button onClick={() => window.print()} className="btn-secondary">
-          Print
+            Print
           </button>
-          <button
-            onClick={() => window.print()}
-            className="btn-secondary"
-            title={'Use your browser\'s "Save as PDF" option'}
-          >
-            Export PDF
-          </button>
+
         </div>
 
         {selectedEntry && (
