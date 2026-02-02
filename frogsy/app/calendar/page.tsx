@@ -176,14 +176,16 @@ export default function CalendarPage() {
         </div>
 
         <div className="calendar-nav mt-lg">
-          <button onClick={() => router.push("/main")} className="btn-secondary">
-          Back
-          </button>
+          
           <button onClick={prevMonth} className="btn-secondary">
           Prev
           </button>
           <button onClick={nextMonth} className="btn-secondary">
           Next
+          </button>
+
+          <button onClick={() => router.push("/main")} className="btn-secondary">
+          Back
           </button>
           <button onClick={() => window.print()} className="btn-secondary">
           Print
