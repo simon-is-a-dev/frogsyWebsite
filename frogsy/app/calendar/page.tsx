@@ -7,6 +7,7 @@ import { supabase } from "../supabaseClient";
 interface PainEntry {
   pain_date: string;
   pain_level: number;
+  notes: string | null;
 }
 
 export default function CalendarPage() {
@@ -14,6 +15,7 @@ export default function CalendarPage() {
   const [entries, setEntries] = useState<PainEntry[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selectedEntry, setSelectedEntry] = useState<PainEntry | null>(null);
   const router = useRouter();
 
   const formatDate = (year: number, month: number, day: number) =>
@@ -47,7 +49,7 @@ export default function CalendarPage() {
 
       const { data, error } = await supabase
         .from("pain_entries")
-        .select("pain_date, pain_level")
+        .select("pain_date, pain_level, notes")
         .eq("user_id", userId)
         .gte("pain_date", start)
         .lte("pain_date", end)
@@ -96,8 +98,14 @@ export default function CalendarPage() {
 
     const dateStr = formatDate(currentDate.getFullYear(), currentDate.getMonth() + 1, day);
     setError(null);
-    // Navigate back to main with the selected date so logging happens there
-    router.push(`/main?date=${dateStr}`);
+
+    const entry = entries.find(e => e.pain_date === dateStr) || null;
+    if (entry) {
+      setSelectedEntry(entry);
+    } else {
+      // No entry yet for this day: go to main to log it
+      router.push(`/main?date=${dateStr}`);
+    }
   };
 
   const generateCalendarDays = () => {
@@ -176,7 +184,6 @@ export default function CalendarPage() {
         </div>
 
         <div className="calendar-nav mt-lg">
-          
           <button onClick={prevMonth} className="btn-secondary">
           Prev
           </button>
@@ -190,7 +197,61 @@ export default function CalendarPage() {
           <button onClick={() => window.print()} className="btn-secondary">
           Print
           </button>
+          <button
+            onClick={() => window.print()}
+            className="btn-secondary"
+            title={'Use your browser\'s "Save as PDF" option'}
+          >
+            Export PDF
+          </button>
         </div>
+
+        {selectedEntry && (
+          <div className="modal-backdrop" role="presentation" onClick={() => setSelectedEntry(null)}>
+            <div
+              className="modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="day-details-title"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 id="day-details-title">Day details</h3>
+              <p className="text-muted" style={{ marginBottom: "1rem" }}>
+                {new Date(selectedEntry.pain_date).toLocaleDateString()}
+              </p>
+              <p>
+                <strong>Pain level:</strong>{" "}
+                {selectedEntry.pain_level !== null ? selectedEntry.pain_level : "No entry"}
+              </p>
+              <p style={{ marginTop: "1rem" }}>
+                <strong>Notes:</strong>
+                <br />
+                {selectedEntry.notes && selectedEntry.notes.trim().length > 0
+                  ? selectedEntry.notes
+                  : "No notes for this day."}
+              </p>
+
+              <div className="calendar-log-actions mt-lg">
+                <button
+                  className="btn-secondary"
+                  onClick={() => {
+                    const dateStr = selectedEntry.pain_date;
+                    setSelectedEntry(null);
+                    router.push(`/main?date=${dateStr}`);
+                  }}
+                >
+                  Edit in main
+                </button>
+                <button
+                  className="btn-secondary"
+                  onClick={() => setSelectedEntry(null)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

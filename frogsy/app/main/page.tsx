@@ -22,6 +22,7 @@ function MainPageContent() {
   const [painLevel, setPainLevel] = useState<number | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [notes, setNotes] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -89,6 +90,7 @@ function MainPageContent() {
             user_id: userId,
             pain_date: targetDate,
             pain_level: painLevel,
+            notes: notes.trim() === "" ? null : notes.trim(),
           },
         ],
         { onConflict: "user_id,pain_date" }
@@ -102,12 +104,17 @@ function MainPageContent() {
     } else {
       setSuccess(`Pain level ${painLevel} logged successfully!`);
       setPainLevel(null);
+      setNotes("");
       setTimeout(() => setSuccess(null), 3000);
     }
   };
 
   const goToCalendar = () => {
     router.push("/calendar");
+  };
+
+  const goToTrends = () => {
+    router.push("/trends");
   };
 
   const displayedPainLevel = painLevel ?? 0;
@@ -171,6 +178,23 @@ function MainPageContent() {
                 className="frog-image"
               />
             </div>
+          </div>
+
+          <div className="mb-lg" style={{ width: "100%", maxWidth: 540 }}>
+            <label
+              htmlFor="pain-notes"
+              className="form-label"
+              style={{ display: "block", marginBottom: "0.5rem" }}
+            >
+              Notes (optional)
+            </label>
+            <textarea
+              id="pain-notes"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              rows={4}
+              placeholder="The Frogs would love to know what you're feeling"
+            />
           </div>
 
           <div className="pain-level-grid" role="group" aria-label="Select pain level">
@@ -250,6 +274,9 @@ function MainPageContent() {
             <div className="pain-row pain-actions">
               <button onClick={goToCalendar} className="btn-secondary" disabled={isLoading}>
                 View Calendar
+              </button>
+              <button onClick={goToTrends} className="btn-secondary" disabled={isLoading}>
+                View Trends
               </button>
             </div>
           </div>
