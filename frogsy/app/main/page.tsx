@@ -282,8 +282,6 @@ function MainPageContent() {
             </div>
           </div>
         </div>
-
-        <NotificationManager userId={userId} />
       </div>
     </div>
   );

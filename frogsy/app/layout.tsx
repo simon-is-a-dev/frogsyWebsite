@@ -11,7 +11,50 @@ const PixelFont = Press_Start_2P({
 
 export const metadata: Metadata = {
   title: "Frogsy",
-  description: "Frogsy is a platform for tracking your pain levels.",
+  description: "Frogsy is a platform for tracking your pain levels .",
+  keywords: ["pain tracking", "health", "wellness", "Frogsy", "pain diary"],
+  authors: [{ name: "SoME Digital" }],
+  creator: "SoME Digital",
+  publisher: "Frogsy",
+  
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    url: "https://frogsy-website.vercel.app/",
+    title: "Frogsy",
+    description: "Frogsy is a platform for tracking your pain levels.",
+    siteName: "Frogsy",
+    images: [
+      {
+        url: "https://frogsy-website.vercel.app/frogsyMetaImg.png",
+        width: 1200,
+        height: 630,
+        alt: "Frogsy - Pain Tracking Platform",
+      },
+    ],
+  },
+
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+    other: [
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "32x32",
+        url: "/favicon.png",
+      },
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "16x16",
+        url: "/favicon.png",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
