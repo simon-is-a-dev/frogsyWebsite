@@ -15,16 +15,3 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/test-notifications/deno.json"
 entrypoint = "./functions/test-notifications/index.ts"
-
-# Cron jobs for scheduled notifications
-[cron]
-
-# Runs at 08:00 UTC (8:00 AM) every day
-[cron.send-morning-reminder]
-schedule = "0 8 * * *"
-function = "send-reminders"
-
-# Runs at 19:00 UTC (7:00 PM) every day  
-[cron.send-evening-reminder]
-schedule = "0 19 * * *"
-function = "send-reminders"

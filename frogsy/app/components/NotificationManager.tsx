@@ -79,14 +79,14 @@ export default function NotificationManager({ userId }: NotificationManagerProps
       const subscription = await registration.pushManager.getSubscription();
       
       if (subscription) {
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from("push_subscriptions")
           .select("user_id")
           .eq("endpoint", subscription.endpoint)
           .eq("user_id", userId)
-          .single();
+          .maybeSingle();
         
-        if (data) {
+        if (!error && data) {
           setEnabled(true);
         }
       }
@@ -106,14 +106,14 @@ export default function NotificationManager({ userId }: NotificationManagerProps
         .from("user_notification_preferences")
         .select("*")
         .eq("user_id", userId)
-        .single();
+        .maybeSingle();
 
-      if (data) {
+      if (!error && data) {
         setMorningTime(data.morning_time?.substring(0, 5) || "08:00");
         setAfternoonTime(data.afternoon_time?.substring(0, 5) || "19:00");
         setMorningEnabled(data.morning_enabled ?? true);
         setAfternoonEnabled(data.afternoon_enabled ?? true);
-      } else {
+      } else if (!data) {
         // Create default preferences for new user
         await saveUserPreferences();
       }

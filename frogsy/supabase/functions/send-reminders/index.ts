@@ -1,30 +1,31 @@
 // index.ts - Send Reminders Edge Function (Deno)
 
-import { createClient } from "@supabase/supabase-js";
-import webpush from "web-push";
+import { createClient } from "npm:@supabase/supabase-js@2";
+import webpush from "npm:web-push@3.6.7";
 
 // Initialize Supabase
 const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  Deno.env.get("SUPABASE_URL")!,
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
 );
 
 // Initialize web-push
 webpush.setVapidDetails(
   "mailto:simonswart91@gmail.com",
-  process.env.VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
+  Deno.env.get("VAPID_PUBLIC_KEY")!,
+  Deno.env.get("VAPID_PRIVATE_KEY")!
 );
 
 export async function handler(req: Request): Promise<Response> {
   try {
     console.log("Starting to send push notifications...");
     
-    // Get current time in UTC
+    // Get current time in SAST (South Africa Time - UTC+2)
     const now = new Date();
+    const sastTime = new Date(now.toLocaleString("en-US", { timeZone: "Africa/Johannesburg" }));
     const pad = (n: number) => n.toString().padStart(2, "0");
-    const currentTimeUTC = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}`; // HH:MM format
-    console.log(`Current UTC time: ${currentTimeUTC}`);
+    const currentTimeSAST = `${pad(sastTime.getHours())}:${pad(sastTime.getMinutes())}`; // HH:MM format
+    console.log(`Current SAST time: ${currentTimeSAST}`);
     
     // Fetch users who should receive notifications at this time
     const { data: preferences, error: prefError } = await supabase
@@ -50,18 +51,18 @@ export async function handler(req: Request): Promise<Response> {
     // Filter users who should receive notifications at current time
     const eligibleUserIds = (preferences as any[])
       .filter(pref => {
-        const morningMatch = pref.morning_enabled && pref.morning_time?.substring(0, 5) === currentTimeUTC;
-        const afternoonMatch = pref.afternoon_enabled && pref.afternoon_time?.substring(0, 5) === currentTimeUTC;
+        const morningMatch = pref.morning_enabled && pref.morning_time?.substring(0, 5) === currentTimeSAST;
+        const afternoonMatch = pref.afternoon_enabled && pref.afternoon_time?.substring(0, 5) === currentTimeSAST;
         return morningMatch || afternoonMatch;
       })
       .map(pref => pref.user_id);
 
     if (eligibleUserIds.length === 0) {
-      console.log("No users scheduled for notifications at this time");
+      console.log(`No users scheduled for notifications at ${currentTimeSAST} SAST`);
       return new Response(JSON.stringify({ success: true, message: "No users scheduled for this time" }), { status: 200 });
     }
 
-    console.log(`Found ${eligibleUserIds.length} users scheduled for notifications at ${currentTimeUTC}`);
+    console.log(`Found ${eligibleUserIds.length} users scheduled for notifications at ${currentTimeSAST} SAST`);
 
     // Fetch push subscriptions for eligible users
     const { data: subscriptions, error } = await supabase
@@ -134,3 +135,6 @@ export async function handler(req: Request): Promise<Response> {
     return new Response(JSON.stringify({ error: err.message }), { status: 500 });
   }
 }
+
+// Serve the function
+Deno.serve(handler);
