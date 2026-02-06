@@ -29,6 +29,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
   const [afternoonTime, setAfternoonTime] = useState("19:00");
   const [morningEnabled, setMorningEnabled] = useState(true);
   const [afternoonEnabled, setAfternoonEnabled] = useState(true);
+  const [saveStatus, setSaveStatus] = useState<string>(""); // For save confirmation feedback
   const [deviceInfo, setDeviceInfo] = useState<string>("");
 
   const notificationsSupported =
@@ -141,6 +142,23 @@ export default function NotificationManager({ userId }: NotificationManagerProps
       if (error) throw error;
     } catch (error) {
       console.error("Error saving preferences:", error);
+    }
+  };
+
+  // Handler for explicit Save button
+  const handleSavePreferences = async () => {
+    if (!userId) return;
+    
+    setSaveStatus("Saving...");
+    
+    try {
+      await saveUserPreferences();
+      setSaveStatus("✅ Saved!");
+      setTimeout(() => setSaveStatus(""), 3000); // Clear after 3 seconds
+    } catch (error) {
+      console.error("Error saving:", error);
+      setSaveStatus("❌ Failed to save");
+      setTimeout(() => setSaveStatus(""), 3000);
     }
   };
 
@@ -432,10 +450,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
                 <input
                   type="checkbox"
                   checked={morningEnabled}
-                  onChange={(e) => {
-                    setMorningEnabled(e.target.checked);
-                    setTimeout(saveUserPreferences, 500);
-                  }}
+                  onChange={(e) => setMorningEnabled(e.target.checked)}
                   style={{ 
                     marginRight: 'var(--space-sm)',
                     cursor: 'pointer'
@@ -453,10 +468,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
               <input
                 type="time"
                 value={morningTime}
-                onChange={(e) => {
-                  setMorningTime(e.target.value);
-                  setTimeout(saveUserPreferences, 500);
-                }}
+                onChange={(e) => setMorningTime(e.target.value)}
                 disabled={!morningEnabled}
                 className={morningEnabled ? '' : 'disabled'}
                 style={{ 
@@ -489,10 +501,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
                 <input
                   type="checkbox"
                   checked={afternoonEnabled}
-                  onChange={(e) => {
-                    setAfternoonEnabled(e.target.checked);
-                    setTimeout(saveUserPreferences, 500);
-                  }}
+                  onChange={(e) => setAfternoonEnabled(e.target.checked)}
                   style={{ 
                     marginRight: 'var(--space-sm)',
                     cursor: 'pointer'
@@ -510,10 +519,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
               <input
                 type="time"
                 value={afternoonTime}
-                onChange={(e) => {
-                  setAfternoonTime(e.target.value);
-                  setTimeout(saveUserPreferences, 500);
-                }}
+                onChange={(e) => setAfternoonTime(e.target.value)}
                 disabled={!afternoonEnabled}
                 className={afternoonEnabled ? '' : 'disabled'}
                 style={{ 
@@ -530,6 +536,27 @@ export default function NotificationManager({ userId }: NotificationManagerProps
                 }}
               />
             </div>
+          </div>
+          
+          {/* Save Button */}
+          <div style={{ marginTop: 'var(--space-md)' }}>
+            <button 
+              onClick={handleSavePreferences}
+              disabled={!userId}
+              className="btn-primary"
+              style={{ 
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 'var(--space-sm)',
+                fontSize: 'var(--text-sm)',
+                padding: 'var(--space-md)'
+              }}
+            >
+              <span>💾</span>
+              {saveStatus || 'Save Times'}
+            </button>
           </div>
         </div>
       )}
