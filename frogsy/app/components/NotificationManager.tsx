@@ -94,32 +94,71 @@ export default function NotificationManager({ userId }: NotificationManagerProps
 
         const now = new Date();
         const times = [
-            { hour: 8, minute: 0 },  // 8:00 AM
-            { hour: 19, minute: 0 }  // 7:00 PM
+            { hour: 8, minute: 0, id: '8am' },
+            { hour: 19, minute: 0, id: '7pm' }
         ];
 
-        times.forEach(({ hour, minute }) => {
+        times.forEach(({ hour, minute, id }) => {
             const scheduledTime = new Date();
             scheduledTime.setHours(hour, minute, 0, 0);
 
-            // If the time has passed today, schedule for tomorrow
             if (scheduledTime <= now) {
                 scheduledTime.setDate(scheduledTime.getDate() + 1);
             }
 
             const timeUntilNotification = scheduledTime.getTime() - now.getTime();
+            
+            console.log(`Scheduling ${id} notification in ${Math.round(timeUntilNotification / 1000 / 60)} minutes (${scheduledTime.toLocaleTimeString()})`);
 
             const timeout = setTimeout(() => {
-                sendNotification();
-                // Reschedule for next day
+                const nowInside = new Date();
+                // Double check if we already sent one for this slot today
+                const lastSentKey = `lastSent_${id}_${nowInside.toDateString()}`;
+                if (!localStorage.getItem(lastSentKey)) {
+                    sendNotification();
+                    localStorage.setItem(lastSentKey, "true");
+                }
                 scheduleNotifications();
             }, timeUntilNotification);
 
             timeoutRefs.current.push(timeout);
         });
 
-        // Update next notification time display
+        // Add a "safety" check every 5 minutes to catch missed ones if tab was throttled
+        const safetyTimeout = setTimeout(() => {
+            checkMissedNotifications();
+            scheduleNotifications();
+        }, 5 * 60 * 1000);
+        timeoutRefs.current.push(safetyTimeout);
+
         updateNextNotificationTime();
+    };
+
+    const checkMissedNotifications = () => {
+        if (!notificationsEnabled) return;
+        
+        const now = new Date();
+        const times = [
+            { hour: 8, minute: 0, id: '8am' },
+            { hour: 19, minute: 0, id: '7pm' }
+        ];
+
+        times.forEach(({ hour, minute, id }) => {
+            const lastSentKey = `lastSent_${id}_${now.toDateString()}`;
+            const alreadySent = localStorage.getItem(lastSentKey);
+
+            if (!alreadySent) {
+                const targetTime = new Date();
+                targetTime.setHours(hour, minute, 0, 0);
+
+                // If we are past the target time but it's still today, send it now
+                if (now > targetTime) {
+                    console.log(`Missed ${id} notification detected. Sending now.`);
+                    sendNotification();
+                    localStorage.setItem(lastSentKey, "true");
+                }
+            }
+        });
     };
 
     const updateNextNotificationTime = () => {
@@ -342,6 +381,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
                 fontSize: "0.8rem"
             }}>
                 <h4 style={{ marginBottom: "0.5rem" }}>Diagnostic Info</h4>
+                <p><strong>Device Time:</strong> {new Date().toLocaleTimeString()}</p>
                 <p><strong>Permission:</strong> {permission}</p>
                 <p><strong>SW Status:</strong> {swStatus}</p>
                 <p><strong>Secure Context:</strong> {typeof window !== 'undefined' && window.isSecureContext ? 'Yes' : 'No'}</p>
