@@ -5,11 +5,17 @@ import { useRouter } from "next/navigation";
 import { supabase } from "../supabaseClient";
 import NotificationManager from "../components/NotificationManager";
 
+
 function SettingsPageContent() {
   const [userId, setUserId] = useState<string | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const router = useRouter();
 
+useEffect(() => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+  }
+}, []);
   useEffect(() => {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();

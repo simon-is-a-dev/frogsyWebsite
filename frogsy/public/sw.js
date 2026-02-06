@@ -1,47 +1,42 @@
-// Service Worker for handling notifications
 self.addEventListener('install', (event) => {
-    console.log('Service Worker installed');
-    self.skipWaiting();
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-    console.log('Service Worker activated');
-    event.waitUntil(self.clients.claim());
-});
-
-self.addEventListener('notificationclick', (event) => {
-    console.log('Notification clicked');
-    event.notification.close();
-
-    event.waitUntil(
-        self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-            // If a window is already open, focus it
-            for (const client of clientList) {
-                if (client.url.includes('/main') && 'focus' in client) {
-                    return client.focus();
-                }
-            }
-            // Otherwise, open a new window
-            if (self.clients.openWindow) {
-                return self.clients.openWindow('/main');
-            }
-        })
-    );
+  event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener('push', (event) => {
-    console.log('Push notification received');
+  const data = event.data?.json() ?? {};
 
-    const options = {
-        body: event.data ? event.data.text() : 'Time to rate your pain!',
-        icon: '/favicon.png',
-        badge: '/favicon.png',
-        tag: 'pain-reminder',
-        requireInteraction: true,
-        vibrate: [200, 100, 200]
-    };
+  const options = {
+    body: data.body ?? 'Time to log your pain 🐸',
+    icon: '/favicon.png',
+    badge: '/favicon.png',
+    tag: 'pain-reminder',
+    requireInteraction: true,
+  };
 
-    event.waitUntil(
-        self.registration.showNotification('Time to Rate Your Pain! 🐸', options)
-    );
+  event.waitUntil(
+    self.registration.showNotification(
+      data.title ?? 'Frogsy Reminder',
+      options
+    )
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clients) => {
+        for (const client of clients) {
+          if ('focus' in client) return client.focus();
+        }
+        if (self.clients.openWindow) {
+          return self.clients.openWindow('/main');
+        }
+      })
+  );
 });
