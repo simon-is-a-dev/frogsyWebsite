@@ -207,19 +207,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
       console.log("🧪 Testing notification...");
       console.log(`📱 Device: ${deviceInfo}`);
       
-      // Test 1: Direct browser notification
-      console.log("Testing direct notification...");
-      const directTest = new Notification("🧪 Direct Test", {
-        body: `Testing on ${deviceInfo} - Direct notification`,
-        icon: '/favicon.png',
-        badge: '/favicon.png',
-        tag: 'direct-test',
-        requireInteraction: true
-      });
-      
-      setTimeout(() => directTest.close(), 5000);
-
-      // Test 2: Service worker notification
+      // Show test notification via service worker (works on all platforms)
       console.log("Testing service worker notification...");
       const registration = await navigator.serviceWorker.ready;
       console.log("Service worker registration:", registration);
@@ -239,13 +227,10 @@ export default function NotificationManager({ userId }: NotificationManagerProps
       // Show the notification through service worker
       await registration.showNotification(testPayload.title, testPayload);
 
-      // Test 3: Check subscription
-      console.log("Checking push subscription...");
-      const subscription = await registration.pushManager.getSubscription();
-      console.log("Current subscription:", subscription);
+      console.log("✅ Test notification sent successfully!");
 
-      // Platform-specific success message
-      let successMsg = "✅ Test notification sent! Check your notification tray.";
+      // Success message
+      let successMsg = `✅ Test notification sent!\n\nCheck your notification shade/tray.`;
       if (deviceInfo.includes('iPhone')) {
         successMsg += "\n\n🍎 iPhone: Make sure you installed as PWA (Home Screen, not Safari)!";
       } else if (deviceInfo.includes('Android')) {
