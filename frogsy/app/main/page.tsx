@@ -141,15 +141,23 @@ function MainPageContent() {
               </div>
             )}
           </div>
-          <button
-            onClick={handleLogout}
-            className="btn-secondary"
-            style={{ fontSize: '0.8rem', padding: '5px 10px' }}
-          >
-            Sign Out
-          </button>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button
+              onClick={() => router.push("/settings")}
+              className="btn-secondary"
+              style={{ fontSize: '0.8rem', padding: '5px 10px' }}
+            >
+              Settings
+            </button>
+            <button
+              onClick={handleLogout}
+              className="btn-secondary"
+              style={{ fontSize: '0.8rem', padding: '5px 10px' }}
+            >
+              Sign Out
+            </button>
+          </div>
         </div>
-
 
 
         {error && (

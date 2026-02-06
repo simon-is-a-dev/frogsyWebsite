@@ -11,6 +11,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
     const [permission, setPermission] = useState<NotificationPermission>("default");
     const [wakeLockEnabled, setWakeLockEnabled] = useState(false);
     const [nextNotification, setNextNotification] = useState<string>("");
+    const [swStatus, setSwStatus] = useState<string>("Checking...");
     const wakeLockRef = useRef<WakeLockSentinel | null>(null);
     const timeoutRefs = useRef<NodeJS.Timeout[]>([]);
 
@@ -23,6 +24,19 @@ export default function NotificationManager({ userId }: NotificationManagerProps
 
         // Check current permission
         setPermission(Notification.permission);
+
+        // Check SW status
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistration().then(reg => {
+                if (reg) {
+                    setSwStatus(`Registered (${reg.active ? 'Active' : 'Installed'})`);
+                } else {
+                    setSwStatus("Not Registered");
+                }
+            });
+        } else {
+            setSwStatus("Not Supported");
+        }
 
         // Load saved preference
         const saved = localStorage.getItem("notificationsEnabled");
@@ -137,21 +151,54 @@ export default function NotificationManager({ userId }: NotificationManagerProps
         }
     };
 
-    const sendNotification = () => {
-        if (Notification.permission === "granted") {
-            const notification = new Notification("Time to Rate Your Pain! 🐸", {
-                body: "Don't forget to log your pain level for today.",
-                icon: "/favicon.ico",
-                badge: "/favicon.ico",
-                tag: "pain-reminder",
-                requireInteraction: true
-            });
+    const sendNotification = async () => {
+        console.log("Notification: Attempting to send...");
+        
+        if (Notification.permission !== "granted") {
+            console.warn("Notification: Permission not granted", Notification.permission);
+            alert(`Notification permission is: ${Notification.permission}. Please grant permission first.`);
+            return;
+        }
 
-            notification.onclick = () => {
-                window.focus();
-                window.location.href = "/main";
-                notification.close();
+        if (!('serviceWorker' in navigator)) {
+            console.log("Notification: Service Worker NOT in navigator, using fallback");
+            new Notification("Frogsy Test 🐸", { body: "Basic notification fallback" });
+            return;
+        }
+
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            console.log("Notification: Service Worker ready", registration);
+            
+            // Simplified options for maximum compatibility
+            const options = {
+                body: "This is a test notification from Frogsy.",
+                icon: "/favicon.png",
+                tag: "pain-reminder",
+                // Removing vibration/interaction for base test
             };
+
+            await registration.showNotification("Frogsy Test 🐸", options);
+            console.log("Notification: showNotification called successfully");
+            
+            // Helpful hint for Windows users
+            if (navigator.userAgent.includes("Windows")) {
+                console.log("Windows users: If you don't see the notification, check 'Focus Assist' or 'Do Not Disturb' in your Windows settings.");
+            }
+        } catch (err) {
+            console.error("Notification: Service Worker notification failed:", err);
+            new Notification("Frogsy Test 🐸", { body: "Fallback after SW error" });
+        }
+    };
+
+    const unregisterServiceWorker = async () => {
+        if ('serviceWorker' in navigator) {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            for (let registration of registrations) {
+                await registration.unregister();
+            }
+            alert("Service Workers unregistered. Please refresh the page.");
+            window.location.reload();
         }
     };
 
@@ -161,23 +208,35 @@ export default function NotificationManager({ userId }: NotificationManagerProps
             return;
         }
 
+        // Check for secure context (HTTPS or localhost)
+        if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+            alert("Notifications require a secure connection (HTTPS). Testing on localhost should work, but for production, HTTPS is required.");
+        }
+
         if (Notification.permission === "granted") {
             setNotificationsEnabled(true);
             localStorage.setItem("notificationsEnabled", "true");
             await requestWakeLock();
             scheduleNotifications();
         } else if (Notification.permission !== "denied") {
-            const result = await Notification.requestPermission();
-            setPermission(result);
+            try {
+                const result = await Notification.requestPermission();
+                setPermission(result);
 
-            if (result === "granted") {
-                setNotificationsEnabled(true);
-                localStorage.setItem("notificationsEnabled", "true");
-                await requestWakeLock();
-                scheduleNotifications();
+                if (result === "granted") {
+                    setNotificationsEnabled(true);
+                    localStorage.setItem("notificationsEnabled", "true");
+                    await requestWakeLock();
+                    scheduleNotifications();
+                } else {
+                    alert("Notification permission was denied. You can enable them in your browser settings.");
+                }
+            } catch (err) {
+                console.error("Error requesting notification permission:", err);
+                alert("Failed to request notification permission. Make sure you are using a secure connection (HTTPS or localhost).");
             }
         } else {
-            alert("Notifications are blocked. Please enable them in your browser settings.");
+            alert("Notifications are blocked in your browser settings. Please enable them to receive reminders.");
         }
     };
 
@@ -274,6 +333,33 @@ export default function NotificationManager({ userId }: NotificationManagerProps
                     Notifications are blocked. Please enable them in your browser settings.
                 </p>
             )}
+
+            <div style={{ 
+                marginTop: "1.5rem", 
+                padding: "0.75rem", 
+                border: "1px dashed #ccc", 
+                borderRadius: "8px",
+                fontSize: "0.8rem"
+            }}>
+                <h4 style={{ marginBottom: "0.5rem" }}>Diagnostic Info</h4>
+                <p><strong>Permission:</strong> {permission}</p>
+                <p><strong>SW Status:</strong> {swStatus}</p>
+                <p><strong>Secure Context:</strong> {typeof window !== 'undefined' && window.isSecureContext ? 'Yes' : 'No'}</p>
+                <button 
+                    onClick={unregisterServiceWorker}
+                    style={{ 
+                        marginTop: "0.5rem", 
+                        padding: "2px 8px", 
+                        fontSize: "0.7rem",
+                        backgroundColor: "#f0f0f0",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        cursor: "pointer"
+                    }}
+                >
+                    Reset Service Worker
+                </button>
+            </div>
         </div>
     );
 }

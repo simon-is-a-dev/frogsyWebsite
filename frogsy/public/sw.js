@@ -34,8 +34,8 @@ self.addEventListener('push', (event) => {
 
     const options = {
         body: event.data ? event.data.text() : 'Time to rate your pain!',
-        icon: '/favicon.ico',
-        badge: '/favicon.ico',
+        icon: '/favicon.png',
+        badge: '/favicon.png',
         tag: 'pain-reminder',
         requireInteraction: true,
         vibrate: [200, 100, 200]
