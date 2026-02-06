@@ -76,26 +76,59 @@ export default function NotificationManager({ userId }: NotificationManagerProps
     if (!userId) return;
     
     try {
+      console.log("🔍 Checking subscription status...");
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.getSubscription();
       
       if (subscription) {
+        console.log("📱 Found browser subscription:", subscription.endpoint);
+        
+        // Check if subscription exists in database
         const { data, error } = await supabase
           .from("push_subscriptions")
-          .select("user_id")
+          .select("user_id, created_at")
           .eq("endpoint", subscription.endpoint)
           .eq("user_id", userId)
           .maybeSingle();
         
         if (!error && data) {
+          console.log("✅ Subscription valid in database");
+          setEnabled(true);
+        } else {
+          // Subscription exists in browser but not in DB - re-save it
+          console.log("⚠️ Subscription not in database, re-saving...");
+          await renewSubscription(subscription);
           setEnabled(true);
         }
+      } else {
+        console.log("❌ No browser subscription found");
+        setEnabled(false);
       }
 
       // Load user preferences
       await loadUserPreferences();
     } catch (error) {
       console.error("Error checking subscription:", error);
+    }
+  };
+
+  // Helper to renew/save subscription to database
+  const renewSubscription = async (subscription: PushSubscription) => {
+    try {
+      const json = subscription.toJSON();
+      
+      await supabase.from("push_subscriptions").upsert({
+        user_id: userId!,
+        endpoint: json.endpoint!,
+        p256dh: json.keys?.p256dh!,
+        auth: json.keys?.auth!,
+      }, {
+        onConflict: 'endpoint,user_id'
+      });
+      
+      console.log("💾 Subscription renewed in database");
+    } catch (error) {
+      console.error("Failed to renew subscription:", error);
     }
   };
 
@@ -327,21 +360,36 @@ export default function NotificationManager({ userId }: NotificationManagerProps
         </div>
       </div>
 
-      {/* Device Info */}
-      {deviceInfo && (
+      {/* PWA Installation Banner for Mobile */}
+      {deviceInfo && (deviceInfo.includes('iPhone') || deviceInfo.includes('Android')) && (
         <div style={{ 
           marginBottom: 'var(--space-md)',
-          padding: 'var(--space-sm)',
-          background: 'linear-gradient(135deg, var(--color-surface) 0%, var(--color-background) 100%)',
-          border: '2px solid var(--color-border)',
+          padding: 'var(--space-md)',
+          background: 'linear-gradient(135deg, #FFB84D 0%, #FF9A1F 100%)',
+          border: '3px solid #CC7A00',
           fontSize: 'var(--text-sm)',
-          textAlign: 'center',
-          color: 'var(--color-text)'
+          color: '#2D3D2D',
+          lineHeight: '1.6',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
         }}>
-          <strong>Device:</strong> {deviceInfo}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', marginBottom: 'var(--space-sm)' }}>
+            <span style={{ fontSize: '24px' }}>📲</span>
+            <strong style={{ fontSize: 'var(--text-base)' }}>Install as App for Reliable Notifications</strong>
+          </div>
           {deviceInfo.includes('iPhone') && (
-            <div style={{ fontSize: 'var(--text-xs)', marginTop: 'var(--space-xs)', color: 'var(--color-warning)' }}>
-              💡 Install as PWA for best results
+            <div style={{ fontSize: 'var(--text-xs)' }}>
+              <strong>iOS:</strong> Tap Share → Add to Home Screen
+              <div style={{ marginTop: 'var(--space-xs)', opacity: 0.9 }}>
+                ⚠️ Notifications only work when installed as PWA, not in Safari browser!
+              </div>
+            </div>
+          )}
+          {deviceInfo.includes('Android') && (
+            <div style={{ fontSize: 'var(--text-xs)' }}>
+              <strong>Android:</strong> Tap ⋮ Menu → Install app / Add to Home screen
+              <div style={{ marginTop: 'var(--space-xs)', opacity: 0.9 }}>
+                ✅ Works in Chrome even when app is closed!
+              </div>
             </div>
           )}
         </div>
