@@ -1,3 +1,5 @@
+// index.ts - Send Reminders Edge Function (Deno)
+
 import { createClient } from "@supabase/supabase-js";
 import webpush from "web-push";
 
@@ -20,7 +22,8 @@ export async function handler(req: Request): Promise<Response> {
     
     // Get current time in UTC
     const now = new Date();
-    const currentTimeUTC = now.toTimeString().substring(0, 5); // HH:MM format
+    const pad = (n: number) => n.toString().padStart(2, "0");
+    const currentTimeUTC = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}`; // HH:MM format
     console.log(`Current UTC time: ${currentTimeUTC}`);
     
     // Fetch users who should receive notifications at this time
@@ -45,7 +48,7 @@ export async function handler(req: Request): Promise<Response> {
     }
 
     // Filter users who should receive notifications at current time
-    const eligibleUserIds = preferences
+    const eligibleUserIds = (preferences as any[])
       .filter(pref => {
         const morningMatch = pref.morning_enabled && pref.morning_time?.substring(0, 5) === currentTimeUTC;
         const afternoonMatch = pref.afternoon_enabled && pref.afternoon_time?.substring(0, 5) === currentTimeUTC;
@@ -80,7 +83,7 @@ export async function handler(req: Request): Promise<Response> {
 
     // Send notification to all eligible subscriptions
     const results = await Promise.allSettled(
-      subscriptions.map(async (sub: any) => {
+      (subscriptions as any[]).map(async (sub: any) => {
         try {
           await webpush.sendNotification(
             {
@@ -96,6 +99,7 @@ export async function handler(req: Request): Promise<Response> {
             })
           );
           console.log(`Successfully sent notification to user ${sub.user_id}`);
+          return { user_id: sub.user_id, status: "fulfilled" };
         } catch (error: any) {
           console.error(`Failed to send notification to user ${sub.user_id}:`, error);
           
@@ -121,7 +125,7 @@ export async function handler(req: Request): Promise<Response> {
       success: true, 
       time: currentTimeUTC,
       eligibleUsers: eligibleUserIds.length,
-      total: subscriptions.length,
+      totalSubscriptions: (subscriptions as any[]).length,
       successful,
       failed
     }), { status: 200 });

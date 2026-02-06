@@ -29,6 +29,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
   const [afternoonTime, setAfternoonTime] = useState("19:00");
   const [morningEnabled, setMorningEnabled] = useState(true);
   const [afternoonEnabled, setAfternoonEnabled] = useState(true);
+  const [deviceInfo, setDeviceInfo] = useState<string>("");
 
   const notificationsSupported =
     typeof window !== "undefined" &&
@@ -38,6 +39,28 @@ export default function NotificationManager({ userId }: NotificationManagerProps
   useEffect(() => {
     if (!notificationsSupported) return;
 
+    // Detect device and platform
+    const detectDevice = () => {
+      const userAgent = navigator.userAgent;
+      const platform = navigator.platform;
+      
+      let device = "Unknown";
+      if (/iPhone|iPad|iPod/.test(userAgent)) {
+        device = "🍎 iPhone/iOS";
+      } else if (/Android/.test(userAgent)) {
+        device = "🤖 Android";
+      } else if (/Mac/.test(platform)) {
+        device = "💻 macOS";
+      } else if (/Win/.test(platform)) {
+        device = "🪟 Windows";
+      } else if (/Linux/.test(platform)) {
+        device = "🐧 Linux";
+      }
+      
+      setDeviceInfo(device);
+    };
+
+    detectDevice();
     setPermission(Notification.permission);
 
     navigator.serviceWorker.getRegistration().then((reg) => {
@@ -182,11 +205,12 @@ export default function NotificationManager({ userId }: NotificationManagerProps
 
     try {
       console.log("🧪 Testing notification...");
+      console.log(`📱 Device: ${deviceInfo}`);
       
       // Test 1: Direct browser notification
       console.log("Testing direct notification...");
       const directTest = new Notification("🧪 Direct Test", {
-        body: "This is a direct browser notification test",
+        body: `Testing on ${deviceInfo} - Direct notification`,
         icon: '/favicon.png',
         badge: '/favicon.png',
         tag: 'direct-test',
@@ -202,8 +226,8 @@ export default function NotificationManager({ userId }: NotificationManagerProps
       
       // Create a test notification payload
       const testPayload = {
-        title: "🐸 Frogsy Test",
-        body: "If you see this, notifications are working! 🎉",
+        title: `🐸 Frogsy Test - ${deviceInfo}`,
+        body: `If you see this, notifications are working on ${deviceInfo}! 🎉`,
         tag: 'frogsy-test-notification',
         requireInteraction: true,
         icon: '/favicon.png',
@@ -220,10 +244,29 @@ export default function NotificationManager({ userId }: NotificationManagerProps
       const subscription = await registration.pushManager.getSubscription();
       console.log("Current subscription:", subscription);
 
-      alert("✅ Test notification sent! Check your browser's notification tray and OS notification center. If you don't see it, check the browser console for errors.");
+      // Platform-specific success message
+      let successMsg = "✅ Test notification sent! Check your notification tray.";
+      if (deviceInfo.includes('iPhone')) {
+        successMsg += "\n\n🍎 iPhone: Make sure you installed as PWA (Home Screen, not Safari)!";
+      } else if (deviceInfo.includes('Android')) {
+        successMsg += "\n\n🤖 Android: Check your notification shade and Chrome settings!";
+      }
+      successMsg += "\n\nIf you don't see it, check browser console for errors.";
+
+      alert(successMsg);
     } catch (error: any) {
       console.error("❌ Error sending test notification:", error);
-      alert(`❌ Failed to send test notification: ${error?.message || 'Unknown error'}\n\nCheck browser console for more details.`);
+      
+      // Platform-specific error messages
+      let errorMsg = `❌ Failed to send test notification: ${error?.message || 'Unknown error'}`;
+      if (deviceInfo.includes('iPhone')) {
+        errorMsg += "\n\n🍎 iPhone: Did you install as PWA? Safari notifications are limited.";
+      } else if (deviceInfo.includes('Android')) {
+        errorMsg += "\n\n🤖 Android: Check Chrome notification permissions and battery optimization.";
+      }
+      errorMsg += "\n\nCheck browser console for more details.";
+
+      alert(errorMsg);
     }
   };
 
@@ -281,6 +324,26 @@ export default function NotificationManager({ userId }: NotificationManagerProps
         </div>
       </div>
 
+      {/* Device Info */}
+      {deviceInfo && (
+        <div style={{ 
+          marginBottom: 'var(--space-md)',
+          padding: 'var(--space-sm)',
+          background: 'linear-gradient(135deg, var(--color-surface) 0%, var(--color-background) 100%)',
+          border: '2px solid var(--color-border)',
+          fontSize: 'var(--text-sm)',
+          textAlign: 'center',
+          color: 'var(--color-text)'
+        }}>
+          <strong>Device:</strong> {deviceInfo}
+          {deviceInfo.includes('iPhone') && (
+            <div style={{ fontSize: 'var(--text-xs)', marginTop: 'var(--space-xs)', color: 'var(--color-warning)' }}>
+              💡 Install as PWA for best results
+            </div>
+          )}
+        </div>
+      )}
+
       <p className="text-muted" style={{ marginBottom: 'var(--space-lg)' }}>
         Get gentle reminders to log your pain levels. Choose times that work best for your daily routine.
       </p>
@@ -311,6 +374,37 @@ export default function NotificationManager({ userId }: NotificationManagerProps
           </div>
         </div>
       </div>
+
+      {/* Platform-specific tips */}
+      {deviceInfo.includes('iPhone') && (
+        <div className="notification-help" style={{ 
+          marginBottom: 'var(--space-lg)',
+          padding: 'var(--space-md)',
+          background: 'linear-gradient(135deg, var(--color-warning) 0%, #FFA726 100%)',
+          border: '2px solid #F57C00',
+          fontSize: 'var(--text-xs)',
+          color: '#FFF',
+          lineHeight: '1.6'
+        }}>
+          <strong style={{ display: 'block', marginBottom: 'var(--space-xs)' }}>🍎 iPhone Users:</strong>
+          Install as PWA: Safari → Share → "Add to Home Screen" → Open from Home Screen (not Safari!)
+        </div>
+      )}
+
+      {deviceInfo.includes('Android') && (
+        <div className="notification-help" style={{ 
+          marginBottom: 'var(--space-lg)',
+          padding: 'var(--space-md)',
+          background: 'linear-gradient(135deg, var(--color-success) 0%, #66BB6A 100%)',
+          border: '2px solid #43A047',
+          fontSize: 'var(--text-xs)',
+          color: '#FFF',
+          lineHeight: '1.6'
+        }}>
+          <strong style={{ display: 'block', marginBottom: 'var(--space-xs)' }}>🤖 Android Users:</strong>
+          Works great in Chrome! Install as PWA: Chrome → 3-dots → "Add to Home screen"
+        </div>
+      )}
 
       {/* Time Settings */}
       {enabled && (
