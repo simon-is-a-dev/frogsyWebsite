@@ -149,13 +149,7 @@ function MainPageContent() {
             >
               Settings
             </button>
-            <button
-              onClick={handleLogout}
-              className="btn-secondary"
-              style={{ fontSize: '0.8rem', padding: '5px 10px' }}
-            >
-              Sign Out
-            </button>
+         
           </div>
         </div>
 
