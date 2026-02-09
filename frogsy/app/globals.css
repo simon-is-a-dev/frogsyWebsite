@@ -992,17 +992,29 @@ textarea::placeholder {
   border: 4px solid var(--color-border);
   background: linear-gradient(135deg, #F5FAF5 0%, #E8F0E8 100%);
   box-shadow: var(--shadow-pixel-md);
-  padding: 0.75rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem; 
   max-width: 100%;
   overflow-x: auto;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .trends-chart-inner {
-  min-width: 320px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin: 0 auto;
-  margin-right: 30px;
+}
+
+/* Responsive chart wrapper - adapts to container */
+.trends-chart-inner svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
 }
 
 .trends-chart-header {
@@ -1038,6 +1050,251 @@ textarea::placeholder {
 
 .recent-list li:first-child {
   border-top: none;
+}
+
+/* ============================================
+   HEAT MAP - Contribution Grid Style
+   ============================================ */
+.heat-map-container {
+  width: 100%;
+  border: 4px solid var(--color-border);
+  background: linear-gradient(135deg, #F5FAF5 0%, #E8F0E8 100%);
+  box-shadow: var(--shadow-pixel-md);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.heat-map-scroll-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.heat-map-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.heat-map-header {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-sm);
+}
+
+.heat-map-months {
+  display: flex;
+  gap: 6px;
+  margin-left: 60px;
+}
+
+.heat-map-month {
+  font-size: var(--text-xs);
+  color: var(--color-primary);
+  text-transform: uppercase;
+  font-weight: 400;
+  min-width: 60px;
+}
+
+.heat-map-body {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+}
+
+.heat-map-days {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: flex-start;
+  padding-top: 2px;
+}
+
+.heat-map-day-label {
+  font-size: var(--text-xs);
+  color: var(--color-primary);
+  text-transform: uppercase;
+  height: 18px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  min-width: 40px;
+}
+
+.heat-map-weeks {
+  display: flex;
+  gap: 6px;
+}
+
+.heat-map-week {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Add visual separator for month starts */
+.heat-map-week.month-start {
+  margin-left: 8px;
+  padding-left: 8px;
+  border-left: 3px solid var(--color-border);
+}
+
+.heat-map-cell {
+  width: 18px;
+  height: 18px;
+  border: 3px solid var(--color-border);
+  background: #E8F0E8;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  box-shadow: 3px 3px 0 rgba(45, 61, 45, 0.3);
+}
+
+.heat-map-cell:hover:not(.future):not(.no-data) {
+  transform: scale(1.4);
+  z-index: 10;
+  box-shadow: 4px 4px 0 rgba(45, 61, 45, 0.5);
+}
+
+/* Future dates - gray with lighter border */
+.heat-map-cell.future {
+  background: #F5FAF5;
+  border-color: rgba(45, 61, 45, 0.1);
+  cursor: default;
+  box-shadow: 2px 2px 0 rgba(45, 61, 45, 0.1);
+}
+
+/* No data but past dates - show with lighter fill */
+.heat-map-cell.no-data {
+  background: #E8F0E8;
+  border-color: rgba(45, 61, 45, 0.2);
+  cursor: default;
+}
+
+/* Pain level colors for heat map - vibrant forest inspired */
+.heat-map-cell[data-level="0"] {
+  background: #7ACA8A;
+  border-color: var(--color-border);
+}
+
+.heat-map-cell[data-level="1"],
+.heat-map-cell[data-level="2"] {
+  background: #9ADA9A;
+  border-color: var(--color-border);
+}
+
+.heat-map-cell[data-level="3"],
+.heat-map-cell[data-level="4"] {
+  background: #BAEA8A;
+  border-color: var(--color-border);
+}
+
+.heat-map-cell[data-level="5"],
+.heat-map-cell[data-level="6"] {
+  background: #DACA7A;
+  border-color: var(--color-border);
+}
+
+.heat-map-cell[data-level="7"],
+.heat-map-cell[data-level="8"] {
+  background: #EAAA6A;
+  border-color: var(--color-border);
+}
+
+.heat-map-cell[data-level="9"],
+.heat-map-cell[data-level="10"] {
+  background: #EA8A6A;
+  border-color: var(--color-border);
+}
+
+.heat-map-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-primary);
+  color: #F5FAF5;
+  padding: var(--space-sm) var(--space-md);
+  border: 3px solid var(--color-border);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 100;
+  margin-bottom: 6px;
+  box-shadow: var(--shadow-pixel-md);
+}
+
+.heat-map-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: 3px solid var(--color-border);
+  font-size: var(--text-xs);
+  color: var(--color-text);
+  flex-wrap: wrap;
+}
+
+.heat-map-legend-label {
+  font-weight: 400;
+  color: var(--color-text-light);
+}
+
+.heat-map-legend-scale {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.heat-map-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.heat-map-legend-box {
+  width: 18px;
+  height: 18px;
+  border: 3px solid var(--color-border);
+  box-shadow: 3px 3px 0 rgba(45, 61, 45, 0.3);
+}
+
+@media (max-width: 640px) {
+  .heat-map-container {
+    padding: var(--space-md);
+  }
+  
+  .heat-map-months {
+    margin-left: 45px;
+  }
+  
+  .heat-map-month {
+    font-size: 0.45rem;
+    min-width: 50px;
+  }
+  
+  .heat-map-cell {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .heat-map-day-label {
+    font-size: 0.45rem;
+    min-width: 30px;
+    height: 16px;
+    line-height: 16px;
+  }
+  
+  .heat-map-legend-box {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 /* ============================================
@@ -1281,7 +1538,14 @@ textarea::placeholder {
   }
 
   .trends-chart {
-    padding: var(--space-sm);
+   
+    overflow-x: auto;
+    justify-content: center;
+  }
+
+  .trends-chart-inner {
+    min-width: 300px;
+    justify-content: center;
   }
 
   .trends-range-controls {
@@ -1366,5 +1630,495 @@ textarea::placeholder {
   }
   50% {
     background-position: 100% 50%;
+  }
+}
+
+/* ============================================
+   REPORT PAGE STYLES
+   ============================================ */
+
+/* Screen controls */
+.report-controls {
+  margin-bottom: var(--space-xl);
+}
+
+.report-controls h1 {
+  margin-bottom: var(--space-lg);
+}
+
+.report-date-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.report-preset-buttons {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.report-date-inputs {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.report-date-inputs > div {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.report-date-inputs label {
+  font-weight: 600;
+  font-size: var(--text-sm);
+}
+
+.date-input {
+  padding: 0.5rem;
+  border: 3px solid var(--color-border);
+  background: white;
+  font-family: var(--font-main);
+  font-size: var(--text-sm);
+  box-shadow: var(--shadow-pixel-sm);
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.report-action-buttons {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+/* Report content */
+.report-content {
+  background: white;
+  padding: var(--space-xl);
+  border: 4px solid var(--color-border);
+  box-shadow: var(--shadow-pixel-md);
+}
+
+.report-header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-lg);
+  border-bottom: 3px solid var(--color-border);
+}
+
+.report-header h2 {
+  margin-bottom: var(--space-sm);
+}
+
+.report-date-range {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.report-section {
+  margin-bottom: var(--space-xl);
+}
+
+.report-section h3 {
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 2px solid var(--color-border);
+}
+
+/* Statistics grid */
+.report-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.report-stat {
+  padding: var(--space-md);
+  border: 3px solid var(--color-border);
+  background: var(--color-bg);
+  text-align: center;
+  box-shadow: var(--shadow-pixel-sm);
+}
+
+.report-stat-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.report-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* Report table */
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--space-md);
+}
+
+.report-table th,
+.report-table td {
+  padding: var(--space-sm);
+  text-align: left;
+  border: 2px solid var(--color-border);
+}
+
+.report-table th {
+  background: var(--color-bg);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: var(--text-xs);
+}
+
+.report-table tr:nth-child(even) {
+  background: var(--color-bg);
+}
+
+.report-pain-cell {
+  text-align: center;
+}
+
+.report-pain-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: var(--text-sm);
+}
+
+/* Pain level colors for report */
+.report-pain-badge.pain-0 { background: #E8F0E8; color: #2D5A4D; }
+.report-pain-badge.pain-1 { background: #D4E8D4; color: #2D5A4D; }
+.report-pain-badge.pain-2 { background: #C0E0C0; color: #2D5A4D; }
+.report-pain-badge.pain-3 { background: #A8D8A8; color: #2D5A4D; }
+.report-pain-badge.pain-4 { background: #F0E8A8; color: #5A4D2D; }
+.report-pain-badge.pain-5 { background: #E8D890; color: #5A4D2D; }
+.report-pain-badge.pain-6 { background: #E8C878; color: #5A4D2D; }
+.report-pain-badge.pain-7 { background: #E8B060; color: #5A2D2D; }
+.report-pain-badge.pain-8 { background: #E89848; color: #5A2D2D; }
+.report-pain-badge.pain-9 { background: #E88030; color: white; }
+.report-pain-badge.pain-10 { background: #E06030; color: white; }
+
+/* Notes list */
+.report-notes-list {
+  margin-top: var(--space-md);
+}
+
+.report-note-item {
+  padding: var(--space-md);
+  border: 2px solid var(--color-border);
+  background: var(--color-bg);
+  margin-bottom: var(--space-md);
+}
+
+.report-note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.report-note-pain {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.report-note-content {
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* ============================================
+   PRINT STYLES - Optimized for minimal ink
+   ============================================ */
+@media print {
+  /* Hide screen controls */
+  .no-print,
+  .report-controls,
+  nav,
+  .nav,
+  button:not(.report-content button) {
+    display: none !important;
+  }
+
+  /* Reset page margins */
+  @page {
+    margin: 0.5in;
+    size: A4;
+  }
+
+  body {
+    background: white;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  /* Report content */
+  .report-content {
+    background: white;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .report-header {
+    border-bottom: 2px solid black;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .report-header h2 {
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .report-date-range {
+    font-size: 0.875rem;
+  }
+
+  .report-section {
+    margin-bottom: 1.5rem;
+    page-break-inside: avoid;
+  }
+
+  .report-section h3 {
+    font-size: 1.125rem;
+    border-bottom: 1px solid black;
+    padding-bottom: 0.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Statistics - simple black and white */
+  .report-stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+
+  .report-stat {
+    border: 1px solid black;
+    background: white;
+    box-shadow: none;
+    padding: 0.5rem;
+  }
+
+  .report-stat-label {
+    font-size: 0.75rem;
+    color: #333;
+  }
+
+  .report-stat-value {
+    color: black;
+    font-size: 1.5rem;
+  }
+
+  /* Table - minimal ink */
+  .report-table {
+    border-collapse: collapse;
+  }
+
+  .report-table th,
+  .report-table td {
+    border: 1px solid black;
+    padding: 0.5rem;
+  }
+
+  .report-table th {
+    background: white;
+    border-bottom: 2px solid black;
+    font-size: 0.75rem;
+  }
+
+  .report-table tr:nth-child(even) {
+    background: #f9f9f9;
+  }
+
+  /* Pain badges - minimal ink, just text */
+  .report-pain-badge {
+    background: none !important;
+    color: black !important;
+    padding: 0;
+    font-weight: bold;
+  }
+
+  /* Notes */
+  .report-note-item {
+    border: 1px solid black;
+    background: white;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    page-break-inside: avoid;
+  }
+
+  .report-note-header {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .report-note-content {
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+
+  /* Page breaks */
+  .page-break-before {
+    page-break-before: always;
+  }
+
+  .page-break-after {
+    page-break-after: always;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .report-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .report-table {
+    font-size: var(--text-xs);
+  }
+
+  .report-table th,
+  .report-table td {
+    padding: var(--space-xs);
+  }
+}
+
+
+/* ============================================
+   NEW REPORT LAYOUT STYLES
+   ============================================ */
+
+.report-grid-layout {
+  display: grid;
+  grid-template-columns: 40% 60%;
+  gap: var(--space-md);
+  align-items: start;
+}
+
+.report-card {
+  padding: var(--space-sm);
+  border: 2px solid var(--color-border);
+  box-shadow: none; /* Flatter for print */
+}
+
+.report-card h3 {
+  font-size: 1rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 4px;
+}
+
+/* Calendar override for report flexibility */
+.report-calendar-grid-override {
+  gap: 2px;
+}
+
+/* Compact notes */
+.report-notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 400px; /* Prevent overflow on screen */
+  overflow-y: auto;
+}
+
+.report-note-item-compact {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px dashed var(--color-border);
+  font-size: 0.85rem;
+}
+
+.report-note-date {
+  font-weight: bold;
+  font-size: 0.75rem;
+  min-width: 50px;
+}
+
+.report-note-badge {
+  font-weight: bold;
+  color: var(--color-primary);
+  font-size: 0.75rem;
+}
+
+.report-note-text {
+  color: var(--color-text);
+  flex: 1;
+}
+
+/* PRINT OPTIMIZATIONS */
+@media print {
+  @page {
+    size: landscape; /* Suggest landscape for charts side-by-side or auto */
+    margin: 0.25in;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Force grid layout */
+  .report-grid-layout {
+    display: grid !important;
+    grid-template-columns: 40% 58% !important; /* Slightly smaller to fit gap */
+    gap: 1rem !important;
+  }
+
+  .report-col-left, .report-col-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .report-card {
+    break-inside: avoid;
+    border: 2px solid #000 !important;
+    box-shadow: none !important;
+  }
+  
+  /* Ensure charts print */
+  .recharts-wrapper {
+    margin: 0 auto;
+  }
+  
+  /* Expand notes fully */
+  .report-notes-list {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Calendar styling fix for print */
+  .calendar-day {
+    border: 1px solid #ccc !important;
+  }
+  
+  .calendar-pain-level {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }

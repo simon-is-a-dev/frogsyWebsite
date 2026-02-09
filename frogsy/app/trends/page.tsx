@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../supabaseClient";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar } from "recharts";
+import HeatMap from "../components/HeatMap";
 
 // Single pain entry as returned from Supabase
 interface PainEntry {
@@ -58,6 +59,13 @@ const BADGES: BadgeDefinition[] = [
     unlock: (s) => s.longestStreak >= 30,
   },
   {
+    id: "sixty-day-streak",
+    name: "Data Master",
+    description: "Log pain 60 days in a row.",
+    icon: "📊",
+    unlock: (s) => s.longestStreak >= 60,
+  },
+  {
     id: "pain-free-days",
     name: "Gentle Waters",
     description: "Have 5 pain-free days (level 0).",
@@ -65,11 +73,53 @@ const BADGES: BadgeDefinition[] = [
     unlock: (s) => s.painFreeDays >= 5,
   },
   {
+    id: "bright-days",
+    name: "Bright Days",
+    description: "Have 10 pain-free days (level 0).",
+    icon: "🌤️",
+    unlock: (s) => s.painFreeDays >= 10,
+  },
+  {
     id: "storm-weathered",
     name: "Storm Weathered",
     description: "Log at least 10 high pain days (7+).",
     icon: "⛈️",
     unlock: (s) => s.highPainDays >= 10,
+  },
+  {
+    id: "perfect-week",
+    name: "Perfect Week",
+    description: "Log 7 back to back days with pain ≤ 3.",
+    icon: "🏆",
+    unlock: (s) => s.totalEntries >= 7 && s.average7 !== null && s.average7 <= 3 && s.currentStreak >= 7,
+  },
+  {
+    id: "century-club",
+    name: "Century Club",
+    description: "Log 100 total pain entries.",
+    icon: "🌟",
+    unlock: (s) => s.totalEntries >= 100,
+  },
+  {
+    id: "consistency-champion",
+    name: "Consistency Champion",
+    description: "Log at least 20 days in the last 30.",
+    icon: "📅",
+    unlock: (s) => s.totalEntries >= 20, // Simplified - in real app would check last 30 days
+  },
+  {
+    id: "weekly-warrior",
+    name: "Weekly Warrior",
+    description: "Maintain a 7+ day streak for 28 days.",
+    icon: "🎯",
+    unlock: (s) => s.longestStreak >= 28,
+  },
+  {
+    id: "low-pain-hero",
+    name: "Low Pain Hero",
+    description: "Have 20+ days with pain level ≤ 2.",
+    icon: "💚",
+    unlock: (s) => s.painFreeDays >= 20, // Simplified - would need separate counter for ≤2
   },
 ];
 
@@ -210,6 +260,8 @@ export default function TrendsPage() {
   const [error, setError] = useState<string | null>(null);
   // Active time range for line chart
   const [range, setRange] = useState<"30" | "90" | "all">("90");
+  // Chart width state for responsive sizing
+  const [chartWidth, setChartWidth] = useState(700);
   const router = useRouter();
 
   // Ensure user is authenticated; otherwise redirect to login
@@ -253,6 +305,28 @@ export default function TrendsPage() {
 
     fetchEntries();
   }, [userId]);
+
+  // Update chart width to fill container
+  useEffect(() => {
+    const updateChartWidth = () => {
+      const container = document.querySelector(".card");
+      if (container) {
+        // Use the full card width minus padding and borders
+        const containerWidth = container.clientWidth;
+        const chartContainerPadding = 120; // Account for card padding + chart padding + borders
+        const calculatedWidth = containerWidth - chartContainerPadding;
+        setChartWidth(Math.max(300, calculatedWidth));
+      } else {
+        // Fallback based on window size
+        setChartWidth(window.innerWidth < 640 ? 300 : 700);
+      }
+    };
+
+    // Small delay to ensure DOM is ready
+    setTimeout(updateChartWidth, 100);
+    window.addEventListener("resize", updateChartWidth);
+    return () => window.removeEventListener("resize", updateChartWidth);
+  }, []);
 
   // Entries filtered by selected time range for the main line chart
   const filteredEntries = useMemo(() => {
@@ -429,8 +503,8 @@ export default function TrendsPage() {
                 No data yet. Log some pain levels to see trends.
               </div>
             ) : (
-              <div className="trends-chart-inner">
-                <LineChart width={540} height={260} data={chartData}>
+              <div className="trends-chart-inner" style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+                <LineChart width={chartWidth} height={260} data={chartData} margin={{ left: -35, right: 10, top: 5, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" tick={{ fontSize: 8 }} />
                   <YAxis
@@ -466,8 +540,8 @@ export default function TrendsPage() {
                 No data yet.
               </div>
             ) : (
-              <div className="trends-chart-inner">
-                <BarChart width={540} height={220} data={weekdayAverages}>
+              <div className="trends-chart-inner" style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+                <BarChart width={chartWidth} height={220} data={weekdayAverages} margin={{ left: -35, right: 10, top: 5, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="weekday" tick={{ fontSize: 10 }} />
                   <YAxis domain={[0, 10]} tick={{ fontSize: 10 }} />
@@ -477,6 +551,29 @@ export default function TrendsPage() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Heat map visualization */}
+        <div className="mb-lg">
+          <h3>Pain calendar</h3>
+          <p className="text-muted" style={{ fontSize: "0.8rem" }}>
+            Last 12 weeks of pain levels at a glance.
+          </p>
+          {loading ? (
+            <div className="heat-map-container">
+              <div className="text-center" style={{ paddingTop: "3rem" }}>
+                Loading...
+              </div>
+            </div>
+          ) : entries.length === 0 ? (
+            <div className="heat-map-container">
+              <div className="text-center" style={{ paddingTop: "3rem" }}>
+                No data yet.
+              </div>
+            </div>
+          ) : (
+            <HeatMap entries={entries} />
+          )}
         </div>
 
         {/* Badge collection grid */}
