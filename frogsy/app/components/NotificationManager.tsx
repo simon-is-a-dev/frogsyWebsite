@@ -18,7 +18,7 @@ function urlBase64ToUint8Array(base64String: string) {
   return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
 }
 
-const VAPID_PUBLIC_KEY = "BElWMgd9Bvohy186HV3Wz2lpmqmGaI0r6wtQ9YRDJTA4-6t1vnvmTvfHpPCyLyDzqNA70m6HD0nuUgkeaSquqac";
+const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
 
 export default function NotificationManager({ userId }: NotificationManagerProps) {
   const [permission, setPermission] = useState<NotificationPermission>("default");
@@ -44,7 +44,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
     const detectDevice = () => {
       const userAgent = navigator.userAgent;
       const platform = navigator.platform;
-      
+
       let device = "Unknown";
       if (/iPhone|iPad|iPod/.test(userAgent)) {
         device = "🍎 iPhone/iOS";
@@ -57,7 +57,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
       } else if (/Linux/.test(platform)) {
         device = "🐧 Linux";
       }
-      
+
       setDeviceInfo(device);
     };
 
@@ -74,15 +74,15 @@ export default function NotificationManager({ userId }: NotificationManagerProps
 
   const checkExistingSubscription = async () => {
     if (!userId) return;
-    
+
     try {
       console.log("🔍 Checking subscription status...");
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.getSubscription();
-      
+
       if (subscription) {
         console.log("📱 Found browser subscription:", subscription.endpoint);
-        
+
         // Check if subscription exists in database
         const { data, error } = await supabase
           .from("push_subscriptions")
@@ -90,7 +90,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
           .eq("endpoint", subscription.endpoint)
           .eq("user_id", userId)
           .maybeSingle();
-        
+
         if (!error && data) {
           console.log("✅ Subscription valid in database");
           setEnabled(true);
@@ -116,7 +116,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
   const renewSubscription = async (subscription: PushSubscription) => {
     try {
       const json = subscription.toJSON();
-      
+
       await supabase.from("push_subscriptions").upsert({
         user_id: userId!,
         endpoint: json.endpoint!,
@@ -125,7 +125,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
       }, {
         onConflict: 'endpoint,user_id'
       });
-      
+
       console.log("💾 Subscription renewed in database");
     } catch (error) {
       console.error("Failed to renew subscription:", error);
@@ -181,9 +181,9 @@ export default function NotificationManager({ userId }: NotificationManagerProps
   // Handler for explicit Save button
   const handleSavePreferences = async () => {
     if (!userId) return;
-    
+
     setSaveStatus("Saving...");
-    
+
     try {
       await saveUserPreferences();
       setSaveStatus("✅ Saved!");
@@ -257,12 +257,12 @@ export default function NotificationManager({ userId }: NotificationManagerProps
     try {
       console.log("🧪 Testing notification...");
       console.log(`📱 Device: ${deviceInfo}`);
-      
+
       // Show test notification via service worker (works on all platforms)
       console.log("Testing service worker notification...");
       const registration = await navigator.serviceWorker.ready;
       console.log("Service worker registration:", registration);
-      
+
       // Create a test notification payload
       const testPayload = {
         title: `🐸 Frogsy Test - ${deviceInfo}`,
@@ -292,7 +292,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
       alert(successMsg);
     } catch (error: any) {
       console.error("❌ Error sending test notification:", error);
-      
+
       // Platform-specific error messages
       let errorMsg = `❌ Failed to send test notification: ${error?.message || 'Unknown error'}`;
       if (deviceInfo.includes('iPhone')) {
@@ -349,8 +349,8 @@ export default function NotificationManager({ userId }: NotificationManagerProps
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-md)' }}>
         <h3>Daily Reminders 🔔</h3>
         <div className="notification-status-indicator">
-          <span style={{ 
-            fontSize: 'var(--text-xs)', 
+          <span style={{
+            fontSize: 'var(--text-xs)',
             color: enabled ? 'var(--color-success)' : 'var(--color-text-muted)',
             textTransform: 'uppercase',
             letterSpacing: '0.05em'
@@ -362,7 +362,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
 
       {/* PWA Installation Banner for Mobile */}
       {deviceInfo && (deviceInfo.includes('iPhone') || deviceInfo.includes('Android')) && (
-        <div style={{ 
+        <div style={{
           marginBottom: 'var(--space-md)',
           padding: 'var(--space-md)',
           background: 'linear-gradient(135deg, #FFB84D 0%, #FF9A1F 100%)',
@@ -400,15 +400,15 @@ export default function NotificationManager({ userId }: NotificationManagerProps
       </p>
 
       {/* Status Display */}
-      <div className="notification-status-grid" style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', 
-        gap: 'var(--space-sm)', 
-        marginBottom: 'var(--space-lg)' 
+      <div className="notification-status-grid" style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+        gap: 'var(--space-sm)',
+        marginBottom: 'var(--space-lg)'
       }}>
         <div className="summary-card">
           <div className="summary-label">Permission</div>
-          <div className="summary-value" style={{ 
+          <div className="summary-value" style={{
             fontSize: 'var(--text-sm)',
             color: permission === 'granted' ? 'var(--color-success)' : 'var(--color-warning)'
           }}>
@@ -417,7 +417,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
         </div>
         <div className="summary-card">
           <div className="summary-label">Service Worker</div>
-          <div className="summary-value" style={{ 
+          <div className="summary-value" style={{
             fontSize: 'var(--text-sm)',
             color: swStatus === 'Registered' ? 'var(--color-success)' : 'var(--color-warning)'
           }}>
@@ -428,7 +428,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
 
       {/* Platform-specific tips */}
       {deviceInfo.includes('iPhone') && (
-        <div className="notification-help" style={{ 
+        <div className="notification-help" style={{
           marginBottom: 'var(--space-lg)',
           padding: 'var(--space-md)',
           background: 'linear-gradient(135deg, var(--color-warning) 0%, #FFA726 100%)',
@@ -443,7 +443,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
       )}
 
       {deviceInfo.includes('Android') && (
-        <div className="notification-help" style={{ 
+        <div className="notification-help" style={{
           marginBottom: 'var(--space-lg)',
           padding: 'var(--space-md)',
           background: 'linear-gradient(135deg, var(--color-success) 0%, #66BB6A 100%)',
@@ -459,15 +459,15 @@ export default function NotificationManager({ userId }: NotificationManagerProps
 
       {/* Time Settings */}
       {enabled && (
-        <div className="notification-time-settings" style={{ 
+        <div className="notification-time-settings" style={{
           marginBottom: 'var(--space-lg)',
           padding: 'var(--space-lg)',
           background: 'linear-gradient(135deg, var(--color-surface) 0%, var(--color-background) 100%)',
           border: '3px solid var(--color-border)',
           boxShadow: 'var(--shadow-pixel-sm)'
         }}>
-          <h4 style={{ 
-            marginBottom: 'var(--space-md)', 
+          <h4 style={{
+            marginBottom: 'var(--space-md)',
             fontSize: 'var(--text-lg)',
             color: 'var(--color-primary)',
             display: 'flex',
@@ -477,17 +477,17 @@ export default function NotificationManager({ userId }: NotificationManagerProps
             <span>⏰</span>
             Reminder Schedule
           </h4>
-          
-          <div className="time-input-grid" style={{ 
-            display: 'grid', 
+
+          <div className="time-input-grid" style={{
+            display: 'grid',
             gap: 'var(--space-md)',
             gridTemplateColumns: '1fr'
           }}>
             {/* Morning Reminder */}
             <div className="time-input-group">
-              <label style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
+              <label style={{
+                display: 'flex',
+                alignItems: 'center',
                 marginBottom: 'var(--space-sm)',
                 fontSize: 'var(--text-sm)',
                 color: 'var(--color-text)',
@@ -499,12 +499,12 @@ export default function NotificationManager({ userId }: NotificationManagerProps
                   type="checkbox"
                   checked={morningEnabled}
                   onChange={(e) => setMorningEnabled(e.target.checked)}
-                  style={{ 
+                  style={{
                     marginRight: 'var(--space-sm)',
                     cursor: 'pointer'
                   }}
                 />
-                <span style={{ 
+                <span style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: 'var(--space-xs)'
@@ -519,9 +519,9 @@ export default function NotificationManager({ userId }: NotificationManagerProps
                 onChange={(e) => setMorningTime(e.target.value)}
                 disabled={!morningEnabled}
                 className={morningEnabled ? '' : 'disabled'}
-                style={{ 
-                  padding: 'var(--space-md)', 
-                  borderRadius: '0', 
+                style={{
+                  padding: 'var(--space-md)',
+                  borderRadius: '0',
                   border: '3px solid var(--color-border)',
                   fontSize: 'var(--text-sm)',
                   fontFamily: 'var(--font-pixel)',
@@ -536,9 +536,9 @@ export default function NotificationManager({ userId }: NotificationManagerProps
 
             {/* Afternoon Reminder */}
             <div className="time-input-group">
-              <label style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
+              <label style={{
+                display: 'flex',
+                alignItems: 'center',
                 marginBottom: 'var(--space-sm)',
                 fontSize: 'var(--text-sm)',
                 color: 'var(--color-text)',
@@ -550,12 +550,12 @@ export default function NotificationManager({ userId }: NotificationManagerProps
                   type="checkbox"
                   checked={afternoonEnabled}
                   onChange={(e) => setAfternoonEnabled(e.target.checked)}
-                  style={{ 
+                  style={{
                     marginRight: 'var(--space-sm)',
                     cursor: 'pointer'
                   }}
                 />
-                <span style={{ 
+                <span style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: 'var(--space-xs)'
@@ -570,9 +570,9 @@ export default function NotificationManager({ userId }: NotificationManagerProps
                 onChange={(e) => setAfternoonTime(e.target.value)}
                 disabled={!afternoonEnabled}
                 className={afternoonEnabled ? '' : 'disabled'}
-                style={{ 
-                  padding: 'var(--space-md)', 
-                  borderRadius: '0', 
+                style={{
+                  padding: 'var(--space-md)',
+                  borderRadius: '0',
                   border: '3px solid var(--color-border)',
                   fontSize: 'var(--text-sm)',
                   fontFamily: 'var(--font-pixel)',
@@ -585,14 +585,14 @@ export default function NotificationManager({ userId }: NotificationManagerProps
               />
             </div>
           </div>
-          
+
           {/* Save Button */}
           <div style={{ marginTop: 'var(--space-md)' }}>
-            <button 
+            <button
               onClick={handleSavePreferences}
               disabled={!userId}
               className="btn-primary"
-              style={{ 
+              style={{
                 width: '100%',
                 display: 'flex',
                 alignItems: 'center',
@@ -610,9 +610,9 @@ export default function NotificationManager({ userId }: NotificationManagerProps
       )}
 
       {/* Action Buttons */}
-      <div className="notification-actions" style={{ 
-        display: 'flex', 
-        gap: 'var(--space-md)', 
+      <div className="notification-actions" style={{
+        display: 'flex',
+        gap: 'var(--space-md)',
         flexWrap: 'wrap',
         marginTop: 'var(--space-md)'
       }}>
@@ -632,10 +632,10 @@ export default function NotificationManager({ userId }: NotificationManagerProps
           </button>
         ) : (
           <>
-            <button 
-              onClick={testNotification} 
-              className="btn-secondary" 
-              style={{ 
+            <button
+              onClick={testNotification}
+              className="btn-secondary"
+              style={{
                 fontSize: 'var(--text-sm)',
                 minWidth: '120px'
               }}
@@ -645,10 +645,10 @@ export default function NotificationManager({ userId }: NotificationManagerProps
                 Test Now
               </span>
             </button>
-            <button 
-              onClick={disableNotifications} 
+            <button
+              onClick={disableNotifications}
               className="btn-secondary"
-              style={{ 
+              style={{
                 fontSize: 'var(--text-sm)',
                 background: 'linear-gradient(180deg, var(--color-error) 0%, #8A5A5A 100%)',
                 minWidth: '140px'
@@ -664,7 +664,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
       </div>
 
       {/* Help Text */}
-      <div className="notification-help" style={{ 
+      <div className="notification-help" style={{
         marginTop: 'var(--space-lg)',
         padding: 'var(--space-md)',
         background: 'linear-gradient(135deg, var(--color-info) 0%, var(--color-water-dark) 100%)',
