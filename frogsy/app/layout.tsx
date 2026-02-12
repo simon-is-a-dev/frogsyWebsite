@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   authors: [{ name: "SoME Digital" }],
   creator: "SoME Digital",
   publisher: "Frogsy",
-  
+
   alternates: {
     canonical: "/",
   },
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     siteName: "Frogsy",
     images: [
       {
-        url: "https://frogsy-website.vercel.app/frogsyMetaImg.png",
+        url: "https://frogsy-website.vercel.app/frogsyMetaNew.png",
         width: 1200,
         height: 630,
         alt: "Frogsy - Pain Tracking Platform",
@@ -75,8 +75,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Frogsy" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="msapplication-TileColor" content="#2D3D2D" />
-        <meta name="theme-color" content="#4CAF50" />
+
         <script
           dangerouslySetInnerHTML={{
             __html: `
