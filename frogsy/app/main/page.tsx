@@ -21,6 +21,7 @@ const painImages: Record<number, string> = {
 
 function MainPageContent() {
   const [painLevel, setPainLevel] = useState<number | null>(null);
+  const [clickCount, setClickCount] = useState(0);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [notes, setNotes] = useState<string>("");
@@ -46,6 +47,10 @@ function MainPageContent() {
       setSelectedDate(todayLocal);
     }
   }, [searchParams, todayLocal]);
+
+  useEffect(() => {
+    setClickCount(0);
+  }, [painLevel]);
 
   // Get authenticated user
   useEffect(() => {
@@ -149,7 +154,7 @@ function MainPageContent() {
             >
               Settings
             </button>
-         
+
           </div>
         </div>
 
@@ -179,6 +184,17 @@ function MainPageContent() {
                 src={frogImageSrc}
                 alt={`Frog illustration for pain level ${displayedPainLevel}`}
                 className="frog-image"
+                onClick={() => {
+                  if (painLevel === 2) {
+                    const newCount = clickCount + 1;
+                    setClickCount(newCount);
+
+                    if (newCount === 3) {
+                      router.push('/dedicated');
+                    }
+                  }
+                }}
+                style={{ cursor: painLevel === 2 ? 'pointer' : 'default' }}
               />
             </div>
           </div>
