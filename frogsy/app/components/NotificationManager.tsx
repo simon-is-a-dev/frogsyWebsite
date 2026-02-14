@@ -20,6 +20,10 @@ function urlBase64ToUint8Array(base64String: string) {
 
 const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
 
+if (!VAPID_PUBLIC_KEY) {
+  console.error("❌ Missing NEXT_PUBLIC_VAPID_PUBLIC_KEY in environment variables");
+}
+
 export default function NotificationManager({ userId }: NotificationManagerProps) {
   const [permission, setPermission] = useState<NotificationPermission>("default");
   const [enabled, setEnabled] = useState(false);
@@ -64,9 +68,20 @@ export default function NotificationManager({ userId }: NotificationManagerProps
     detectDevice();
     setPermission(Notification.permission);
 
-    navigator.serviceWorker.getRegistration().then((reg) => {
-      setSwStatus(reg ? "Registered" : "Not registered");
-    });
+    const registerServiceWorker = async () => {
+      try {
+        if ('serviceWorker' in navigator) {
+          const registration = await navigator.serviceWorker.register('/sw.js');
+          console.log('✅ Service Worker registered with scope:', registration.scope);
+          setSwStatus("Registered");
+        }
+      } catch (error) {
+        console.error('❌ Service Worker registration failed:', error);
+        setSwStatus("Failed");
+      }
+    };
+
+    registerServiceWorker();
 
     // Check if user already has a subscription
     checkExistingSubscription();
@@ -167,7 +182,8 @@ export default function NotificationManager({ userId }: NotificationManagerProps
           morning_time: morningTime + ":00",
           afternoon_time: afternoonTime + ":00",
           morning_enabled: morningEnabled,
-          afternoon_enabled: afternoonEnabled
+          afternoon_enabled: afternoonEnabled,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
         }, {
           onConflict: 'user_id'
         });
@@ -198,6 +214,12 @@ export default function NotificationManager({ userId }: NotificationManagerProps
   const enableNotifications = async () => {
     if (!userId) {
       alert("Please log in to enable notifications.");
+      return;
+    }
+
+    if (!VAPID_PUBLIC_KEY) {
+      console.error("Cannot enable notifications: Missing VAPID key");
+      alert("Configuration error: Missing VAPID key. Please contact support.");
       return;
     }
 
