@@ -371,33 +371,16 @@ export default function ReportPage() {
                       return (
                         <div key={idx} className="rp-log-row" style={{ 
                           display: 'grid', 
-                          gridTemplateColumns: '80px 40px 1fr', 
-                          gap: '12px', 
+                          gridTemplateColumns: 'auto 1fr', 
+                          gap: '32px', 
                           alignItems: 'start',
                           padding: '8px 0',
                           borderBottom: '1px solid #eee'
                         }}>
-                          <span className="rp-log-date" style={{ fontSize: '0.9rem', color: '#555' }}>
+                          <span className="rp-log-date" style={{ fontSize: '0.9rem', color: '#555', whiteSpace: 'nowrap' }}>
                             {formatDate(entry.pain_date)}
                           </span>
                           
-                          <span
-                            className={`rp-log-badge pain-level-${entry.pain_level}`}
-                            style={{ 
-                              color: entry.pain_level >= 8 ? 'white' : 'black',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              width: '32px',
-                              height: '32px',
-                              borderRadius: '50%',
-                              fontWeight: 'bold',
-                              fontSize: '1rem'
-                            }}
-                          >
-                            {entry.pain_level}
-                          </span>
-
                           <div className="rp-log-content">
                             {/* Meds Row */}
                             {activeMeds.length > 0 && (
