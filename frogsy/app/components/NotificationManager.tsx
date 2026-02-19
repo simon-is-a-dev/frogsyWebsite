@@ -491,7 +491,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
           <h4 style={{
             marginBottom: 'var(--space-md)',
             fontSize: 'var(--text-lg)',
-            color: 'var(--color-primary)',
+            color: '#111',
             display: 'flex',
             alignItems: 'center',
             gap: 'var(--space-sm)'

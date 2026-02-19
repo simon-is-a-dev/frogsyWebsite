@@ -216,7 +216,7 @@ export default function LoginPage() {
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: '#4CAF50',
+                  color: '#111',
                   cursor: 'pointer',
                   textDecoration: 'underline',
                   fontSize: '0.8rem',
@@ -244,7 +244,7 @@ export default function LoginPage() {
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#2D5A4D',
+                color: '#111',
                 cursor: 'pointer',
                 fontSize: '0.75rem',
                 opacity: 0.9,

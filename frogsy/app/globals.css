@@ -1,70 +1,70 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
 :root {
   /* Forest Primary Colors - Deep Woods */
-  --color-primary: #2D5A4D;
+  --color-primary: #2d5a4d;
   /* Deep Forest Green */
-  --color-primary-light: #3D7A6D;
-  --color-primary-dark: #1D4A3D;
+  --color-primary-light: #3d7a6d;
+  --color-primary-dark: #1d4a3d;
 
   /* Moss & Sage */
-  --color-accent: #7A9B76;
+  --color-accent: #7a9b76;
   /* Sage Green */
-  --color-accent-light: #9ABC96;
-  --color-accent-dark: #5A7B56;
+  --color-accent-light: #9abc96;
+  --color-accent-dark: #5a7b56;
 
   /* Water & Stream Blues */
-  --color-water: #4A7C8C;
+  --color-water: #4a7c8c;
   /* Teal Blue */
-  --color-water-light: #6A9CAC;
-  --color-water-dark: #2A5C6C;
+  --color-water-light: #6a9cac;
+  --color-water-dark: #2a5c6c;
 
   /* Cyan & Aqua */
-  --color-cyan: #5C9A9A;
+  --color-cyan: #5c9a9a;
   /* Muted Cyan */
-  --color-cyan-light: #7CBABA;
-  --color-cyan-dark: #3C7A7A;
+  --color-cyan-light: #7cbaba;
+  --color-cyan-dark: #3c7a7a;
 
   /* Sky & Mist */
-  --color-sky: #8BB4C4;
+  --color-sky: #8bb4c4;
   /* Soft Sky Blue */
-  --color-sky-light: #ABD4E4;
-  --color-sky-dark: #6B94A4;
+  --color-sky-light: #abd4e4;
+  --color-sky-dark: #6b94a4;
 
   /* Game Boy Forest Screen */
-  --color-gb-screen: #5C8A6A;
-  --color-gb-dark: #2D4A3D;
-  --color-gb-mid: #4A6A5A;
-  --color-gb-light: #7AAA8A;
+  --color-gb-screen: #5c8a6a;
+  --color-gb-dark: #2d4a3d;
+  --color-gb-mid: #4a6a5a;
+  --color-gb-light: #7aaa8a;
 
   /* Neutral Colors - 8-bit Forest Palette */
-  --color-background: #E8F0E8;
-  --color-surface: #F5FAF5;
-  --color-border: #2D3D2D;
-  --color-text: #2D3D2D;
-  --color-text-light: #4D5D4D;
-  --color-text-muted: #7D8D7D;
+  --color-background: #e8f0e8;
+  --color-surface: #f5faf5;
+  --color-border: #2d3d2d;
+  --color-text: #111;
+  --color-text-light: #333;
+  --color-text-muted: #555;
 
   /* Semantic Colors - Forest Inspired */
-  --color-success: #6A9A6A;
+  --color-success: #6a9a6a;
   /* Healthy Leaf */
-  --color-warning: #AA8A5A;
+  --color-warning: #aa8a5a;
   /* Autumn Leaf */
-  --color-error: #8A5A5A;
+  --color-error: #8a5a5a;
   /* Withered */
-  --color-info: #6A8AAA;
+  --color-info: #6a8aaa;
   /* Clear Stream */
 
   /* Pain Level Colors - Natural Gradient */
-  --color-pain-0: #7AAA8A;
+  --color-pain-0: #7aaa8a;
   /* Vibrant Foliage */
-  --color-pain-low: #8ABA9A;
+  --color-pain-low: #8aba9a;
   /* Fresh Growth */
-  --color-pain-medium: #9AAA7A;
+  --color-pain-medium: #9aaa7a;
   /* Moss */
-  --color-pain-high: #AA9A6A;
+  --color-pain-high: #aa9a6a;
   /* Dried Leaves */
-  --color-pain-severe: #8A7A6A;
+  --color-pain-severe: #8a7a6a;
   /* Bark */
 
   /* Spacing Scale */
@@ -87,7 +87,7 @@
   --shadow-pixel-lg: 8px 8px 0 rgba(45, 61, 45, 0.5);
 
   /* Typography */
-  --font-pixel: 'Press Start 2P', 'Courier New', monospace;
+  --font-pixel: "Press Start 2P", "Courier New", monospace;
 
   /* Font Sizes - 8-bit scaled */
   --text-xs: 0.5rem;
@@ -121,23 +121,24 @@ html {
 
 body {
   font-family: var(--font-pixel);
-  background-color: #6A9A8A;
+  background-color: #6a9a8a;
   background-image:
-    repeating-linear-gradient(0deg,
+    repeating-linear-gradient(
+      0deg,
       transparent,
       transparent 4px,
       rgba(45, 61, 45, 0.1) 4px,
-      rgba(45, 61, 45, 0.1) 8px),
-    repeating-linear-gradient(90deg,
+      rgba(45, 61, 45, 0.1) 8px
+    ),
+    repeating-linear-gradient(
+      90deg,
       transparent,
       transparent 4px,
       rgba(45, 61, 45, 0.1) 4px,
-      rgba(45, 61, 45, 0.1) 8px),
-    linear-gradient(135deg,
-      #6A9A8A 0%,
-      #5A8A7A 50%,
-      #6A9A8A 100%);
-  color: var(--color-text);
+      rgba(45, 61, 45, 0.1) 8px
+    ),
+    linear-gradient(135deg, #6a9a8a 0%, #5a8a7a 50%, #6a9a8a 100%);
+  color: #111;
   line-height: 1.6;
   min-height: 100vh;
   position: relative;
@@ -145,17 +146,19 @@ body {
 
 /* Scanline effect overlay */
 body::before {
-  content: '';
+  content: "";
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: repeating-linear-gradient(0deg,
-      rgba(0, 0, 0, 0.03),
-      rgba(0, 0, 0, 0.03) 1px,
-      transparent 1px,
-      transparent 2px);
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.03),
+    rgba(0, 0, 0, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
   pointer-events: none;
   z-index: 9999;
 }
@@ -171,7 +174,7 @@ h5,
 h6 {
   font-weight: 400;
   line-height: 1.4;
-  color: var(--color-primary);
+  color: #111;
   margin-bottom: var(--space-md);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -179,12 +182,12 @@ h6 {
 
 h1 {
   font-size: var(--text-3xl);
-  text-shadow: 4px 4px 0 rgba(45, 61, 45, 0.2);
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
 h2 {
   font-size: var(--text-2xl);
-  text-shadow: 3px 3px 0 rgba(45, 61, 45, 0.2);
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 640px) {
@@ -264,7 +267,7 @@ p {
 
 /* Forest leaf corner decoration */
 .card::before {
-  content: '◆';
+  content: "◆";
   position: absolute;
   top: 12px;
   right: 12px;
@@ -324,8 +327,12 @@ button:active:not(:disabled) {
 /* Primary Button - Forest style */
 .btn-primary,
 button:not([class]) {
-  background: linear-gradient(180deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
-  color: #F5FAF5;
+  background: linear-gradient(
+    180deg,
+    var(--color-primary-light) 0%,
+    var(--color-primary) 100%
+  );
+  color: #f5faf5;
   border-color: var(--color-border);
   box-shadow: 4px 4px 0 rgba(45, 61, 45, 0.3);
   /* Pixel shadow */
@@ -335,7 +342,11 @@ button:not([class]) {
 
 .btn-primary:hover:not(:disabled),
 button:not([class]):hover:not(:disabled) {
-  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--color-primary) 0%,
+    var(--color-primary-dark) 100%
+  );
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0 rgba(45, 61, 45, 0.4);
 }
@@ -348,14 +359,22 @@ button:not([class]):active:not(:disabled) {
 
 /* Secondary Button - Stream style */
 .btn-secondary {
-  background: linear-gradient(180deg, var(--color-water-light) 0%, var(--color-water) 100%);
-  color: #F5FAF5;
+  background: linear-gradient(
+    180deg,
+    var(--color-water-light) 0%,
+    var(--color-water) 100%
+  );
+  color: #f5faf5;
   border-color: var(--color-border);
   box-shadow: var(--shadow-pixel-sm);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: linear-gradient(180deg, var(--color-water) 0%, var(--color-water-dark) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--color-water) 0%,
+    var(--color-water-dark) 100%
+  );
 }
 
 /* Icon Button */
@@ -363,13 +382,17 @@ button:not([class]):active:not(:disabled) {
   padding: var(--space-sm);
   width: 3rem;
   height: 3rem;
-  background: linear-gradient(180deg, #F5FAF5 0%, #E0E8E0 100%);
+  background: linear-gradient(180deg, #f5faf5 0%, #e0e8e0 100%);
   border-color: var(--color-border);
   color: var(--color-text);
 }
 
 .btn-icon:hover:not(:disabled) {
-  background: linear-gradient(180deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--color-accent) 0%,
+    var(--color-accent-dark) 100%
+  );
   color: var(--color-text);
 }
 
@@ -382,13 +405,13 @@ input[type="text"],
 input[type="number"],
 textarea,
 select {
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   /* Keep readable mono */
   font-size: 1rem;
   padding: 1rem;
   border: 4px solid var(--color-border);
   /* Thicker borders */
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   color: var(--color-text);
   transition: none;
   /* Instant transitions for retro feel */
@@ -405,8 +428,10 @@ input[type="number"]:focus,
 textarea:focus,
 select:focus {
   border-color: var(--color-primary);
-  background-color: #F5FAF5;
-  box-shadow: inset 4px 4px 0 rgba(45, 61, 45, 0.1), 0 0 0 4px rgba(45, 90, 77, 0.3);
+  background-color: #f5faf5;
+  box-shadow:
+    inset 4px 4px 0 rgba(45, 61, 45, 0.1),
+    0 0 0 4px rgba(45, 90, 77, 0.3);
 }
 
 input::placeholder,
@@ -431,7 +456,7 @@ textarea::placeholder {
 .frog-display {
   width: 100%;
   max-width: 520px;
-  background: linear-gradient(135deg, #F5FAF5 0%, #E8F0E8 100%);
+  background: linear-gradient(135deg, #f5faf5 0%, #e8f0e8 100%);
   border: 4px solid var(--color-border);
   box-shadow: var(--shadow-pixel-md);
   padding: var(--space-lg);
@@ -442,17 +467,19 @@ textarea::placeholder {
 
 /* Forest screen effect */
 .frog-display::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: repeating-linear-gradient(90deg,
-      transparent,
-      transparent 2px,
-      rgba(45, 61, 45, 0.02) 2px,
-      rgba(45, 61, 45, 0.02) 4px);
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 2px,
+    rgba(45, 61, 45, 0.02) 2px,
+    rgba(45, 61, 45, 0.02) 4px
+  );
   pointer-events: none;
 }
 
@@ -467,7 +494,7 @@ textarea::placeholder {
 
 .frog-display__label {
   font-weight: 400;
-  color: var(--color-primary);
+  color: #111;
   text-transform: uppercase;
   font-size: var(--text-lg);
 }
@@ -486,42 +513,35 @@ textarea::placeholder {
   align-items: center;
   justify-content: center;
   position: relative;
-  background: linear-gradient(135deg, #6A9A8A 0%, #5A8A7A 100%);
+  background-color: #4a7c8c; /* Deep water base */
   border: 4px solid var(--color-border);
   overflow: hidden;
   image-rendering: pixelated;
-  box-shadow: inset 4px 4px 0 rgba(45, 61, 45, 0.2);
+  box-shadow: inset 4px 4px 0 rgba(0, 0, 0, 0.2);
 }
 
-/* Animated forest background pattern */
+/* Pixel Pond Animation */
 .frog-image-frame::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
   width: 200%;
   height: 200%;
   background-image:
-    repeating-linear-gradient(45deg,
-      transparent,
-      transparent 20px,
-      rgba(106, 154, 138, 0.3) 20px,
-      rgba(106, 154, 138, 0.3) 40px),
-    repeating-linear-gradient(-45deg,
-      transparent,
-      transparent 20px,
-      rgba(90, 138, 122, 0.2) 20px,
-      rgba(90, 138, 122, 0.2) 40px);
-  animation: scrollBackground 20s linear infinite;
-  pointer-events: none;
+    linear-gradient(45deg, #5a8c9c 25%, transparent 25%, transparent 75%, #5a8c9c 75%, #5a8c9c),
+    linear-gradient(45deg, #5a8c9c 25%, transparent 25%, transparent 75%, #5a8c9c 75%, #5a8c9c);
+  background-position: 0 0, 20px 20px;
+  background-size: 40px 40px;
+  opacity: 0.3;
+  animation: pondRipple 4s linear infinite;
   z-index: 1;
 }
 
-@keyframes scrollBackground {
+@keyframes pondRipple {
   0% {
     transform: translate(0, 0);
   }
-
   100% {
     transform: translate(40px, 40px);
   }
@@ -534,7 +554,8 @@ textarea::placeholder {
   image-rendering: pixelated;
   position: relative;
   z-index: 2;
-  filter: contrast(1.1) saturate(1.2);
+  filter: drop-shadow(0 4px 4px rgba(0,0,0,0.2));
+  transform: scale(1.35); /* Keep frog bigger */
 }
 
 /* Nature bar style indicator */
@@ -544,9 +565,10 @@ textarea::placeholder {
   left: 12px;
   right: 12px;
   height: 16px;
-  background: #2D3D2D;
-  border: 2px solid #2D3D2D;
-  box-shadow: 2px 2px 0 rgba(45, 61, 45, 0.5);
+  background: #2d3d2d;
+  border: 2px solid #2d3d2d;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+  z-index: 3;
 }
 
 .pain-level-grid {
@@ -581,9 +603,11 @@ textarea::placeholder {
   font-weight: 400;
   font-size: var(--text-3xl);
   border: 4px solid var(--color-border);
-  background: linear-gradient(135deg, #F5FAF5 0%, #E0E8E0 100%);
+  background: linear-gradient(135deg, #f5faf5 0%, #e0e8e0 100%);
   color: var(--color-text);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
   box-shadow: var(--shadow-pixel-sm);
   image-rendering: pixelated;
   position: relative;
@@ -600,9 +624,11 @@ textarea::placeholder {
 }
 
 .pain-button.selected {
-  border-color: #2D3D2D;
+  border-color: #2d3d2d;
   background: var(--btn-color);
-  box-shadow: inset 4px 4px 0 rgba(45, 61, 45, 0.2), var(--shadow-pixel-sm);
+  box-shadow:
+    inset 4px 4px 0 rgba(45, 61, 45, 0.2),
+    var(--shadow-pixel-sm);
   color: var(--color-text);
   font-weight: 400;
 }
@@ -640,9 +666,13 @@ textarea::placeholder {
 }
 
 .btn-submit {
-  background: linear-gradient(135deg, var(--color-cyan-light) 0%, var(--color-cyan) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-cyan-light) 0%,
+    var(--color-cyan) 100%
+  );
   border-color: var(--color-border);
-  color: #F5FAF5;
+  color: #f5faf5;
   font-size: var(--text-2xl);
   line-height: 1.4;
   text-shadow: 2px 2px 0 rgba(45, 61, 45, 0.3);
@@ -650,12 +680,16 @@ textarea::placeholder {
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--color-cyan) 0%, var(--color-cyan-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-cyan) 0%,
+    var(--color-cyan-dark) 100%
+  );
 }
 
 .btn-submit:disabled {
-  background: #C0CAC0;
-  color: #7D8D7D;
+  background: #c0cac0;
+  color: #2a3a2a;
 }
 
 .pain-actions button {
@@ -687,7 +721,11 @@ textarea::placeholder {
   gap: var(--space-lg);
   margin-bottom: var(--space-xl);
   padding: var(--space-lg);
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-dark) 100%
+  );
   border: 4px solid var(--color-border);
   box-shadow: var(--shadow-pixel-md);
   position: relative;
@@ -695,7 +733,7 @@ textarea::placeholder {
 
 /* Forest leaf indicator */
 .calendar-header::after {
-  content: '◆';
+  content: "◆";
   position: absolute;
   top: 12px;
   left: 12px;
@@ -707,7 +745,6 @@ textarea::placeholder {
 }
 
 @keyframes blink {
-
   0%,
   50% {
     opacity: 1;
@@ -733,7 +770,7 @@ textarea::placeholder {
 }
 
 .calendar-nav button {
-  background: linear-gradient(135deg, #F5FAF5 0%, #E0E8E0 100%);
+  background: linear-gradient(135deg, #f5faf5 0%, #e0e8e0 100%);
   color: var(--color-text);
   font-size: var(--text-xs);
   padding: var(--space-md);
@@ -742,7 +779,7 @@ textarea::placeholder {
 .calendar-title {
   font-size: var(--text-xl);
   font-weight: 400;
-  color: #F5FAF5;
+  color: #f5faf5;
   margin: 0;
   order: -1;
   text-align: center;
@@ -776,11 +813,11 @@ textarea::placeholder {
   text-align: center;
   font-weight: 400;
   font-size: var(--text-xs);
-  color: var(--color-primary);
+  color: #111;
   padding: var(--space-sm);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: linear-gradient(135deg, #F5FAF5 0%, #E8F0E8 100%);
+  background: linear-gradient(135deg, #f5faf5 0%, #e8f0e8 100%);
   border: 2px solid var(--color-border);
 }
 
@@ -791,7 +828,7 @@ textarea::placeholder {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #F5FAF5 0%, #EDF5ED 100%);
+  background: linear-gradient(135deg, #f5faf5 0%, #edf5ed 100%);
   transition: all var(--transition-fast);
   min-height: 70px;
   padding: var(--space-xs);
@@ -822,7 +859,9 @@ textarea::placeholder {
 
 .calendar-day.selected {
   border-color: var(--color-primary);
-  box-shadow: inset 2px 2px 0 rgba(45, 61, 45, 0.2), var(--shadow-pixel-sm);
+  box-shadow:
+    inset 2px 2px 0 rgba(45, 61, 45, 0.2),
+    var(--shadow-pixel-sm);
 }
 
 .calendar-day.disabled {
@@ -853,13 +892,19 @@ textarea::placeholder {
   padding: 4px 6px;
   min-width: 2rem;
   text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 3px solid var(--color-border);
   box-shadow: 3px 3px 0 rgba(45, 61, 45, 0.4);
+  z-index: 1;
+}
+
+.calendar-day .calendar-pain-level {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1;
 }
 
 @media (min-width: 768px) {
@@ -884,8 +929,8 @@ textarea::placeholder {
 /* Pain level colors in calendar - Forest Nature colors */
 .pain-level-0,
 .pain-level-1 {
-  background-color: #7AAA8A;
-  color: #F5FAF5;
+  background-color: #7aaa8a;
+  color: #f5faf5;
   text-shadow: 2px 2px 0 rgba(45, 61, 45, 0.4);
 }
 
@@ -911,7 +956,7 @@ textarea::placeholder {
 .pain-level-9,
 .pain-level-10 {
   background-color: #ff0000;
-  color: #F5FAF5;
+  color: #f5faf5;
   text-shadow: 2px 2px 0 rgba(45, 61, 45, 0.4);
 }
 
@@ -920,7 +965,7 @@ textarea::placeholder {
   margin-top: var(--space-xl);
   padding: var(--space-lg);
   border: 4px solid var(--color-border);
-  background: linear-gradient(135deg, #F5FAF5 0%, #E8F0E8 100%);
+  background: linear-gradient(135deg, #f5faf5 0%, #e8f0e8 100%);
   box-shadow: var(--shadow-pixel-md);
   display: flex;
   flex-direction: column;
@@ -937,11 +982,15 @@ textarea::placeholder {
 
 .calendar-log-title {
   margin: 0;
-  color: var(--color-primary);
+  color: #111;
 }
 
 .selected-date-chip {
-  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-accent) 0%,
+    var(--color-accent-dark) 100%
+  );
   border: 3px solid var(--color-border);
   padding: var(--space-sm) var(--space-md);
   font-weight: 400;
@@ -973,7 +1022,7 @@ textarea::placeholder {
 }
 
 .modal {
-  background: linear-gradient(135deg, #F5FAF5 0%, #E8F0E8 100%);
+  background: linear-gradient(135deg, #f5faf5 0%, #e8f0e8 100%);
   border: 4px solid var(--color-border);
   box-shadow: var(--shadow-pixel-lg);
   padding: var(--space-lg);
@@ -1002,7 +1051,7 @@ textarea::placeholder {
 
 .summary-card {
   border: 3px solid var(--color-border);
-  background: linear-gradient(135deg, #F5FAF5 0%, #E8F0E8 100%);
+  background: linear-gradient(135deg, #f5faf5 0%, #e8f0e8 100%);
   padding: var(--space-md);
   box-shadow: var(--shadow-pixel-sm);
 }
@@ -1015,13 +1064,13 @@ textarea::placeholder {
 
 .summary-value {
   font-size: var(--text-xl);
-  color: var(--color-primary);
+  color: #111;
 }
 
 .badge-card {
   border: 3px solid var(--color-border);
   padding: var(--space-md);
-  background: linear-gradient(135deg, #F5FAF5 0%, #E8F0E8 100%);
+  background: linear-gradient(135deg, #f5faf5 0%, #e8f0e8 100%);
   box-shadow: var(--shadow-pixel-sm);
   display: flex;
   flex-direction: column;
@@ -1042,7 +1091,7 @@ textarea::placeholder {
 
 .badge-name {
   font-size: var(--text-sm);
-  color: var(--color-primary);
+  color: #111;
 }
 
 .badges-grid {
@@ -1055,7 +1104,7 @@ textarea::placeholder {
 .trends-chart {
   width: 100%;
   border: 4px solid var(--color-border);
-  background: linear-gradient(135deg, #F5FAF5 0%, #E8F0E8 100%);
+  background: linear-gradient(135deg, #f5faf5 0%, #e8f0e8 100%);
   box-shadow: var(--shadow-pixel-md);
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
@@ -1102,7 +1151,7 @@ textarea::placeholder {
   padding: 0;
   margin-top: var(--space-sm);
   border: 3px solid var(--color-border);
-  background: linear-gradient(135deg, #F5FAF5 0%, #E8F0E8 100%);
+  background: linear-gradient(135deg, #f5faf5 0%, #e8f0e8 100%);
   box-shadow: var(--shadow-pixel-sm);
 }
 
@@ -1123,7 +1172,7 @@ textarea::placeholder {
 .heat-map-container {
   width: 100%;
   border: 4px solid var(--color-border);
-  background: linear-gradient(135deg, #F5FAF5 0%, #E8F0E8 100%);
+  background: linear-gradient(135deg, #f5faf5 0%, #e8f0e8 100%);
   box-shadow: var(--shadow-pixel-md);
   padding: var(--space-xl);
   display: flex;
@@ -1158,7 +1207,7 @@ textarea::placeholder {
 
 .heat-map-month {
   font-size: var(--text-xs);
-  color: var(--color-primary);
+  color: #111;
   text-transform: uppercase;
   font-weight: 400;
   min-width: 60px;
@@ -1180,7 +1229,7 @@ textarea::placeholder {
 
 .heat-map-day-label {
   font-size: var(--text-xs);
-  color: var(--color-primary);
+  color: #111;
   text-transform: uppercase;
   height: 18px;
   line-height: 18px;
@@ -1212,7 +1261,7 @@ textarea::placeholder {
   width: 18px;
   height: 18px;
   border: 3px solid var(--color-border);
-  background: #E8F0E8;
+  background: #e8f0e8;
   cursor: pointer;
   transition: all var(--transition-base);
   position: relative;
@@ -1227,7 +1276,7 @@ textarea::placeholder {
 
 /* Future dates - gray with lighter border */
 .heat-map-cell.future {
-  background: #F5FAF5;
+  background: #f5faf5;
   border-color: rgba(45, 61, 45, 0.1);
   cursor: default;
   box-shadow: 2px 2px 0 rgba(45, 61, 45, 0.1);
@@ -1235,44 +1284,44 @@ textarea::placeholder {
 
 /* No data but past dates - show with lighter fill */
 .heat-map-cell.no-data {
-  background: #E8F0E8;
+  background: #e8f0e8;
   border-color: rgba(45, 61, 45, 0.2);
   cursor: default;
 }
 
 /* Pain level colors for heat map - vibrant forest inspired */
 .heat-map-cell[data-level="0"] {
-  background: #7ACA8A;
+  background: #7aca8a;
   border-color: var(--color-border);
 }
 
 .heat-map-cell[data-level="1"],
 .heat-map-cell[data-level="2"] {
-  background: #9ADA9A;
+  background: #9ada9a;
   border-color: var(--color-border);
 }
 
 .heat-map-cell[data-level="3"],
 .heat-map-cell[data-level="4"] {
-  background: #BAEA8A;
+  background: #baea8a;
   border-color: var(--color-border);
 }
 
 .heat-map-cell[data-level="5"],
 .heat-map-cell[data-level="6"] {
-  background: #DACA7A;
+  background: #daca7a;
   border-color: var(--color-border);
 }
 
 .heat-map-cell[data-level="7"],
 .heat-map-cell[data-level="8"] {
-  background: #EAAA6A;
+  background: #eaaa6a;
   border-color: var(--color-border);
 }
 
 .heat-map-cell[data-level="9"],
 .heat-map-cell[data-level="10"] {
-  background: #EA8A6A;
+  background: #ea8a6a;
   border-color: var(--color-border);
 }
 
@@ -1282,7 +1331,7 @@ textarea::placeholder {
   left: 50%;
   transform: translateX(-50%);
   background: var(--color-primary);
-  color: #F5FAF5;
+  color: #f5faf5;
   padding: var(--space-sm) var(--space-md);
   border: 3px solid var(--color-border);
   font-size: var(--text-xs);
@@ -1369,20 +1418,20 @@ textarea::placeholder {
   width: 100%;
   max-width: 450px;
   padding: var(--space-xl);
-  background: linear-gradient(135deg, #F5FAF5 0%, #E8F0E8 100%);
+  background: linear-gradient(135deg, #f5faf5 0%, #e8f0e8 100%);
   border: 4px solid var(--color-border);
   box-shadow: var(--shadow-pixel-lg);
   position: relative;
 }
 
 .login-container::before {
-  content: 'PAIN TRACKER';
+  content: "PAIN TRACKER";
   position: absolute;
   top: -40px;
   left: 50%;
   transform: translateX(-50%);
   font-size: var(--text-2xl);
-  color: var(--color-primary);
+  color: #111;
   text-shadow: 4px 4px 0 rgba(45, 61, 45, 0.2);
   white-space: nowrap;
 }
@@ -1411,7 +1460,7 @@ textarea::placeholder {
    ============================================ */
 .error-message {
   padding: var(--space-lg);
-  background: linear-gradient(135deg, #F0E0E0 0%, #E8D0D0 100%);
+  background: linear-gradient(135deg, #f0e0e0 0%, #e8d0d0 100%);
   border: 4px solid var(--color-error);
   color: var(--color-error);
   font-size: var(--text-sm);
@@ -1422,7 +1471,7 @@ textarea::placeholder {
 
 .success-message {
   padding: var(--space-lg);
-  background: linear-gradient(135deg, #E0F0E8 0%, #D0E8D8 100%);
+  background: linear-gradient(135deg, #e0f0e8 0%, #d0e8d8 100%);
   border: 4px solid var(--color-success);
   color: var(--color-success);
   font-size: var(--text-sm);
@@ -1521,97 +1570,59 @@ textarea::placeholder {
 /* ============================================
    PRINT STYLES
    ============================================ */
+/* Default: Screen View */
+.print-only {
+  display: none !important;
+}
+
 @media print {
   @page {
     margin: 0.5in;
-    size: portrait;
+    size: portrait; /* Report handles its own layout */
   }
 
-  * {
-    print-color-adjust: economy !important;
-    -webkit-print-color-adjust: economy !important;
+  /* Reset all potential background interferences */
+  body, .container, .card {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
-  body {
-    background-color: white !important;
-    background-image: none !important;
-  }
-
-  body::before {
-    display: none;
-  }
-
-  .container {
-    max-width: 100%;
-    padding: 0;
-    min-height: auto;
-  }
-
-  .card {
-    box-shadow: none;
-    border: 1px solid #000;
-    padding: var(--space-md);
-    background: #ffffff !important;
-  }
-
-  .calendar-nav {
+  /* HIDE everything by default to avoid leaks */
+  body > * {
     display: none !important;
   }
 
-  .calendar-header {
-    margin-bottom: var(--space-lg);
-    box-shadow: none;
-    background: #ffffff !important;
-    border-color: #000 !important;
+  /* Only display the Next.js app container, but manage its children */
+  body > div[data-nextjs-scroll-focus-boundary] {
+    display: block !important;
   }
 
-  .calendar-header::after {
-    display: none;
+  /* Restore for new rp-* report page (uses .rp-page not .container) */
+  body > div {
+    display: block !important;
+  }
+  body > div > div {
+    display: block !important;
   }
 
-  .calendar-title {
-    font-size: var(--text-3xl);
-    margin-bottom: var(--space-lg);
-    color: #000 !important;
-  }
-
-  .calendar-grid {
-    gap: 2px;
-  }
-
-  .calendar-day {
-    border: 1px solid #000 !important;
-    min-height: 80px;
-    page-break-inside: avoid;
-    background: #ffffff !important;
-    box-shadow: none !important;
-  }
-
-  .calendar-day-number {
-    color: #000 !important;
-  }
-
-  .calendar-pain-level {
-    font-size: var(--text-lg) !important;
-    padding: 8px 12px !important;
-    background: #ffffff !important;
-    border: 1px solid #000 !important;
-    color: #000 !important;
-    box-shadow: none !important;
-  }
-
-  /* Hide decorative elements that waste ink */
-  .card::before,
-  .calendar-header::after,
-  .modal-backdrop {
+  /* THE KEY: Hide screen content, show print content */
+  .screen-only {
     display: none !important;
   }
 
-  /* Keep modals from printing over the calendar */
-  .modal {
-    border: 1px solid #000 !important;
-    box-shadow: none !important;
-    background: #ffffff !important;
+  .print-only {
+    display: block !important;
+  }
+
+  /* Ensure footer shows if added */
+  body::after {
+    content: none !important; /* Let the report handle the footer */
   }
 }
 
@@ -1661,7 +1672,6 @@ textarea::placeholder {
   }
 
   .trends-chart {
-
     overflow-x: auto;
     justify-content: center;
   }
@@ -1702,7 +1712,6 @@ textarea::placeholder {
    ANIMATIONS - Forest Style
    ============================================ */
 @keyframes bounce {
-
   0%,
   100% {
     transform: translateY(0);
@@ -1714,7 +1723,6 @@ textarea::placeholder {
 }
 
 @keyframes shake {
-
   0%,
   100% {
     transform: translateX(0);
@@ -1756,7 +1764,6 @@ textarea::placeholder {
 
 /* Gentle forest ambient animation */
 @keyframes forestBreeze {
-
   0%,
   100% {
     background-position: 0% 50%;
@@ -1800,7 +1807,7 @@ textarea::placeholder {
   flex-wrap: wrap;
 }
 
-.report-date-inputs>div {
+.report-date-inputs > div {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
@@ -1892,7 +1899,7 @@ textarea::placeholder {
 .report-stat-value {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--color-primary);
+  color: #111;
 }
 
 /* Report table */
@@ -1934,58 +1941,58 @@ textarea::placeholder {
 
 /* Pain level colors for report */
 .report-pain-badge.pain-0 {
-  background: #E8F0E8;
-  color: #2D5A4D;
+  background: #e8f0e8;
+  color: #111;
 }
 
 .report-pain-badge.pain-1 {
-  background: #D4E8D4;
-  color: #2D5A4D;
+  background: #d4e8d4;
+  color: #111;
 }
 
 .report-pain-badge.pain-2 {
-  background: #C0E0C0;
-  color: #2D5A4D;
+  background: #c0e0c0;
+  color: #111;
 }
 
 .report-pain-badge.pain-3 {
-  background: #A8D8A8;
-  color: #2D5A4D;
+  background: #a8d8a8;
+  color: #111;
 }
 
 .report-pain-badge.pain-4 {
-  background: #F0E8A8;
-  color: #5A4D2D;
+  background: #f0e8a8;
+  color: #5a4d2d;
 }
 
 .report-pain-badge.pain-5 {
-  background: #E8D890;
-  color: #5A4D2D;
+  background: #e8d890;
+  color: #5a4d2d;
 }
 
 .report-pain-badge.pain-6 {
-  background: #E8C878;
-  color: #5A4D2D;
+  background: #e8c878;
+  color: #5a4d2d;
 }
 
 .report-pain-badge.pain-7 {
-  background: #E8B060;
-  color: #5A2D2D;
+  background: #e8b060;
+  color: #5a2d2d;
 }
 
 .report-pain-badge.pain-8 {
-  background: #E89848;
-  color: #5A2D2D;
+  background: #e89848;
+  color: #5a2d2d;
 }
 
 .report-pain-badge.pain-9 {
-  background: #E88030;
-  color: white;
+  background: #e88030;
+  color: #111;
 }
 
 .report-pain-badge.pain-10 {
-  background: #E06030;
-  color: white;
+  background: #e06030;
+  color: #111;
 }
 
 /* Notes list */
@@ -2023,7 +2030,6 @@ textarea::placeholder {
    PRINT STYLES - Optimized for minimal ink
    ============================================ */
 @media print {
-
   /* Hide screen controls */
   .no-print,
   .report-controls,
@@ -2184,124 +2190,1369 @@ textarea::placeholder {
   }
 }
 
-
 /* ============================================
-   NEW REPORT LAYOUT STYLES
+   REPORT — ALL STYLES (Single Source of Truth)
    ============================================ */
 
-.report-grid-layout {
-  display: grid;
-  grid-template-columns: 40% 60%;
-  gap: var(--space-md);
-  align-items: start;
+/* ---- Screen Header ---- */
+.report-screen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
 }
 
+.report-screen-header h1 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+/* ---- Date Controls ---- */
+.report-date-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+  .report-date-controls {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+}
+
+.report-preset-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.report-date-inputs {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.report-date-inputs > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 130px;
+}
+
+.report-date-inputs label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.date-input {
+  padding: 0.6rem 0.75rem;
+  border: 3px solid var(--color-border);
+  font-family: inherit;
+  font-size: 0.85rem;
+  width: 100%;
+  box-sizing: border-box;
+  background: white;
+}
+
+.report-action-buttons {
+  margin-top: 1.25rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ---- Printable Report Header ---- */
+.report-header {
+  margin-bottom: 1.25rem;
+  border-bottom: 3px solid var(--color-border);
+  padding-bottom: 0.75rem;
+}
+
+.report-header h2 { margin: 0 0 0.25rem 0; }
+
+.report-date-range {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* ---- Summary Stats ---- */
+.report-section { margin-bottom: 1.5rem; }
+
+.report-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.report-stat {
+  background: white;
+  border: 4px solid var(--color-border);
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 4px 4px 0 rgba(45, 61, 45, 0.2);
+}
+
+.report-stat-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--color-text-light);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
+.report-stat-value {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #111;
+}
+
+/* ---- Report Card ---- */
 .report-card {
-  padding: var(--space-sm);
-  border: 2px solid var(--color-border);
-  box-shadow: none;
-  /* Flatter for print */
+  background: white;
+  border: 4px solid var(--color-border);
+  padding: 1.25rem;
+  box-shadow: 6px 6px 0 rgba(45, 61, 45, 0.2);
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .report-card h3 {
-  font-size: 1rem;
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: 4px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.5rem;
 }
 
-/* Calendar override for report flexibility */
-.report-calendar-grid-override {
-  gap: 2px;
+/* ---- Visuals Section ---- */
+.report-visuals-section {
+  display: flex;
+  flex-direction: column; /* Mobile-first: stacked */
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
 }
 
-/* Compact notes */
+@media (min-width: 768px) {
+  /* Desktop: side-by-side, chart wider */
+  .report-visuals-section {
+    flex-direction: row;
+    align-items: stretch;
+  }
+  .report-chart-card { flex: 2; }
+  .report-calendar-card { flex: 1; }
+}
+
+/* ---- Chart ---- */
+/* The chart container has a fixed height; recharts fills it.
+   For large date ranges, we allow horizontal scroll on DESKTOP only. */
+.chart-container {
+  height: 260px;
+  width: 100%;
+  position: relative;
+}
+
+/* On desktop, allow scrolling for large date ranges */
+@media (min-width: 768px) {
+  .chart-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+}
+
+/* ---- Logs section ---- */
+.report-logs-section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Compact notes list — scrollable on screen for big ranges */
 .report-notes-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  max-height: 400px;
-  /* Prevent overflow on screen */
+  gap: 0;
+  max-height: 480px;
   overflow-y: auto;
 }
 
 .report-note-item-compact {
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   gap: 8px;
-  padding: 4px 0;
-  border-bottom: 1px dashed var(--color-border);
-  font-size: 0.85rem;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(45, 61, 45, 0.15);
+  font-size: 0.8rem;
 }
 
 .report-note-date {
   font-weight: bold;
-  font-size: 0.75rem;
-  min-width: 50px;
+  font-size: 0.72rem;
+  min-width: 80px;
+  flex-shrink: 0;
+  padding-top: 1px;
 }
 
 .report-note-badge {
   font-weight: bold;
-  color: var(--color-primary);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
+  flex-shrink: 0;
 }
 
 .report-note-text {
   color: var(--color-text);
   flex: 1;
+  min-width: 0;
+  word-break: break-word;
+  line-height: 1.5;
 }
 
-/* PRINT OPTIMIZATIONS */
-@media print {
-  @page {
-    size: landscape;
-    /* Suggest landscape for charts side-by-side or auto */
-    margin: 0.25in;
+/* ---- Calendar overrides ---- */
+.report-calendar-grid-override {
+  grid-template-columns: repeat(7, 1fr) !important;
+  gap: 2px !important;
+  margin-top: 8px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.report-calendar-grid-override .calendar-day {
+  min-height: 28px !important;
+  height: auto !important;
+  padding: 0 !important;
+  border-width: 1px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.report-calendar-grid-override .calendar-pain-level {
+  position: static !important;
+  transform: none !important;
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+  border-radius: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.7rem !important;
+}
+
+/* ============================================
+   MOBILE STYLES  (max-width: 767px)
+   ============================================ */
+@media (max-width: 767px) {
+  /* Prevent horizontal overflow site-wide on mobile */
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
-  body {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+  .container {
+    overflow-x: hidden;
+    box-sizing: border-box;
+    max-width: 100vw;
   }
 
-  /* Force grid layout */
-  .report-grid-layout {
-    display: grid !important;
-    grid-template-columns: 40% 58% !important;
-    /* Slightly smaller to fit gap */
-    gap: 1rem !important;
+  /* Controls card tighter */
+  .report-controls.card {
+    padding: 1rem;
+    box-shadow: 3px 3px 0 rgba(45, 61, 45, 0.15);
   }
 
-  .report-col-left,
-  .report-col-right {
+  /* Header: always a row, compact */
+  .report-screen-header {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .report-screen-header h1 {
+    font-size: 0.85rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .report-screen-header button {
+    font-size: 0.6rem;
+    padding: 6px 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Preset buttons: 3-column grid */
+  .report-preset-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.35rem;
+    flex-wrap: unset;
+  }
+
+  .report-preset-buttons button {
+    font-size: 0.55rem;
+    padding: 7px 2px;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  /* Date inputs: stacked */
+  .report-date-inputs {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .report-date-inputs > div {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .date-input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  /* Print button full-width */
+  .report-action-buttons {
+    justify-content: stretch;
+  }
+
+  .report-action-buttons button {
+    width: 100%;
+  }
+
+  /* Stats: single column, label left, value right */
+  .report-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .report-stat {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    box-shadow: 2px 2px 0 rgba(45, 61, 45, 0.1);
+  }
+
+  .report-stat-label {
+    margin: 0;
+    font-size: 0.65rem;
+    max-width: 60%;
+  }
+
+  .report-stat-value {
+    font-size: 1.4rem;
+  }
+
+  /* Visuals: fully stacked */
+  .report-visuals-section {
     flex-direction: column;
     gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Chart card: clip so recharts can't overflow */
+  .report-chart-card {
+    overflow: hidden;
+  }
+
+  /* Chart: explicit height, NO horizontal scroll on mobile */
+  .chart-container {
+    height: 220px;
+    width: 100%;
+    overflow: hidden; /* recharts must stay inside */
+  }
+
+  /* Calendar card: clip */
+  .report-calendar-card {
+    overflow: hidden;
+  }
+
+  .report-calendar-grid-override {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  /* Calendar days: small squares */
+  .report-calendar-grid-override .calendar-day {
+    aspect-ratio: 1 / 1 !important;
+    min-height: 0 !important;
+  }
+
+  .report-calendar-grid-override .calendar-pain-level {
+    font-size: 0.55rem !important;
+  }
+
+  /* Cards */
+  .report-card {
+    border-width: 3px;
+    padding: 0.875rem;
+    box-shadow: 2px 2px 0 rgba(45, 61, 45, 0.1);
+  }
+
+  /* Logs */
+  .report-notes-list {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .report-note-item-compact {
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 0;
+    font-size: 0.75rem;
+  }
+
+  .report-note-date {
+    min-width: 0;
+    font-size: 0.68rem;
+  }
+}
+
+/* ============================================
+   PRINT LAYOUT — Single authoritative block
+   ============================================ */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 1cm;
+  }
+
+  /* Ensure colors print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html, body {
+    background: white !important;
+    font-size: 11px;
+    color: black;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  /* Hide all UI */
+  .no-print,
+  .screen-only,
+  .report-controls,
+  button,
+  nav,
+  header {
+    display: none !important;
+  }
+
+  /* Reset containers */
+  .container,
+  .report-content {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    min-height: 0 !important;
+    justify-content: flex-start !important;
+    overflow: visible !important;
+  }
+
+  /* Report header */
+  .report-header {
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid #000;
+    padding-bottom: 0.4rem;
+  }
+
+  /* Stats row: horizontal */
+  .report-section {
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .report-stats-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 0.4rem;
+    margin-bottom: 0;
+  }
+
+  .report-stat {
+    flex: 1;
+    border: 1px solid #333;
+    padding: 0.35rem 0.4rem;
+    text-align: center;
+    box-shadow: none !important;
+    display: block !important; /* override mobile flex */
+  }
+
+  .report-stat-label { font-size: 0.55rem; margin-bottom: 0.2rem; }
+  .report-stat-value { font-size: 1.1rem; text-shadow: none; }
+
+  /* Visuals on Page 1 */
+  .report-visuals-section {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0.5rem;
+    margin-bottom: 0;
+    page-break-after: always;
+  }
+
+  .report-chart-card,
+  .report-calendar-card {
+    width: 100% !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    overflow: visible !important;
   }
 
   .report-card {
-    break-inside: avoid;
-    border: 2px solid #000 !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    padding: 0.4rem !important;
+    overflow: visible !important;
+  }
+
+  .report-card h3 {
+    font-size: 0.7rem;
+    margin-bottom: 0.3rem;
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid #ccc;
+  }
+
+  /* Chart: fill the available space */
+  .chart-container {
+    height: 400px !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* Calendar compact rows */
+  .report-calendar-grid-override .calendar-day {
+    aspect-ratio: auto !important;
+    min-height: 18px !important;
+    height: 18px !important;
+  }
+
+  .report-calendar-grid-override .calendar-pain-level {
+    font-size: 0.5rem !important;
+  }
+
+  /* Page 2: Logs */
+  .report-logs-section {
+    page-break-before: always;
+    display: block !important;
+    width: 100% !important;
+    margin-top: 0 !important;
+  }
+
+  .report-logs-section .report-card {
+    border: none !important;
+    padding: 0 !important;
     box-shadow: none !important;
   }
 
-  /* Ensure charts print */
-  .recharts-wrapper {
-    margin: 0 auto;
+  .report-logs-section h3 {
+    border-bottom: 2px solid #000;
+    padding-bottom: 0.3rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
   }
 
-  /* Expand notes fully */
   .report-notes-list {
     max-height: none !important;
     overflow: visible !important;
   }
 
-  /* Calendar styling fix for print */
-  .calendar-day {
-    border: 1px solid #ccc !important;
+  .report-note-item-compact {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 0.5rem;
+    padding: 3px 0;
+    border-bottom: 1px solid #eee;
+    page-break-inside: avoid;
+    font-size: 0.65rem;
   }
 
-  .calendar-pain-level {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+  .report-note-date {
+    font-weight: bold;
+    min-width: 65px;
+    flex-shrink: 0;
+  }
+
+  .report-note-badge { flex-shrink: 0; }
+  .report-note-text { flex: 1; word-break: break-word; }
+}
+
+/* ============================================================
+   REPORT PAGE — NEW STYLES (rp-* prefix, no conflicts)
+   ============================================================ */
+
+/* Page wrapper */
+.rp-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.25rem;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* ── CONTROLS (screen only) ── */
+.rp-controls {
+  background: rgba(245, 250, 245, 0.95);
+  border: 4px solid var(--color-border);
+  padding: 1.25rem;
+  box-shadow: 6px 6px 0 rgba(45, 61, 45, 0.2);
+  margin-bottom: 1.5rem;
+  box-sizing: border-box;
+}
+
+.rp-controls-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 0.75rem;
+}
+
+.rp-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #111;
+}
+
+.rp-back-btn {
+  font-size: 0.65rem;
+  padding: 6px 12px;
+  flex-shrink: 0;
+}
+
+/* Presets row */
+.rp-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.rp-preset-btn {
+  font-size: 0.6rem;
+  padding: 6px 10px;
+}
+
+/* Date row */
+.rp-date-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.rp-date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 130px;
+}
+
+.rp-date-field label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  letter-spacing: 0.05em;
+}
+
+.rp-date-input {
+  padding: 0.5rem 0.75rem;
+  border: 3px solid var(--color-border);
+  font-family: inherit;
+  font-size: 0.8rem;
+  width: 100%;
+  box-sizing: border-box;
+  background: white;
+}
+
+.rp-print-btn {
+  font-size: 0.65rem;
+  padding: 8px 16px;
+  flex-shrink: 0;
+  align-self: flex-end;
+}
+
+/* ── REPORT CONTENT ── */
+.rp-report {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.rp-report-header {
+  border-bottom: 3px solid var(--color-border);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.rp-report-title {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.2rem;
+}
+
+.rp-report-dates {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.rp-loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* ── STATS ROW ── */
+.rp-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.rp-stat {
+  background: white;
+  border: 4px solid var(--color-border);
+  padding: 0.875rem 1rem;
+  box-shadow: 4px 4px 0 rgba(45, 61, 45, 0.15);
+  text-align: center;
+}
+
+.rp-stat-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  margin-bottom: 0.3rem;
+}
+
+.rp-stat-value {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #111;
+  line-height: 1;
+}
+
+/* ── VISUALS SECTION ── */
+.rp-visuals {
+  display: grid;
+  grid-template-columns: 1fr; /* stacked default */
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  min-width: 0;
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .rp-visuals {
+    grid-template-columns: 3fr 2fr; /* chart wider than calendar */
+  }
+}
+
+/* Grid children must have min-width:0 or they'll overflow their column */
+.rp-visuals > * {
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ── CARDS ── */
+.rp-card {
+  background: white;
+  border: 4px solid var(--color-border);
+  padding: 1rem;
+  box-shadow: 4px 4px 0 rgba(45, 61, 45, 0.15);
+  box-sizing: border-box;
+}
+
+.rp-card-title {
+  font-size: 0.75rem;
+  margin: 0 0 0.75rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #eee;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── CHART ── */
+.rp-chart-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Explicit height so chart can always measure on all viewports */
+.rp-chart-wrap {
+  width: 100%;
+  height: 240px;
+  min-height: 200px;
+  overflow: hidden; /* clip fixed-width SVG when container is narrower */
+  box-sizing: border-box;
+}
+
+
+/* ── CALENDAR ── */
+.rp-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.rp-cal-day {
+  aspect-ratio: 1 / 1;
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.rp-cal-day .calendar-pain-level {
+  position: static !important;
+  transform: none !important;
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+  border-radius: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.65rem !important;
+}
+
+.rp-cal-empty {
+  background: rgba(200, 210, 200, 0.2);
+}
+
+/* ── LOGS ── */
+.rp-logs {
+  width: 100%;
+}
+
+.rp-log-list {
+  display: flex;
+  flex-direction: column;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.rp-log-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(45, 61, 45, 0.12);
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+.rp-log-date {
+  font-weight: bold;
+  min-width: 82px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+
+.rp-log-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  padding: 0 4px;
+  font-weight: bold;
+  font-size: 0.68rem;
+  flex-shrink: 0;
+}
+
+.rp-log-text {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+  color: var(--color-text);
+}
+
+.rp-log-meds {
+  color: var(--color-text-muted);
+}
+
+.rp-empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+/* ── MEDICATIONS BANNER (report) ── */
+.rp-meds-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.75rem;
+  background: rgba(45, 90, 77, 0.07);
+  border: 2px solid var(--color-border);
+  border-left: 4px solid var(--color-border);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.rp-meds-banner-label {
+  font-weight: bold;
+  color: #111;
+  flex-shrink: 0;
+  margin-right: 0.25rem;
+}
+
+.rp-meds-banner-item {
+  color: #333;
+}
+
+/* ============================================================
+   MOBILE  ≤ 640px
+   ============================================================ */
+@media (max-width: 640px) {
+  .rp-page {
+    padding: 0.75rem;
+  }
+
+  .rp-controls {
+    padding: 0.875rem;
+    border-width: 3px;
+    box-shadow: 3px 3px 0 rgba(45, 61, 45, 0.15);
+  }
+
+  .rp-controls-header {
+    margin-bottom: 0.75rem;
+  }
+
+  .rp-title {
+    font-size: 0.85rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Presets: 3-col grid */
+  .rp-presets {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .rp-preset-btn {
+    font-size: 0.5rem;
+    padding: 6px 2px;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  /* Date row: stack */
+  .rp-date-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .rp-date-field { min-width: 0; width: 100%; }
+
+  .rp-print-btn {
+    width: 100%;
+    align-self: stretch;
+  }
+
+  /* Stats: vertical list, label left value right */
+  .rp-stats-row {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .rp-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    padding: 0.6rem 0.875rem;
+    box-shadow: 2px 2px 0 rgba(45, 61, 45, 0.1);
+  }
+
+  .rp-stat-label { margin: 0; }
+  .rp-stat-value { font-size: 1.4rem; }
+
+  /* Visuals: stacked on mobile */
+  .rp-visuals {
+    grid-template-columns: 1fr;
+  }
+
+  /* Chart: keep explicit height on mobile */
+  .rp-chart-wrap {
+    height: 200px;
+    min-height: 180px;
+  }
+
+  /* Calendar: tighter cells */
+  .rp-cal-day .calendar-pain-level {
+    font-size: 0.55rem !important;
+  }
+
+  /* Logs: full height, no max */
+  .rp-log-list {
+    max-height: none;
+    overflow: visible;
+  }
+
+  /* Log rows: stack on narrow screens */
+  .rp-log-row {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .rp-log-date { min-width: 0; width: 100%; font-size: 0.65rem; }
+
+  .rp-card {
+    border-width: 3px;
+    box-shadow: 2px 2px 0 rgba(45, 61, 45, 0.1);
+  }
+}
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 1.5cm;
+  }
+
+  /* Force colors + clean font everywhere */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  html, body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 9pt !important;
+    color: #111 !important;
+    width: 100% !important;
+  }
+
+  /* Kill the scanline overlay & any pseudo decorations */
+  body::before,
+  body::after,
+  *::before,
+  *::after {
+    display: none !important;
+  }
+
+  /* Hide everything except the report */
+  .rp-controls,
+  .screen-only,
+  nav,
+  header,
+  button {
+    display: none !important;
+  }
+
+  /* ── Wrappers ── */
+  .rp-page {
+    max-width: none !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: white !important;
+  }
+
+  .rp-report {
+    width: 100% !important;
+    background: white !important;
+  }
+
+  /* ── HEADER: title left / date right ── */
+  .rp-report-header {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: baseline !important;
+    padding-bottom: 5pt !important;
+    margin-bottom: 8pt !important;
+    border-bottom: 1.5pt solid #111 !important;
+  }
+
+  .rp-report-title {
+    font-size: 15pt !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.01em !important;
+    color: #000 !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+  }
+
+  .rp-report-dates {
+    font-size: 8.5pt !important;
+    color: #555 !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+  }
+
+  /* ── STATS: 3 equal columns ── */
+  .rp-stats-row {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 5pt !important;
+    margin-bottom: 10pt !important;
+  }
+
+  .rp-stat {
+    display: block !important;
+    text-align: center !important;
+    border: 0.75pt solid #aaa !important;
+    padding: 5pt 6pt !important;
+    background: #fafafa !important;
+  }
+
+  .rp-stat-label {
+    display: block !important;
+    font-size: 6pt !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    color: #666 !important;
+    margin-bottom: 2pt !important;
+  }
+
+  .rp-stat-value {
+    display: block !important;
+    font-size: 20pt !important;
+    font-weight: 700 !important;
+    color: #000 !important;
+    line-height: 1.1 !important;
+  }
+
+  /* ── VISUALS: stacked, page break after (so logs go to page 2) ── */
+  .rp-visuals {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8pt !important;
+    width: 100% !important;
+    overflow: visible !important;
+    min-width: 0 !important;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .rp-visuals > * {
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* ── CHART CARD ── */
+  .rp-chart-card {
+    width: 100% !important;
+    border: 0.75pt solid #ccc !important;
+    padding: 6pt 8pt !important;
+    background: white !important;
+    overflow: visible !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    display: block !important;
+  }
+
+  /* Chart wrap: fixed height so the beforeprint-set chartWidth has room */
+  .rp-chart-wrap {
+    width: 100% !important;
+    height: 260pt !important;
+    min-height: 260pt !important;
+    overflow: visible !important;
+  }
+
+  /* Scale the Recharts SVG (which has fixed px width) to fill the container */
+  .rp-chart-wrap .recharts-wrapper {
+    width: 100% !important;
+    height: 260pt !important;
+  }
+
+  .rp-chart-wrap svg,
+  .rp-chart-wrap .recharts-surface {
+    width: 100% !important;
+    height: 260pt !important;
+  }
+
+  /* ── CALENDAR CARD ── */
+  .rp-calendar-card,
+  .rp-card.rp-calendar-card {
+    width: 100% !important;
+    border: 0.75pt solid #ccc !important;
+    padding: 6pt 8pt !important;
+    background: white !important;
+    overflow: visible !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .rp-cal-grid {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 1.5pt !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .rp-cal-day {
+    aspect-ratio: auto !important;
+    height: 18pt !important;
+    min-height: 0 !important;
+    border: 0.5pt solid #ddd !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+  }
+
+  .rp-cal-day .calendar-pain-level {
+    position: static !important;
+    transform: none !important;
+    width: 100% !important;
+    height: 18pt !important;
+    border: none !important;
+    border-radius: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 6.5pt !important;
+    font-weight: 600 !important;
+  }
+
+  .rp-cal-empty {
+    background: #f5f5f5 !important;
+  }
+
+  /* ── GENERIC CARD ── */
+  .rp-card {
+    border: 0.75pt solid #ccc !important;
+    padding: 6pt 8pt !important;
+    background: white !important;
+    overflow: visible !important;
+  }
+
+  .rp-card-title {
+    font-size: 6.5pt !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.12em !important;
+    color: #444 !important;
+    margin: 0 0 5pt !important;
+    padding-bottom: 3pt !important;
+    border-bottom: 0.5pt solid #ddd !important;
+  }
+
+  /* ── DETAILED LOG — page 2 ── */
+  .rp-logs {
+    page-break-before: always;
+    break-before: page;
+    width: 100% !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  .rp-logs .rp-card {
+    border: none !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  /* Log heading matches the report header style */
+  .rp-logs .rp-card-title {
+    font-size: 13pt !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+    letter-spacing: 0.01em !important;
+    color: #000 !important;
+    border-bottom: 1.5pt solid #111 !important;
+    margin-bottom: 8pt !important;
+    padding-bottom: 4pt !important;
+  }
+
+  .rp-log-list {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .rp-log-row {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 7pt !important;
+    padding: 3.5pt 0 !important;
+    border-bottom: 0.5pt solid #e8e8e8 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    font-size: 8.5pt !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Zebra striping for readability */
+  .rp-log-row:nth-child(even) {
+    background: #f9f9f9 !important;
+  }
+
+  .rp-log-date {
+    font-weight: 700 !important;
+    min-width: 62pt !important;
+    flex-shrink: 0 !important;
+    color: #000 !important;
+    font-size: 8pt !important;
+  }
+
+  .rp-log-badge {
+    flex-shrink: 0 !important;
+    font-size: 7pt !important;
+    font-weight: 700 !important;
+    min-width: 14pt !important;
+    padding: 1pt 3pt !important;
+    text-align: center !important;
+    border-radius: 1pt !important;
+  }
+
+  .rp-log-text {
+    flex: 1 !important;
+    word-break: break-word !important;
+    color: #222 !important;
+    font-size: 8.5pt !important;
+  }
+
+  .rp-log-meds {
+    color: #555 !important;
+    font-size: 7.5pt !important;
+    font-style: italic !important;
   }
 }

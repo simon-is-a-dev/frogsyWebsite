@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../supabaseClient";
 import NotificationManager from "../components/NotificationManager";
+import MedicationManager from "../components/MedicationManager";
 
 
 function SettingsPageContent() {
@@ -157,6 +158,10 @@ function SettingsPageContent() {
         </div>
 
         <NotificationManager userId={userId} />
+
+        <div className="mt-lg pt-md" style={{ borderTop: '1px solid rgba(0,0,0,0.1)', marginTop: '2rem' }}>
+          <MedicationManager userId={userId} />
+        </div>
 
         <div className="mt-lg pt-md" style={{ borderTop: '1px solid rgba(0,0,0,0.1)', marginTop: '2rem' }}>
           <h3>Data & Privacy</h3>
