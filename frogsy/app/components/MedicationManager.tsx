@@ -23,6 +23,13 @@ export default function MedicationManager({ userId }: { userId: string | null })
   const [frequency, setFrequency] = useState("");
   const [isAdding, setIsAdding] = useState(false);
 
+  // Edit state
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editDosage, setEditDosage] = useState("");
+  const [editFrequency, setEditFrequency] = useState("");
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
+
   useEffect(() => {
     if (userId) {
       fetchMedications();
@@ -85,6 +92,48 @@ export default function MedicationManager({ userId }: { userId: string | null })
     setIsAdding(false);
   };
 
+  const startEditing = (med: Medication) => {
+    setEditingId(med.id);
+    setEditName(med.name);
+    setEditDosage(med.dosage || "");
+    setEditFrequency(med.frequency || "");
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditName("");
+    setEditDosage("");
+    setEditFrequency("");
+  };
+
+  const saveEdit = async (id: string) => {
+    if (!editName) return;
+    setIsSavingEdit(true);
+    setError(null);
+
+    const { error } = await supabase
+      .from("medications")
+      .update({
+        name: editName,
+        dosage: editDosage,
+        frequency: editFrequency
+      })
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error updating medication:", error);
+      setError("Failed to update medication");
+    } else {
+      setMedications(medications.map(med => 
+        med.id === id 
+          ? { ...med, name: editName, dosage: editDosage, frequency: editFrequency } 
+          : med
+      ));
+      setEditingId(null);
+    }
+    setIsSavingEdit(false);
+  };
+
   const handleDeleteMedication = async (id: string) => {
     if (!confirm("Are you sure you want to remove this medication? It will remain in past logs.")) return;
 
@@ -132,31 +181,98 @@ export default function MedicationManager({ userId }: { userId: string | null })
           <ul className="list-group">
             {medications.map(med => (
               <li key={med.id} className="list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #eee' }}>
-                <div>
-                  <strong>{med.name}</strong>
-                  <div className="text-muted" style={{ fontSize: '0.9rem' }}>
-                    {med.dosage && <span>{med.dosage} • </span>}
-                    {med.frequency && <span>{med.frequency}</span>}
+                {editingId === med.id ? (
+                  <div style={{ flex: 1, marginRight: '10px' }}>
+                    <div className="form-group mb-sm">
+                      <input
+                        type="text"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        required
+                        placeholder="Medication Name"
+                        className="form-control"
+                        style={{ width: '100%', padding: '6px', borderRadius: '4px', border: '1px solid #ccc', marginBottom: '8px' }}
+                      />
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <input
+                        type="text"
+                        value={editDosage}
+                        onChange={(e) => setEditDosage(e.target.value)}
+                        placeholder="Dosage"
+                        className="form-control"
+                        style={{ flex: 1, padding: '6px', borderRadius: '4px', border: '1px solid #ccc' }}
+                      />
+                      <input
+                        type="text"
+                        value={editFrequency}
+                        onChange={(e) => setEditFrequency(e.target.value)}
+                        placeholder="Frequency"
+                        className="form-control"
+                        style={{ flex: 1, padding: '6px', borderRadius: '4px', border: '1px solid #ccc' }}
+                      />
+                    </div>
+                    <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+                      <button 
+                        onClick={() => saveEdit(med.id)} 
+                        disabled={isSavingEdit || !editName}
+                        className="btn-primary"
+                        style={{ padding: '4px 12px', fontSize: '0.85rem' }}
+                      >
+                        {isSavingEdit ? 'Saving...' : 'Save'}
+                      </button>
+                      <button 
+                        onClick={cancelEditing} 
+                        disabled={isSavingEdit}
+                        className="btn-secondary"
+                        style={{ padding: '4px 12px', fontSize: '0.85rem' }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <button 
-                  onClick={() => handleDeleteMedication(med.id)}
-                  className="btn-danger"
-                  style={{ 
-                    color: '#991b1b', 
-                    background: '#fee2e2',
-                    border: '1px solid #f87171', 
-                    borderRadius: '4px',
-                    padding: '6px 12px',
-                    cursor: 'pointer',
-                    fontSize: '0.85rem',
-                    fontWeight: 'bold',
-                    marginLeft: '10px'
-                  }}
-                  title="Delete Medication"
-                >
-                  Delete
-                </button>
+                ) : (
+                  <>
+                    <div style={{ flex: 1 }}>
+                      <strong>{med.name}</strong>
+                      <div className="text-muted" style={{ fontSize: '0.9rem' }}>
+                        {med.dosage && <span>{med.dosage} • </span>}
+                        {med.frequency && <span>{med.frequency}</span>}
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button 
+                        onClick={() => startEditing(med)}
+                        className="btn-secondary"
+                        style={{ 
+                          padding: '6px 12px',
+                          cursor: 'pointer',
+                          fontSize: '0.85rem',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteMedication(med.id)}
+                        className="btn-danger"
+                        style={{ 
+                          color: '#991b1b', 
+                          background: '#fee2e2',
+                          border: '1px solid #f87171', 
+                          borderRadius: '4px',
+                          padding: '6px 12px',
+                          cursor: 'pointer',
+                          fontSize: '0.85rem',
+                          fontWeight: 'bold'
+                        }}
+                        title="Delete Medication"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </>
+                )}
               </li>
             ))}
           </ul>
