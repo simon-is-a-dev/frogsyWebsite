@@ -3,7 +3,7 @@
 import React, { Suspense, useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../supabaseClient";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface WeightEntry {
   id: string;
@@ -35,33 +35,10 @@ function WeightTrackerContent() {
   }, []);
 
   const [dateInput, setDateInput] = useState<string>(todayLocal);
-  
-  // Custom responsive chart sizing
-  const chartContainerRef = React.useRef<HTMLDivElement>(null);
-  const [chartWidth, setChartWidth] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
-    if (!chartContainerRef.current) return;
-    
-    // Force a fallback minimum width for mobile layout rendering
-    if (typeof window !== 'undefined') {
-      const initial = chartContainerRef.current.clientWidth || window.innerWidth - 64;
-      setChartWidth(initial > 0 ? initial : 320);
-    }
-    
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.contentRect.width > 0) {
-          setChartWidth(entry.contentRect.width);
-        }
-      }
-    });
-
-    observer.observe(chartContainerRef.current);
-
-    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -278,21 +255,22 @@ function WeightTrackerContent() {
         {entries.length > 0 && (
           <div className="mb-lg" style={{ marginTop: '2rem' }}>
             <h3 style={{ marginBottom: '1rem' }}>Progress Chart</h3>
-            <div 
-              ref={chartContainerRef}
-              style={{ width: '100%', height: 300, position: 'relative', overflowX: 'hidden' }}
-            >
-              {isMounted && chartWidth > 0 && (
-                <LineChart width={chartWidth} height={300} data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                  <Line type="monotone" dataKey="weight" stroke="#60a5fa" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 8 }} />
-                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" opacity={0.5} />
-                  <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-                  <YAxis domain={['auto', 'auto']} tick={{ fontSize: 12 }} />
-                  <Tooltip 
-                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 100 }}
-                    labelStyle={{ fontWeight: 'bold', color: '#333' }}
-                  />
-                </LineChart>
+            <div style={{ position: 'relative', width: '100%', height: 300 }}>
+              {isMounted && (
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                      <Line type="monotone" dataKey="weight" stroke="#60a5fa" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 8 }} />
+                      <CartesianGrid stroke="#ccc" strokeDasharray="5 5" opacity={0.5} />
+                      <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+                      <YAxis domain={['auto', 'auto']} tick={{ fontSize: 12 }} />
+                      <Tooltip 
+                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 100 }}
+                        labelStyle={{ fontWeight: 'bold', color: '#333' }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
               )}
             </div>
           </div>

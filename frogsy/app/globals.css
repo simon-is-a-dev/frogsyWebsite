@@ -422,6 +422,17 @@ select {
   border-radius: 0;
 }
 
+/* Force iOS webkit date picker inner elements to inherit pixel font */
+input[type="date"]::-webkit-datetime-edit,
+input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+input[type="date"]::-webkit-datetime-edit-text,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-year-field {
+  font-family: "Courier New", monospace !important;
+  color: var(--color-text) !important;
+}
+
 input[type="email"]:focus,
 input[type="password"]:focus,
 input[type="text"]:focus,
