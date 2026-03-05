@@ -403,6 +403,7 @@ input[type="email"],
 input[type="password"],
 input[type="text"],
 input[type="number"],
+input[type="date"],
 textarea,
 select {
   font-family: "Courier New", monospace;
@@ -425,6 +426,7 @@ input[type="email"]:focus,
 input[type="password"]:focus,
 input[type="text"]:focus,
 input[type="number"]:focus,
+input[type="date"]:focus,
 textarea:focus,
 select:focus {
   border-color: var(--color-primary);
@@ -529,9 +531,25 @@ textarea::placeholder {
   width: 200%;
   height: 200%;
   background-image:
-    linear-gradient(45deg, #5a8c9c 25%, transparent 25%, transparent 75%, #5a8c9c 75%, #5a8c9c),
-    linear-gradient(45deg, #5a8c9c 25%, transparent 25%, transparent 75%, #5a8c9c 75%, #5a8c9c);
-  background-position: 0 0, 20px 20px;
+    linear-gradient(
+      45deg,
+      #5a8c9c 25%,
+      transparent 25%,
+      transparent 75%,
+      #5a8c9c 75%,
+      #5a8c9c
+    ),
+    linear-gradient(
+      45deg,
+      #5a8c9c 25%,
+      transparent 25%,
+      transparent 75%,
+      #5a8c9c 75%,
+      #5a8c9c
+    );
+  background-position:
+    0 0,
+    20px 20px;
   background-size: 40px 40px;
   opacity: 0.3;
   animation: pondRipple 4s linear infinite;
@@ -554,7 +572,7 @@ textarea::placeholder {
   image-rendering: pixelated;
   position: relative;
   z-index: 2;
-  filter: drop-shadow(0 4px 4px rgba(0,0,0,0.2));
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.2));
   transform: scale(1.35); /* Keep frog bigger */
 }
 
@@ -1582,7 +1600,9 @@ textarea::placeholder {
   }
 
   /* Reset all potential background interferences */
-  body, .container, .card {
+  body,
+  .container,
+  .card {
     background: white !important;
     color: black !important;
     box-shadow: none !important;
@@ -2273,7 +2293,9 @@ textarea::placeholder {
   padding-bottom: 0.75rem;
 }
 
-.report-header h2 { margin: 0 0 0.25rem 0; }
+.report-header h2 {
+  margin: 0 0 0.25rem 0;
+}
 
 .report-date-range {
   font-size: 0.75rem;
@@ -2281,7 +2303,9 @@ textarea::placeholder {
 }
 
 /* ---- Summary Stats ---- */
-.report-section { margin-bottom: 1.5rem; }
+.report-section {
+  margin-bottom: 1.5rem;
+}
 
 .report-stats-grid {
   display: grid;
@@ -2344,8 +2368,12 @@ textarea::placeholder {
     flex-direction: row;
     align-items: stretch;
   }
-  .report-chart-card { flex: 2; }
-  .report-calendar-card { flex: 1; }
+  .report-chart-card {
+    flex: 2;
+  }
+  .report-calendar-card {
+    flex: 1;
+  }
 }
 
 /* ---- Chart ---- */
@@ -2449,7 +2477,8 @@ textarea::placeholder {
    ============================================ */
 @media (max-width: 767px) {
   /* Prevent horizontal overflow site-wide on mobile */
-  html, body {
+  html,
+  body {
     overflow-x: hidden;
     max-width: 100vw;
   }
@@ -2635,7 +2664,8 @@ textarea::placeholder {
     print-color-adjust: exact !important;
   }
 
-  html, body {
+  html,
+  body {
     background: white !important;
     font-size: 11px;
     color: black;
@@ -2699,8 +2729,14 @@ textarea::placeholder {
     display: block !important; /* override mobile flex */
   }
 
-  .report-stat-label { font-size: 0.55rem; margin-bottom: 0.2rem; }
-  .report-stat-value { font-size: 1.1rem; text-shadow: none; }
+  .report-stat-label {
+    font-size: 0.55rem;
+    margin-bottom: 0.2rem;
+  }
+  .report-stat-value {
+    font-size: 1.1rem;
+    text-shadow: none;
+  }
 
   /* Visuals on Page 1 */
   .report-visuals-section {
@@ -2796,8 +2832,13 @@ textarea::placeholder {
     flex-shrink: 0;
   }
 
-  .report-note-badge { flex-shrink: 0; }
-  .report-note-text { flex: 1; word-break: break-word; }
+  .report-note-badge {
+    flex-shrink: 0;
+  }
+  .report-note-text {
+    flex: 1;
+    word-break: break-word;
+  }
 }
 
 /* ============================================================
@@ -3015,7 +3056,6 @@ textarea::placeholder {
   box-sizing: border-box;
 }
 
-
 /* ── CALENDAR ── */
 .rp-cal-grid {
   display: grid;
@@ -3178,7 +3218,10 @@ textarea::placeholder {
     gap: 0.5rem;
   }
 
-  .rp-date-field { min-width: 0; width: 100%; }
+  .rp-date-field {
+    min-width: 0;
+    width: 100%;
+  }
 
   .rp-print-btn {
     width: 100%;
@@ -3200,8 +3243,12 @@ textarea::placeholder {
     box-shadow: 2px 2px 0 rgba(45, 61, 45, 0.1);
   }
 
-  .rp-stat-label { margin: 0; }
-  .rp-stat-value { font-size: 1.4rem; }
+  .rp-stat-label {
+    margin: 0;
+  }
+  .rp-stat-value {
+    font-size: 1.4rem;
+  }
 
   /* Visuals: stacked on mobile */
   .rp-visuals {
@@ -3231,7 +3278,11 @@ textarea::placeholder {
     gap: 4px;
   }
 
-  .rp-log-date { min-width: 0; width: 100%; font-size: 0.65rem; }
+  .rp-log-date {
+    min-width: 0;
+    width: 100%;
+    font-size: 0.65rem;
+  }
 
   .rp-card {
     border-width: 3px;
@@ -3257,7 +3308,8 @@ textarea::placeholder {
     text-shadow: none !important;
   }
 
-  html, body {
+  html,
+  body {
     background: white !important;
     margin: 0 !important;
     padding: 0 !important;

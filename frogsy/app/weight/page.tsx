@@ -39,9 +39,17 @@ function WeightTrackerContent() {
   // Custom responsive chart sizing
   const chartContainerRef = React.useRef<HTMLDivElement>(null);
   const [chartWidth, setChartWidth] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     if (!chartContainerRef.current) return;
+    
+    // Force a fallback minimum width for mobile layout rendering
+    if (typeof window !== 'undefined') {
+      const initial = chartContainerRef.current.clientWidth || window.innerWidth - 64;
+      setChartWidth(initial > 0 ? initial : 320);
+    }
     
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
@@ -52,11 +60,6 @@ function WeightTrackerContent() {
     });
 
     observer.observe(chartContainerRef.current);
-    
-    // Initial fallback
-    if (chartContainerRef.current.clientWidth > 0) {
-      setChartWidth(chartContainerRef.current.clientWidth);
-    }
 
     return () => observer.disconnect();
   }, []);
@@ -224,27 +227,25 @@ function WeightTrackerContent() {
           </div>
           
           <form onSubmit={handleAddWeight}>
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '10px' }}>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem', alignItems: 'flex-end' }}>
               <div style={{ flex: '1 1 120px' }}>
-                <label style={{ display: 'block', marginBottom: '4px', fontSize: '0.9rem' }}>Date</label>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.8rem', fontWeight: 'bold' }}>Date</label>
                 <input
                   type="date"
                   value={dateInput}
                   onChange={(e) => setDateInput(e.target.value)}
-                  className="form-control"
-                  style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                  style={{ width: '100%', boxSizing: 'border-box' }}
                   required
                 />
               </div>
               <div style={{ flex: '1 1 120px' }}>
-                <label style={{ display: 'block', marginBottom: '4px', fontSize: '0.9rem' }}>Weight ({unit})</label>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.8rem', fontWeight: 'bold' }}>Weight ({unit})</label>
                 <input
                   type="number"
                   step="0.1"
                   value={weightInput}
                   onChange={(e) => setWeightInput(e.target.value)}
-                  className="form-control"
-                  style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                  style={{ width: '100%', boxSizing: 'border-box' }}
                   placeholder="e.g. 150.5"
                   required
                 />
@@ -252,12 +253,11 @@ function WeightTrackerContent() {
             </div>
             
             <div className="mb-md">
-              <label style={{ display: 'block', marginBottom: '4px', fontSize: '0.9rem' }}>Notes (optional)</label>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.8rem', fontWeight: 'bold' }}>Notes (optional)</label>
               <textarea
                 value={notesInput}
                 onChange={(e) => setNotesInput(e.target.value)}
-                className="form-control"
-                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', resize: 'vertical' }}
+                style={{ width: '100%', boxSizing: 'border-box', resize: 'vertical' }}
                 placeholder="How are you feeling?"
                 rows={2}
               />
@@ -282,7 +282,7 @@ function WeightTrackerContent() {
               ref={chartContainerRef}
               style={{ width: '100%', height: 300, position: 'relative', overflowX: 'hidden' }}
             >
-              {chartWidth > 0 && (
+              {isMounted && chartWidth > 0 && (
                 <LineChart width={chartWidth} height={300} data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                   <Line type="monotone" dataKey="weight" stroke="#60a5fa" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 8 }} />
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" opacity={0.5} />
