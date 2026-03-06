@@ -1,17 +1,31 @@
 "use client";
 
-import React, { Suspense, useEffect, useState, useMemo } from "react";
+import { Suspense, useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../supabaseClient";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
-const LineChart = dynamic(() => import('recharts').then(mod => mod.LineChart), { ssr: false });
-const Line = dynamic(() => import('recharts').then(mod => mod.Line), { ssr: false });
-const XAxis = dynamic(() => import('recharts').then(mod => mod.XAxis), { ssr: false });
-const YAxis = dynamic(() => import('recharts').then(mod => mod.YAxis), { ssr: false });
-const CartesianGrid = dynamic(() => import('recharts').then(mod => mod.CartesianGrid), { ssr: false });
-const Tooltip = dynamic(() => import('recharts').then(mod => mod.Tooltip), { ssr: false });
-const ResponsiveContainer = dynamic(() => import('recharts').then(mod => mod.ResponsiveContainer), { ssr: false });
+// Dynamically import the chart with SSR disabled — prevents hydration crashes on mobile
+const WeightChart = dynamic(() => import("../components/WeightChart"), {
+  ssr: false,
+  loading: () => (
+    <div
+      style={{
+        height: 300,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "#555",
+        fontFamily: "Courier New, monospace",
+        fontSize: "0.75rem",
+        border: "4px solid #2d3d2d",
+        background: "rgba(0,0,0,0.02)",
+      }}
+    >
+      Loading chart...
+    </div>
+  ),
+});
 
 interface WeightEntry {
   id: string;
@@ -46,7 +60,9 @@ function WeightTrackerContent() {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (user) {
         setUserId(user.id);
         fetchEntries(user.id);
@@ -63,7 +79,7 @@ function WeightTrackerContent() {
       .from("weight_entries")
       .select("*")
       .eq("user_id", uid)
-      .order("target_date", { ascending: true }); // Ascending for chart
+      .order("target_date", { ascending: true });
 
     if (error) {
       console.error("Error fetching weight entries:", error);
@@ -75,14 +91,13 @@ function WeightTrackerContent() {
   const handleAddWeight = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) return;
-    
+
     let weightNum = parseFloat(weightInput);
     if (isNaN(weightNum) || weightNum <= 0) {
       setError("Please enter a valid weight.");
       return;
     }
 
-    // Convert to kg for consistent storage if input is in lbs
     if (unit === "lbs") {
       weightNum = weightNum / 2.20462;
     }
@@ -100,7 +115,7 @@ function WeightTrackerContent() {
             target_date: dateInput,
             weight: weightNum,
             notes: notesInput.trim() === "" ? null : notesInput.trim(),
-          }
+          },
         ],
         { onConflict: "user_id,target_date" }
       );
@@ -112,7 +127,7 @@ function WeightTrackerContent() {
       setSuccess("Weight logged successfully!");
       setWeightInput("");
       setNotesInput("");
-      fetchEntries(userId); // Refresh data
+      fetchEntries(userId);
       setTimeout(() => setSuccess(null), 3000);
     }
 
@@ -123,26 +138,32 @@ function WeightTrackerContent() {
     e.stopPropagation();
     if (!confirm("Are you sure you want to delete this entry?")) return;
 
-    const { error } = await supabase.from("weight_entries").delete().eq("id", id);
+    const { error } = await supabase
+      .from("weight_entries")
+      .delete()
+      .eq("id", id);
     if (error) {
       alert("Failed to delete entry.");
     } else {
-      setEntries(entries.filter(e => e.id !== id));
+      setEntries(entries.filter((entry) => entry.id !== id));
     }
   };
 
-  // Prepare chart data
+  // Prepare chart data — convert stored kg to display unit
   const chartData = useMemo(() => {
-    return entries.map(entry => {
-      // Convert to requested unit for display
-      const displayWeight = unit === "lbs" ? Number((entry.weight * 2.20462).toFixed(1)) : Number(entry.weight.toFixed(1));
-      
+    return entries.map((entry) => {
+      const displayWeight =
+        unit === "lbs"
+          ? Number((entry.weight * 2.20462).toFixed(1))
+          : Number(entry.weight.toFixed(1));
+
       return {
-        date: new Date(entry.target_date).toLocaleDateString([], { month: 'short', day: 'numeric' }),
+        date: new Date(entry.target_date).toLocaleDateString([], {
+          month: "short",
+          day: "numeric",
+        }),
         weight: displayWeight,
-        fullDate: entry.target_date,
-        notes: entry.notes
-      }
+      };
     });
   }, [entries, unit]);
 
@@ -157,12 +178,20 @@ function WeightTrackerContent() {
   return (
     <div className="container">
       <div className="card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+        {/* Header */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "1.5rem",
+          }}
+        >
           <h2>Weight Tracker</h2>
           <button
             onClick={() => router.push("/main")}
             className="btn-secondary"
-            style={{ fontSize: '0.8rem', padding: '5px 15px' }}
+            style={{ fontSize: "0.6rem", padding: "5px 10px" }}
           >
             Back
           </button>
@@ -171,73 +200,125 @@ function WeightTrackerContent() {
         {error && <div className="error-message mb-md">{error}</div>}
         {success && <div className="success-message mb-md">{success}</div>}
 
-        {/* Input Form */}
-        <div className="mb-lg p-md" style={{ background: 'rgba(0,0,0,0.02)', borderRadius: '8px' }}>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
-            <div className="unit-toggle" style={{ display: 'flex', background: '#eee', borderRadius: '4px', overflow: 'hidden' }}>
-              <button 
-                onClick={() => setUnit("kg")}
-                style={{ 
-                  padding: '4px 12px', 
-                  border: 'none', 
-                  background: unit === "kg" ? 'var(--color-primary)' : 'transparent',
-                  color: unit === "kg" ? 'white' : '#666',
-                  cursor: 'pointer',
-                  fontWeight: unit === "kg" ? 'bold' : 'normal',
-                  fontSize: '0.8rem'
-                }}
-              >
-                kg
-              </button>
-              <button 
-                onClick={() => setUnit("lbs")}
-                style={{ 
-                  padding: '4px 12px', 
-                  border: 'none', 
-                  background: unit === "lbs" ? 'var(--color-primary)' : 'transparent',
-                  color: unit === "lbs" ? 'white' : '#666',
-                  cursor: 'pointer',
-                  fontWeight: unit === "lbs" ? 'bold' : 'normal',
-                  fontSize: '0.8rem'
-                }}
-              >
-                lbs
-              </button>
-            </div>
+        {/* Unit Toggle */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginBottom: "1rem",
+          }}
+        >
+          <div
+            style={{
+              display: "inline-flex",
+              border: "4px solid #2d3d2d",
+              overflow: "hidden",
+            }}
+          >
+            <button
+              onClick={() => setUnit("kg")}
+              style={{
+                padding: "4px 14px",
+                border: "none",
+                background:
+                  unit === "kg" ? "var(--color-primary)" : "transparent",
+                color: unit === "kg" ? "white" : "#333",
+                cursor: "pointer",
+                fontFamily: "Courier New, monospace",
+                fontSize: "0.8rem",
+                fontWeight: unit === "kg" ? "bold" : "normal",
+              }}
+            >
+              kg
+            </button>
+            <button
+              onClick={() => setUnit("lbs")}
+              style={{
+                padding: "4px 14px",
+                border: "none",
+                background:
+                  unit === "lbs" ? "var(--color-primary)" : "transparent",
+                color: unit === "lbs" ? "white" : "#333",
+                cursor: "pointer",
+                fontFamily: "Courier New, monospace",
+                fontSize: "0.8rem",
+                fontWeight: unit === "lbs" ? "bold" : "normal",
+              }}
+            >
+              lbs
+            </button>
           </div>
-          
+        </div>
+
+        {/* Input Form */}
+        <div
+          className="mb-lg"
+          style={{
+            background: "rgba(0,0,0,0.03)",
+            border: "4px solid #2d3d2d",
+            padding: "1rem",
+          }}
+        >
           <form onSubmit={handleAddWeight}>
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem', alignItems: 'flex-end' }}>
-              <div style={{ flex: '1 1 120px' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.8rem', fontWeight: 'bold' }}>Date</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1rem' }}>
+              <div>
+                <label
+                  style={{
+                    display: 'block',
+                    marginBottom: '0.5rem',
+                    fontSize: 'var(--text-sm)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  Date
+                </label>
                 <input
                   type="date"
                   value={dateInput}
                   onChange={(e) => setDateInput(e.target.value)}
-                  style={{ width: '100%', boxSizing: 'border-box' }}
                   required
                 />
               </div>
-              <div style={{ flex: '1 1 120px' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.8rem', fontWeight: 'bold' }}>Weight ({unit})</label>
+              <div>
+                <label
+                  style={{
+                    display: 'block',
+                    marginBottom: '0.5rem',
+                    fontSize: 'var(--text-sm)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  Weight ({unit})
+                </label>
                 <input
                   type="number"
                   step="0.1"
                   value={weightInput}
                   onChange={(e) => setWeightInput(e.target.value)}
-                  style={{ width: '100%', boxSizing: 'border-box' }}
-                  placeholder="e.g. 150.5"
+                  placeholder={`e.g. ${unit === 'kg' ? '75' : '165'}`}
                   required
                 />
               </div>
             </div>
-            
-            <div className="mb-md">
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.8rem', fontWeight: 'bold' }}>Notes (optional)</label>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label
+                style={{
+                  display: 'block',
+                  marginBottom: '0.5rem',
+                  fontSize: 'var(--text-sm)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                }}
+              >
+                Notes (optional)
+              </label>
               <textarea
                 value={notesInput}
                 onChange={(e) => setNotesInput(e.target.value)}
-                style={{ width: '100%', boxSizing: 'border-box', resize: 'vertical' }}
+                style={{ resize: "vertical" }}
                 placeholder="How are you feeling?"
                 rows={2}
               />
@@ -247,90 +328,100 @@ function WeightTrackerContent() {
               type="submit"
               disabled={isLoading || !weightInput}
               className="btn-primary"
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
             >
-              {isLoading ? 'Saving...' : 'Log Weight'}
+              {isLoading ? "Saving..." : "Log Weight"}
             </button>
           </form>
         </div>
 
-        {/* Chart Section */}
+        {/* Chart — dynamically loaded, no SSR */}
         {entries.length > 0 && (
-          <div className="mb-lg" style={{ marginTop: '2rem' }}>
-            <h3 style={{ marginBottom: '1rem' }}>Progress Chart</h3>
-            <div style={{ position: 'relative', width: '100%', height: 300 }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                    <Line type="monotone" dataKey="weight" stroke="#60a5fa" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 8 }} />
-                    <CartesianGrid stroke="#ccc" strokeDasharray="5 5" opacity={0.5} />
-                    <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-                    <YAxis domain={['auto', 'auto']} tick={{ fontSize: 12 }} />
-                    <Tooltip 
-                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 100 }}
-                      labelStyle={{ fontWeight: 'bold', color: '#333' }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+          <div className="mb-lg" style={{ marginTop: "2rem" }}>
+            <h3 style={{ marginBottom: "1rem" }}>Progress Chart</h3>
+            <WeightChart data={chartData} unit={unit} />
           </div>
         )}
 
         {/* History List */}
-        <div style={{ marginTop: '2rem' }}>
-          <h3 style={{ marginBottom: '1rem' }}>History</h3>
+        <div style={{ marginTop: "2rem" }}>
+          <h3 style={{ marginBottom: "1rem" }}>History</h3>
           {entries.length === 0 ? (
             <p className="text-muted">No entries yet. Start logging above!</p>
           ) : (
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {/* Reverse to show newest first in list */}
-              {[...entries].reverse().map(entry => {
-                const displayWeight = unit === "lbs" ? Number((entry.weight * 2.20462).toFixed(1)) : Number(entry.weight.toFixed(1));
-                
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+              {[...entries].reverse().map((entry) => {
+                const displayWeight =
+                  unit === "lbs"
+                    ? Number((entry.weight * 2.20462).toFixed(1))
+                    : Number(entry.weight.toFixed(1));
+
                 return (
-                <li key={entry.id} style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center', 
-                  padding: '12px 0', 
-                  borderBottom: '1px solid #eee' 
-                }}>
-                  <div>
-                    <div style={{ fontWeight: 'bold' }}>{displayWeight} {unit}</div>
-                    <div className="text-muted" style={{ fontSize: '0.85rem' }}>
-                      {new Date(entry.target_date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
-                    </div>
-                    {entry.notes && (
-                      <div className="text-muted" style={{ fontSize: '0.85rem', marginTop: '4px', fontStyle: 'italic' }}>
-                        "{entry.notes}"
-                      </div>
-                    )}
-                  </div>
-                  <button 
-                    onClick={(e) => handleDelete(entry.id, e)}
-                    className="btn-danger"
-                    style={{ 
-                      color: '#991b1b', 
-                      background: '#fee2e2',
-                      border: '1px solid #f87171', 
-                      borderRadius: '4px',
-                      padding: '4px 8px',
-                      cursor: 'pointer',
-                      fontSize: '0.8rem',
-                      fontWeight: 'bold'
+                  <li
+                    key={entry.id}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "12px 0",
+                      borderBottom: "1px solid #ccc",
                     }}
-                    title="Delete Entry"
                   >
-                    Delete
-                  </button>
-                </li>
+                    <div>
+                      <div style={{ fontWeight: "bold", fontSize: "0.8rem" }}>
+                        {displayWeight} {unit}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "0.65rem",
+                          color: "#555",
+                          marginTop: "2px",
+                        }}
+                      >
+                        {new Date(entry.target_date).toLocaleDateString(
+                          undefined,
+                          {
+                            weekday: "short",
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          }
+                        )}
+                      </div>
+                      {entry.notes && (
+                        <div
+                          style={{
+                            fontSize: "0.65rem",
+                            color: "#666",
+                            fontStyle: "italic",
+                            marginTop: "2px",
+                          }}
+                        >
+                          &ldquo;{entry.notes}&rdquo;
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      onClick={(e) => handleDelete(entry.id, e)}
+                      style={{
+                        color: "#991b1b",
+                        background: "#fee2e2",
+                        border: "2px solid #f87171",
+                        padding: "4px 8px",
+                        cursor: "pointer",
+                        fontSize: "0.6rem",
+                        fontFamily: "Courier New, monospace",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </li>
                 );
               })}
             </ul>
           )}
         </div>
-
       </div>
     </div>
   );
@@ -338,7 +429,13 @@ function WeightTrackerContent() {
 
 export default function WeightTrackerPage() {
   return (
-    <Suspense fallback={<div className="container"><div className="card">Loading...</div></div>}>
+    <Suspense
+      fallback={
+        <div className="container">
+          <div className="card">Loading...</div>
+        </div>
+      }
+    >
       <WeightTrackerContent />
     </Suspense>
   );
