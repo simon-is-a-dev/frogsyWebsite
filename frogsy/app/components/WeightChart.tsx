@@ -56,19 +56,19 @@ export default function WeightChart({ data, unit }: WeightChartProps) {
         <CartesianGrid stroke="#aaa" strokeDasharray="4 4" opacity={0.5} />
         <XAxis
           dataKey="date"
-          tick={{ fontSize: 9, fontFamily: "Courier New, monospace" }}
+          tick={{ fontSize: 8, fontFamily: "'Press Start 2P', monospace" }}
         />
         <YAxis
           domain={["auto", "auto"]}
-          tick={{ fontSize: 9, fontFamily: "Courier New, monospace" }}
+          tick={{ fontSize: 8, fontFamily: "'Press Start 2P', monospace" }}
           width={38}
         />
         <Tooltip
           contentStyle={{
             border: "3px solid #2d3d2d",
             borderRadius: 0,
-            fontFamily: "Courier New, monospace",
-            fontSize: "0.7rem",
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: "var(--text-xs)",
             background: "#f5faf5",
           }}
           formatter={(val) => [`${val} ${unit}`, "Weight"]}

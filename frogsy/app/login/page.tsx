@@ -123,7 +123,7 @@ export default function LoginPage() {
               : (isSignUp ? 'Join the Pond' : 'Welcome Back')}
           </h2>
 
-          <div style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '3rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: 'var(--text-3xl)' }}>
             {isForgotPassword ? '🔑' : (isSignUp ? '🌱' : '🐸')}
           </div>
 
@@ -134,8 +134,7 @@ export default function LoginPage() {
               padding: '1rem',
               borderRadius: '4px',
               border: '2px solid #f87171',
-              fontFamily: 'sans-serif',
-              fontSize: '0.9rem'
+              fontSize: 'var(--text-sm)'
             }}>
               {error}
             </div>
@@ -148,8 +147,7 @@ export default function LoginPage() {
               padding: '1rem',
               borderRadius: '4px',
               border: '2px solid #4ade80',
-              fontFamily: 'sans-serif',
-              fontSize: '0.9rem'
+              fontSize: 'var(--text-sm)'
             }}>
               {success}
             </div>
@@ -219,7 +217,7 @@ export default function LoginPage() {
                   color: '#111',
                   cursor: 'pointer',
                   textDecoration: 'underline',
-                  fontSize: '0.8rem',
+                  fontSize: 'var(--text-xs)',
                   padding: '10px',
                   lineHeight: '1.5',
                   width: '100%'
@@ -246,7 +244,7 @@ export default function LoginPage() {
                 border: 'none',
                 color: '#111',
                 cursor: 'pointer',
-                fontSize: '0.75rem',
+                fontSize: 'var(--text-xs)',
                 opacity: 0.9,
                 width: '100%',
                 lineHeight: '1.6',

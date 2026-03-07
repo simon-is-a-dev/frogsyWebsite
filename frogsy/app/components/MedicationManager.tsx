@@ -217,7 +217,7 @@ export default function MedicationManager({ userId }: { userId: string | null })
                         onClick={() => saveEdit(med.id)} 
                         disabled={isSavingEdit || !editName}
                         className="btn-primary"
-                        style={{ padding: '4px 12px', fontSize: '0.85rem' }}
+                        style={{ padding: '4px 12px', fontSize: 'var(--text-xs)' }}
                       >
                         {isSavingEdit ? 'Saving...' : 'Save'}
                       </button>
@@ -225,7 +225,7 @@ export default function MedicationManager({ userId }: { userId: string | null })
                         onClick={cancelEditing} 
                         disabled={isSavingEdit}
                         className="btn-secondary"
-                        style={{ padding: '4px 12px', fontSize: '0.85rem' }}
+                        style={{ padding: '4px 12px', fontSize: 'var(--text-xs)' }}
                       >
                         Cancel
                       </button>
@@ -235,7 +235,7 @@ export default function MedicationManager({ userId }: { userId: string | null })
                   <>
                     <div style={{ flex: 1 }}>
                       <strong>{med.name}</strong>
-                      <div className="text-muted" style={{ fontSize: '0.9rem' }}>
+                      <div className="text-muted" style={{ fontSize: 'var(--text-xs)' }}>
                         {med.dosage && <span>{med.dosage} • </span>}
                         {med.frequency && <span>{med.frequency}</span>}
                       </div>
@@ -247,7 +247,7 @@ export default function MedicationManager({ userId }: { userId: string | null })
                         style={{ 
                           padding: '6px 12px',
                           cursor: 'pointer',
-                          fontSize: '0.85rem',
+                          fontSize: 'var(--text-xs)',
                           fontWeight: 'bold'
                         }}
                       >
@@ -263,7 +263,7 @@ export default function MedicationManager({ userId }: { userId: string | null })
                           borderRadius: '4px',
                           padding: '6px 12px',
                           cursor: 'pointer',
-                          fontSize: '0.85rem',
+                          fontSize: 'var(--text-xs)',
                           fontWeight: 'bold'
                         }}
                         title="Delete Medication"
@@ -283,7 +283,7 @@ export default function MedicationManager({ userId }: { userId: string | null })
         <h4 className="mb-sm">Add New Medication</h4>
         
         <div className="form-group mb-sm">
-          <label htmlFor="med-name" style={{ display: 'block', marginBottom: '4px', fontSize: '0.9rem' }}>Medication Name</label>
+          <label htmlFor="med-name" style={{ display: 'block', marginBottom: '4px', fontSize: 'var(--text-xs)' }}>Medication Name</label>
           <input
             id="med-name"
             type="text"
@@ -298,7 +298,7 @@ export default function MedicationManager({ userId }: { userId: string | null })
 
         <div className="form-row" style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
           <div className="form-group" style={{ flex: 1 }}>
-            <label htmlFor="med-dosage" style={{ display: 'block', marginBottom: '4px', fontSize: '0.9rem' }}>Dosage (Optional)</label>
+            <label htmlFor="med-dosage" style={{ display: 'block', marginBottom: '4px', fontSize: 'var(--text-xs)' }}>Dosage (Optional)</label>
             <input
               id="med-dosage"
               type="text"
@@ -311,7 +311,7 @@ export default function MedicationManager({ userId }: { userId: string | null })
           </div>
           
           <div className="form-group" style={{ flex: 1 }}>
-            <label htmlFor="med-freq" style={{ display: 'block', marginBottom: '4px', fontSize: '0.9rem' }}>Frequency (Optional)</label>
+            <label htmlFor="med-freq" style={{ display: 'block', marginBottom: '4px', fontSize: 'var(--text-xs)' }}>Frequency (Optional)</label>
             <input
               id="med-freq"
               type="text"

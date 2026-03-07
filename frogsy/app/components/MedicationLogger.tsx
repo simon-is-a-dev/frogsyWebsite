@@ -67,7 +67,7 @@ export default function MedicationLogger({ userId }: { userId: string | null }) 
   if (medications.length === 0) {
     return (
       <div className="medication-logger-empty">
-        <p className="text-muted text-center" style={{ fontSize: '0.9rem' }}>
+        <p className="text-muted text-center" style={{ fontSize: 'var(--text-sm)' }}>
           No medications set up. <a href="/settings" style={{ textDecoration: 'underline' }}>Configure in Settings</a>
         </p>
       </div>
@@ -79,7 +79,7 @@ export default function MedicationLogger({ userId }: { userId: string | null }) 
       <h3 className="mb-sm">Quick Meds</h3>
       
       {successMsg && (
-        <div className="success-message mb-sm" style={{ padding: '8px', fontSize: '0.9rem' }}>
+        <div className="success-message mb-sm" style={{ padding: '8px', fontSize: 'var(--text-sm)' }}>
           {successMsg}
         </div>
       )}
@@ -97,7 +97,7 @@ export default function MedicationLogger({ userId }: { userId: string | null }) 
                 flex: '1 0 calc(50% - 5px)', // 2 columns
                 textAlign: 'left',
                 padding: '10px',
-                fontSize: '0.9rem',
+                fontSize: 'var(--text-sm)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
@@ -107,12 +107,12 @@ export default function MedicationLogger({ userId }: { userId: string | null }) 
             >
                 <div>
                 <span style={{ fontWeight: 'bold', display: 'block' }}>{med.name}</span>
-                {med.dosage && <span className="text-muted" style={{ fontSize: '0.8rem' }}>{med.dosage}</span>}
+                {med.dosage && <span className="text-muted" style={{ fontSize: 'var(--text-xs)' }}>{med.dosage}</span>}
                 </div>
                 {loggingId === med.id ? (
                 <span className="spinner" style={{ width: '16px', height: '16px', border: '2px solid rgba(0,0,0,0.1)', borderTopColor: '#333', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></span>
                 ) : (
-                <span style={{ fontSize: '1.2rem' }}>💊</span>
+                <span style={{ fontSize: 'var(--text-xl)' }}>💊</span>
                 )}
             </button>
             )

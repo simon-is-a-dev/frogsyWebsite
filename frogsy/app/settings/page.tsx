@@ -151,7 +151,7 @@ function SettingsPageContent() {
           <button
             onClick={goBack}
             className="btn-secondary"
-            style={{ fontSize: '0.8rem', padding: '5px 15px' }}
+            style={{ fontSize: 'var(--text-xs)', padding: '5px 15px' }}
           >
             Back
           </button>
@@ -165,7 +165,7 @@ function SettingsPageContent() {
 
         <div className="mt-lg pt-md" style={{ borderTop: '1px solid rgba(0,0,0,0.1)', marginTop: '2rem' }}>
           <h3>Data & Privacy</h3>
-          <p className="text-muted" style={{ fontSize: '0.8rem', marginBottom: '1rem' }}>
+          <p className="text-muted" style={{ fontSize: 'var(--text-xs)', marginBottom: '1rem' }}>
             Manage your personal data.
           </p>
 
@@ -196,7 +196,7 @@ function SettingsPageContent() {
 
         <div className="mt-lg pt-md" style={{ borderTop: '1px solid rgba(0,0,0,0.1)', marginTop: '2rem' }}>
           <h3>Account</h3>
-          <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>
+          <p className="text-muted" style={{ fontSize: 'var(--text-sm)', marginBottom: '1rem' }}>
             You are signed in as <strong>{userEmail}</strong>.
           </p>
           <button
@@ -224,7 +224,7 @@ function SettingsPageContent() {
 
             <div style={{ marginBottom: '1rem' }}>
               <label
-                style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 'bold' }}
+                style={{ display: 'block', marginBottom: '0.5rem', fontSize: 'var(--text-xs)', fontWeight: 'bold' }}
               >
                 Confirm your password to continue:
               </label>
@@ -243,7 +243,7 @@ function SettingsPageContent() {
                 }}
               />
               {deleteError && (
-                <div style={{ color: 'var(--color-error)', fontSize: '0.8rem' }}>{deleteError}</div>
+                <div style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)' }}>{deleteError}</div>
               )}
             </div>
 

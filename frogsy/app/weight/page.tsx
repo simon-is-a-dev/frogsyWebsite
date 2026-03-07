@@ -16,8 +16,8 @@ const WeightChart = dynamic(() => import("../components/WeightChart"), {
         alignItems: "center",
         justifyContent: "center",
         color: "#555",
-        fontFamily: "Courier New, monospace",
-        fontSize: "0.75rem",
+        fontFamily: "var(--font-pixel)",
+        fontSize: "var(--text-xs)",
         border: "4px solid #2d3d2d",
         background: "rgba(0,0,0,0.02)",
       }}
@@ -191,7 +191,7 @@ function WeightTrackerContent() {
           <button
             onClick={() => router.push("/main")}
             className="btn-secondary"
-            style={{ fontSize: "0.6rem", padding: "5px 10px" }}
+            style={{ fontSize: "var(--text-xs)", padding: "5px 10px" }}
           >
             Back
           </button>
@@ -224,8 +224,8 @@ function WeightTrackerContent() {
                   unit === "kg" ? "var(--color-primary)" : "transparent",
                 color: unit === "kg" ? "white" : "#333",
                 cursor: "pointer",
-                fontFamily: "Courier New, monospace",
-                fontSize: "0.8rem",
+                fontFamily: "var(--font-pixel)",
+                fontSize: "var(--text-xs)",
                 fontWeight: unit === "kg" ? "bold" : "normal",
               }}
             >
@@ -240,8 +240,8 @@ function WeightTrackerContent() {
                   unit === "lbs" ? "var(--color-primary)" : "transparent",
                 color: unit === "lbs" ? "white" : "#333",
                 cursor: "pointer",
-                fontFamily: "Courier New, monospace",
-                fontSize: "0.8rem",
+                fontFamily: "var(--font-pixel)",
+                fontSize: "var(--text-xs)",
                 fontWeight: unit === "lbs" ? "bold" : "normal",
               }}
             >
@@ -368,12 +368,12 @@ function WeightTrackerContent() {
                     }}
                   >
                     <div>
-                      <div style={{ fontWeight: "bold", fontSize: "0.8rem" }}>
+                      <div style={{ fontWeight: "bold", fontSize: "var(--text-xs)" }}>
                         {displayWeight} {unit}
                       </div>
                       <div
                         style={{
-                          fontSize: "0.65rem",
+                          fontSize: "var(--text-xs)",
                           color: "#555",
                           marginTop: "2px",
                         }}
@@ -391,7 +391,7 @@ function WeightTrackerContent() {
                       {entry.notes && (
                         <div
                           style={{
-                            fontSize: "0.65rem",
+                            fontSize: "var(--text-xs)",
                             color: "#666",
                             fontStyle: "italic",
                             marginTop: "2px",
@@ -409,8 +409,8 @@ function WeightTrackerContent() {
                         border: "2px solid #f87171",
                         padding: "4px 8px",
                         cursor: "pointer",
-                        fontSize: "0.6rem",
-                        fontFamily: "Courier New, monospace",
+                        fontSize: "var(--text-xs)",
+                        fontFamily: "var(--font-pixel)",
                         textTransform: "uppercase",
                       }}
                     >

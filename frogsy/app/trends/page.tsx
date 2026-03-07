@@ -407,7 +407,7 @@ export default function TrendsPage() {
         <div className="trends-header">
           <div>
             <h2>Pain Trends & Badges</h2>
-            <p className="text-muted" style={{ fontSize: "0.8rem" }}>
+            <p className="text-muted" style={{ fontSize: "var(--text-xs)" }}>
               See how your frogs have been feeling over time.
             </p>
           </div>
@@ -506,10 +506,10 @@ export default function TrendsPage() {
               <div className="trends-chart-inner" style={{ display: "flex", justifyContent: "center", width: "100%" }}>
                 <LineChart width={chartWidth} height={260} data={chartData} margin={{ left: -35, right: 10, top: 5, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" tick={{ fontSize: 8 }} />
+                  <XAxis dataKey="date" tick={{ fontSize: 7, fontFamily: "'Press Start 2P', monospace" }} />
                   <YAxis
                     domain={[0, 10]}
-                    tick={{ fontSize: 10 }}
+                    tick={{ fontSize: 7, fontFamily: "'Press Start 2P', monospace" }}
                     ticks={[0, 2, 4, 6, 8, 10]}
                   />
                   <Tooltip />
@@ -543,8 +543,8 @@ export default function TrendsPage() {
               <div className="trends-chart-inner" style={{ display: "flex", justifyContent: "center", width: "100%" }}>
                 <BarChart width={chartWidth} height={220} data={weekdayAverages} margin={{ left: -35, right: 10, top: 5, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="weekday" tick={{ fontSize: 10 }} />
-                  <YAxis domain={[0, 10]} tick={{ fontSize: 10 }} />
+                  <XAxis dataKey="weekday" tick={{ fontSize: 7, fontFamily: "'Press Start 2P', monospace" }} />
+                  <YAxis domain={[0, 10]} tick={{ fontSize: 7, fontFamily: "'Press Start 2P', monospace" }} />
                   <Tooltip />
                   <Bar dataKey="avg" fill="#4A7C8C" />
                 </BarChart>
@@ -556,7 +556,7 @@ export default function TrendsPage() {
         {/* Heat map visualization */}
         <div className="mb-lg">
           <h3>Pain calendar</h3>
-          <p className="text-muted" style={{ fontSize: "0.8rem" }}>
+          <p className="text-muted" style={{ fontSize: "var(--text-xs)" }}>
             Last 12 weeks of pain levels at a glance.
           </p>
           {loading ? (
@@ -579,7 +579,7 @@ export default function TrendsPage() {
         {/* Badge collection grid */}
         <div className="mb-lg">
           <h3>Badges</h3>
-          <p className="text-muted" style={{ fontSize: "0.8rem" }}>
+          <p className="text-muted" style={{ fontSize: "var(--text-xs)" }}>
             Badges are earned automatically from your logging habits.
           </p>
           <div className="badges-grid">
