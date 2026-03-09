@@ -127,6 +127,10 @@ function MainPageContent() {
     router.push("/weight");
   };
 
+  const goToDiagnoses = () => {
+    router.push("/diagnoses");
+  };
+
   const displayedPainLevel = painLevel ?? 0;
   const frogImageSrc = painImages[displayedPainLevel];
 
@@ -303,6 +307,9 @@ function MainPageContent() {
               </button>
               <button onClick={goToWeightTracker} className="btn-secondary" disabled={isLoading}>
                 Weight Tracker
+              </button>
+              <button onClick={goToDiagnoses} className="btn-secondary" disabled={isLoading}>
+                Diagnoses
               </button>
             </div>
           </div>
