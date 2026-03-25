@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../supabaseClient';
 import Link from 'next/link';
+import { DISEASES } from '../constants/diseases';
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
@@ -11,6 +12,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSignUp, setIsSignUp] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [mainDiagnosis, setMainDiagnosis] = useState("Fibromyalgia");
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -79,6 +81,12 @@ export default function LoginPage() {
         const { error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: {
+              main_diagnosis: mainDiagnosis,
+              diagnosis_initialized: false,
+            }
+          }
         });
         if (error) {
           // Handle "User already registered" specifically
@@ -183,6 +191,31 @@ export default function LoginPage() {
                     ref={passwordRef}
                     disabled={isLoading}
                   />
+                </div>
+              )}
+
+              {isSignUp && (
+                <div className="form-group" style={{ marginTop: '1rem' }}>
+                  <label className="form-label" htmlFor="mainDiagnosis" style={{ marginBottom: '0.5rem', display: 'block' }}>Primary Diagnosis</label>
+                  <select
+                    id="mainDiagnosis"
+                    value={mainDiagnosis}
+                    onChange={(e) => setMainDiagnosis(e.target.value)}
+                    disabled={isLoading}
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      borderRadius: 'var(--radius-sm)',
+                      border: '1px solid var(--color-border)',
+                      fontFamily: 'inherit',
+                      fontSize: 'var(--text-md)',
+                      background: 'var(--color-bg)'
+                    }}
+                  >
+                    {DISEASES.map(d => (
+                      <option key={d} value={d}>{d}</option>
+                    ))}
+                  </select>
                 </div>
               )}
 

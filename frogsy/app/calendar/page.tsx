@@ -27,6 +27,7 @@ export default function CalendarPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [isManagingMeds, setIsManagingMeds] = useState(false);
+  const [medsExpanded, setMedsExpanded] = useState(false);
   const router = useRouter();
 
   const refreshMeds = async () => {
@@ -49,7 +50,7 @@ export default function CalendarPage() {
       if (user) {
         setUserId(user.id);
       } else {
-        router.push('/login');
+        router.push("/login");
       }
     };
     getUser();
@@ -76,8 +77,6 @@ export default function CalendarPage() {
 
       if (!painError && painData) setEntries(painData as PainEntry[]);
 
-      // Only fetch medications once (they don't change per-month)
-      // Fetch ALL meds (history)
       if (medications.length === 0) {
         const { data: medData } = await supabase
           .from("medications")
@@ -100,7 +99,7 @@ export default function CalendarPage() {
 
   const getPainForDay = (day: number) => {
     const dayStr = formatDate(currentDate.getFullYear(), currentDate.getMonth() + 1, day);
-    return entries.find(e => e.pain_date === dayStr) ?? null;
+    return entries.find((e) => e.pain_date === dayStr) ?? null;
   };
 
   const isFutureDay = (day: number) => {
@@ -117,7 +116,20 @@ export default function CalendarPage() {
       return;
     }
     setError(null);
-    setSelectedDay(formatDate(currentDate.getFullYear(), currentDate.getMonth() + 1, day));
+    const dateStr = formatDate(currentDate.getFullYear(), currentDate.getMonth() + 1, day);
+    setSelectedDay(dateStr);
+    // Auto-expand meds section only if <= 3 meds
+    const activeMedCount = medications.filter((med) => {
+      if (med.created_at && new Date(med.created_at) > new Date(new Date(dateStr).getTime() + 86400000)) return false;
+      if (med.archived_at) {
+        const archiveDate = new Date(med.archived_at);
+        const endOfDay = new Date(dateStr);
+        endOfDay.setDate(endOfDay.getDate() + 1);
+        if (archiveDate < endOfDay) return false;
+      }
+      return true;
+    }).length;
+    setMedsExpanded(activeMedCount <= 3);
   };
 
   const generateCalendarDays = () => {
@@ -132,25 +144,24 @@ export default function CalendarPage() {
 
   const calendarDays = generateCalendarDays();
 
-  // Filter meds for the selected day in the modal
-  const selectedDateMeds = selectedDay ? medications.filter(med => {
-    const dayDate = new Date(selectedDay);
-    // created_at check (was it active yet?)
-    if (med.created_at && new Date(med.created_at) > new Date(dayDate.getTime() + 86400000)) return false; 
-    
-    // archived_at check (was it still active?)
-    // Hide if archived BEFORE the end of this day
-    if (med.archived_at) {
-       const archiveDate = new Date(med.archived_at);
-       const endOfDay = new Date(dayDate);
-       endOfDay.setDate(endOfDay.getDate() + 1); // Next day midnight
-       if (archiveDate < endOfDay) return false;
-    }
-    return true;
-  }) : [];
+  // Filter meds relevant to the selected day
+  const selectedDateMeds = selectedDay
+    ? medications.filter((med) => {
+        const dayDate = new Date(selectedDay);
+        if (med.created_at && new Date(med.created_at) > new Date(dayDate.getTime() + 86400000)) return false;
+        if (med.archived_at) {
+          const archiveDate = new Date(med.archived_at);
+          const endOfDay = new Date(dayDate);
+          endOfDay.setDate(endOfDay.getDate() + 1);
+          if (archiveDate < endOfDay) return false;
+        }
+        return true;
+      })
+    : [];
 
-  const selectedEntry = selectedDay ? entries.find(e => e.pain_date === selectedDay) ?? null : null;
-
+  const selectedEntry = selectedDay
+    ? entries.find((e) => e.pain_date === selectedDay) ?? null
+    : null;
 
   if (!userId) {
     return <div className="container"><div className="text-center">Loading...</div></div>;
@@ -167,7 +178,7 @@ export default function CalendarPage() {
           </div>
 
           <div className="calendar-grid">
-            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(d => (
+            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
               <div key={d} className="calendar-day-header">{d}</div>
             ))}
 
@@ -177,7 +188,7 @@ export default function CalendarPage() {
               return (
                 <div
                   key={idx}
-                  className={`calendar-day ${!day ? 'empty' : ''} ${future ? 'disabled' : ''}`}
+                  className={`calendar-day ${!day ? "empty" : ""} ${future ? "disabled" : ""}`}
                   role={day ? "button" : undefined}
                   tabIndex={day ? 0 : undefined}
                   onClick={() => day && !future ? handleDayClick(day) : undefined}
@@ -206,7 +217,11 @@ export default function CalendarPage() {
             })}
           </div>
 
-          {error && <p className="text-muted" style={{ color: 'var(--color-error)', marginTop: '0.5rem' }}>{error}</p>}
+          {error && (
+            <p className="text-muted" style={{ color: "var(--color-error)", marginTop: "0.5rem" }}>
+              {error}
+            </p>
+          )}
 
           <div className="calendar-nav mt-lg">
             <button onClick={prevMonth} className="btn-secondary">Prev</button>
@@ -217,36 +232,50 @@ export default function CalendarPage() {
 
           {/* Day Detail Modal */}
           {selectedDay && (
-            <div className="modal-backdrop" role="presentation" onClick={() => { setSelectedDay(null); setIsManagingMeds(false); }}>
+            <div
+              className="modal-backdrop"
+              role="presentation"
+              onClick={() => { setSelectedDay(null); setIsManagingMeds(false); }}
+            >
               <div
                 className="modal"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="day-details-title"
                 onClick={(e) => e.stopPropagation()}
-                style={isManagingMeds ? { padding: '1rem' } : undefined}
+                style={isManagingMeds ? { padding: "1rem" } : undefined}
               >
                 {isManagingMeds ? (
-                  <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexShrink: 0 }}>
-                       <h3>Manage Medications</h3>
-                       <button 
-                         className="btn-primary" 
-                         onClick={() => { setIsManagingMeds(false); refreshMeds(); }}
-                         style={{ padding: '6px 12px', fontSize: '0.9rem' }}
-                       >
-                         Done
-                       </button>
-                     </div>
-                     <div style={{ flex: 1, overflowY: 'auto' }}>
-                       <MedicationManager userId={userId} />
-                     </div>
+                  <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginBottom: "1rem",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <h3>Manage Medications</h3>
+                      <button
+                        className="btn-primary"
+                        onClick={() => { setIsManagingMeds(false); refreshMeds(); }}
+                        style={{ padding: "6px 12px", fontSize: "0.9rem" }}
+                      >
+                        Done
+                      </button>
+                    </div>
+                    <div style={{ flex: 1, overflowY: "auto" }}>
+                      <MedicationManager userId={userId} />
+                    </div>
                   </div>
                 ) : (
                   <>
                     <h3 id="day-details-title">
                       {new Date(selectedDay + "T12:00:00").toLocaleDateString("default", {
-                        weekday: "long", month: "long", day: "numeric"
+                        weekday: "long",
+                        month: "long",
+                        day: "numeric",
                       })}
                     </h3>
 
@@ -257,13 +286,13 @@ export default function CalendarPage() {
                         <>
                           <span
                             className={`calendar-pain-level pain-level-${selectedEntry.pain_level}`}
-                            style={{ display: 'inline-block', marginRight: '8px' }}
+                            style={{ display: "inline-block", marginRight: "8px" }}
                           >
                             {selectedEntry.pain_level}
                           </span>
                           {selectedEntry.notes && (
-                            <div style={{ marginTop: '8px', fontSize: '0.9rem', fontStyle: 'italic' }}>
-                              "{selectedEntry.notes}"
+                            <div style={{ marginTop: "8px", fontSize: "0.9rem", fontStyle: "italic" }}>
+                              &ldquo;{selectedEntry.notes}&rdquo;
                             </div>
                           )}
                         </>
@@ -272,76 +301,69 @@ export default function CalendarPage() {
                       )}
                     </div>
 
-                    {/* Current medications */}
-                    <div className="mb-md">
-                      <div style={{ 
-                        display: 'flex', 
-                        justifyContent: 'space-between', 
-                        alignItems: 'center', 
-                        marginBottom: '12px', 
-                        borderBottom: '2px solid #eee', 
-                        paddingBottom: '8px' 
-                      }}>
-                        <h4 style={{ margin: 0, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#666' }}>
-                          Current Medications
-                        </h4>
-                        <button 
-                          onClick={() => setIsManagingMeds(true)}
-                          style={{ 
-                            background: 'none', 
-                            border: 'none', 
-                            color: 'var(--color-primary)', 
-                            cursor: 'pointer', 
-                            fontSize: '0.8rem', 
-                            fontWeight: 'bold',
-                            textTransform: 'uppercase'
+                    {/* ── Medications Accordion ── */}
+                    <div className="med-accordion mb-md">
+                      <button
+                        className="med-accordion__toggle"
+                        onClick={() => setMedsExpanded((v) => !v)}
+                        aria-expanded={medsExpanded}
+                      >
+                        <span>
+                          <span style={{ marginRight: "6px" }}>💊</span>
+                          Medications
+                          <span className="med-accordion__count">
+                            {selectedDateMeds.length}
+                          </span>
+                        </span>
+                        <span
+                          className="med-accordion__chevron"
+                          style={{
+                            transform: medsExpanded ? "rotate(180deg)" : "rotate(0deg)",
                           }}
                         >
-                          Manage
-                        </button>
-                      </div>
-                      
-                      {selectedDateMeds.length > 0 ? (
-                        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                          {selectedDateMeds.map(med => (
-                            <li key={med.id} style={{ 
-                              display: 'flex', 
-                              justifyContent: 'space-between', 
-                              alignItems: 'center', 
-                              padding: '10px 0', 
-                              borderBottom: '1px solid rgba(0,0,0,0.05)' 
-                            }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span style={{ fontSize: '1.2em' }}>💊</span>
-                                <span style={{ fontWeight: 600, color: '#111' }}>{med.name}</span>
-                              </div>
-                              {med.dosage && (
-                                <span style={{ 
-                                  color: '#555', 
-                                  fontSize: '0.85rem', 
-                                  background: '#f5f5f5', 
-                                  padding: '2px 8px', 
-                                  borderRadius: '12px',
-                                  whiteSpace: 'nowrap',
-                                  marginLeft: '8px'
-                                }}>
-                                  {med.dosage}
+                          ▼
+                        </span>
+                      </button>
+
+                      {medsExpanded && (
+                        <div className="med-accordion__body">
+                          {selectedDateMeds.length > 0 ? (
+                            <div className="med-chips">
+                              {selectedDateMeds.map((med) => (
+                                <span key={med.id} className="med-chip">
+                                  <span className="med-chip__name">{med.name}</span>
+                                  {med.dosage && (
+                                    <span className="med-chip__dosage">{med.dosage}</span>
+                                  )}
                                 </span>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <div style={{ 
-                          padding: '16px', 
-                          background: '#f9faf9', 
-                          borderRadius: '8px', 
-                          textAlign: 'center', 
-                          color: '#888',
-                          fontSize: '0.9rem',
-                          fontStyle: 'italic'
-                        }}>
-                          No active medications
+                              ))}
+                            </div>
+                          ) : (
+                            <p
+                              className="text-muted"
+                              style={{ fontSize: "0.85rem", textAlign: "center", padding: "12px 0" }}
+                            >
+                              No active medications for this day.
+                            </p>
+                          )}
+
+                          <button
+                            onClick={() => setIsManagingMeds(true)}
+                            style={{
+                              display: "block",
+                              marginTop: "10px",
+                              background: "none",
+                              border: "none",
+                              color: "var(--color-primary)",
+                              cursor: "pointer",
+                              fontSize: "0.8rem",
+                              fontWeight: "bold",
+                              textTransform: "uppercase",
+                              padding: 0,
+                            }}
+                          >
+                            Manage →
+                          </button>
                         </div>
                       )}
                     </div>
@@ -357,7 +379,10 @@ export default function CalendarPage() {
                       >
                         Edit in Main
                       </button>
-                      <button className="btn-secondary" onClick={() => setSelectedDay(null)}>
+                      <button
+                        className="btn-secondary"
+                        onClick={() => setSelectedDay(null)}
+                      >
                         Close
                       </button>
                     </div>

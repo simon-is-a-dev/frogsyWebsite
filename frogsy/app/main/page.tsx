@@ -58,6 +58,23 @@ function MainPageContent() {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setUserId(user.id);
+
+        // Check if user has initialized their diagnosis
+        if (!user.user_metadata?.diagnosis_initialized) {
+          const mainDiagnosis = user.user_metadata?.main_diagnosis || "Fibromyalgia";
+          
+          // Insert the diagnosis
+          await supabase.from("diagnoses").insert([{
+            user_id: user.id,
+            name: mainDiagnosis,
+          }]);
+
+          // Update metadata so this doesn't run again
+          await supabase.auth.updateUser({
+            data: { diagnosis_initialized: true }
+          });
+        }
+
         setCheckingAuth(false);
       } else {
         router.push("/login");
