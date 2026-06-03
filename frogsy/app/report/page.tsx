@@ -26,6 +26,11 @@ interface Medication {
   archived_at?: string | null;
 }
 
+const formatDate = (dateStr: string) => {
+  const d = new Date(dateStr + "T12:00:00");
+  return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`;
+};
+
 export default function ReportPage() {
   const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null);
@@ -191,10 +196,7 @@ export default function ReportPage() {
     : chartData.length > 30 ? 4
     : chartData.length > 14 ? 2 : 0;
 
-  const formatDate = (dateStr: string) => {
-    const d = new Date(dateStr + "T12:00:00");
-    return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`;
-  };
+
 
   return (
     <div className="rp-page">

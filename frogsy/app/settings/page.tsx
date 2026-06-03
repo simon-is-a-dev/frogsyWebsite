@@ -195,7 +195,7 @@ function SettingsPageContent() {
           {/* ── Health ── */}
           {activeTab === "health" && (
             <div>
-              <NotificationManager userId={userId} />
+              <NotificationManager userId={userId} key={userId || "anonymous"} />
             </div>
           )}
 

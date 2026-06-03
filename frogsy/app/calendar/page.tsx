@@ -19,6 +19,9 @@ interface Medication {
   archived_at?: string | null;
 }
 
+const formatDate = (year: number, month: number, day: number) =>
+  `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
 export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [entries, setEntries] = useState<PainEntry[]>([]);
@@ -40,9 +43,6 @@ export default function CalendarPage() {
     if (medData) setMedications(medData as Medication[]);
   };
 
-  const formatDate = (year: number, month: number, day: number) =>
-    `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
   // Auth check
   useEffect(() => {
     const getUser = async () => {
@@ -56,7 +56,7 @@ export default function CalendarPage() {
     getUser();
   }, [router]);
 
-  // Fetch pain entries for the current month + medications list (once)
+  // Fetch pain entries for the current month when currentDate or userId changes
   useEffect(() => {
     if (!userId) return;
 
@@ -76,19 +76,26 @@ export default function CalendarPage() {
         .order("pain_date", { ascending: true });
 
       if (!painError && painData) setEntries(painData as PainEntry[]);
-
-      if (medications.length === 0) {
-        const { data: medData } = await supabase
-          .from("medications")
-          .select("id, name, dosage, created_at, archived_at")
-          .eq("user_id", userId)
-          .order("name");
-        if (medData) setMedications(medData as Medication[]);
-      }
     };
 
     fetchData();
   }, [currentDate, userId]);
+
+  // Fetch medications list when userId changes
+  useEffect(() => {
+    if (!userId) return;
+
+    const fetchMeds = async () => {
+      const { data: medData } = await supabase
+        .from("medications")
+        .select("id, name, dosage, created_at, archived_at")
+        .eq("user_id", userId)
+        .order("name");
+      if (medData) setMedications(medData as Medication[]);
+    };
+
+    fetchMeds();
+  }, [userId]);
 
   useEffect(() => { setError(null); }, [currentDate]);
 

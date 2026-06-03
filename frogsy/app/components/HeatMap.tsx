@@ -20,6 +20,12 @@ interface CellData {
   isMonthStart?: boolean;
 }
 
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return "";
+  const date = new Date(dateStr + "T00:00:00");
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+};
+
 export default function HeatMap({ entries, startDate: propStartDate, endDate: propEndDate }: HeatMapProps) {
   const [hoveredCell, setHoveredCell] = useState<string | null>(null);
   const scrollWrapperRef = useRef<HTMLDivElement>(null);
@@ -169,11 +175,7 @@ export default function HeatMap({ entries, startDate: propStartDate, endDate: pr
     });
   };
 
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return "";
-    const date = new Date(dateStr + "T00:00:00");
-    return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-  };
+
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);

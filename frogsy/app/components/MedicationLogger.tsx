@@ -17,24 +17,22 @@ export default function MedicationLogger({ userId }: { userId: string | null }) 
   const [recentLogs, setRecentLogs] = useState<Set<string>>(new Set()); // Track IDs logged in this session
 
   useEffect(() => {
-    if (userId) {
-      fetchMedications();
-      // Reset recent logs on day change? For now, just per session.
-    }
-  }, [userId]);
-
-  const fetchMedications = async () => {
     if (!userId) return;
-    setLoading(true);
-    const { data } = await supabase
-      .from("medications")
-      .select("id, name, dosage")
-      .eq("user_id", userId)
-      .order("name");
 
-    setMedications(data || []);
-    setLoading(false);
-  };
+    const fetchMedications = async () => {
+      setLoading(true);
+      const { data } = await supabase
+        .from("medications")
+        .select("id, name, dosage")
+        .eq("user_id", userId)
+        .order("name");
+
+      setMedications(data || []);
+      setLoading(false);
+    };
+
+    fetchMedications();
+  }, [userId]);
 
   const handleLogMedication = async (med: Medication) => {
     if (!userId) return;

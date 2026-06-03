@@ -41,6 +41,7 @@ export default function NotificationManager({ userId }: NotificationManagerProps
     "Notification" in window &&
     "serviceWorker" in navigator;
 
+  // 1. Run once on mount to setup device info, notifications, and service worker
   useEffect(() => {
     if (!notificationsSupported) return;
 
@@ -82,94 +83,107 @@ export default function NotificationManager({ userId }: NotificationManagerProps
     };
 
     registerServiceWorker();
+  }, [notificationsSupported]);
 
-    // Check if user already has a subscription
-    checkExistingSubscription();
-  }, [notificationsSupported, userId]);
+  // 2. Fetch subscription and preferences when userId changes
+  useEffect(() => {
+    if (!notificationsSupported) return;
 
-  const checkExistingSubscription = async () => {
     if (!userId) return;
 
-    try {
-      console.log("🔍 Checking subscription status...");
-      const registration = await navigator.serviceWorker.ready;
-      const subscription = await registration.pushManager.getSubscription();
+    const renewSubscription = async (subscription: PushSubscription) => {
+      try {
+        const json = subscription.toJSON();
 
-      if (subscription) {
-        console.log("📱 Found browser subscription:", subscription.endpoint);
+        await supabase.from("push_subscriptions").upsert({
+          user_id: userId,
+          endpoint: json.endpoint!,
+          p256dh: json.keys?.p256dh!,
+          auth: json.keys?.auth!,
+        }, {
+          onConflict: 'endpoint,user_id'
+        });
 
-        // Check if subscription exists in database
+        console.log("💾 Subscription renewed in database");
+      } catch (error) {
+        console.error("Failed to renew subscription:", error);
+      }
+    };
+
+    const loadUserPreferences = async () => {
+      try {
         const { data, error } = await supabase
-          .from("push_subscriptions")
-          .select("user_id, created_at")
-          .eq("endpoint", subscription.endpoint)
+          .from("user_notification_preferences")
+          .select("*")
           .eq("user_id", userId)
           .maybeSingle();
 
         if (!error && data) {
-          console.log("✅ Subscription valid in database");
-          setEnabled(true);
-        } else {
-          // Subscription exists in browser but not in DB - re-save it
-          console.log("⚠️ Subscription not in database, re-saving...");
-          await renewSubscription(subscription);
-          setEnabled(true);
+          setMorningTime(data.morning_time?.substring(0, 5) || "08:00");
+          setAfternoonTime(data.afternoon_time?.substring(0, 5) || "19:00");
+          setMorningEnabled(data.morning_enabled ?? true);
+          setAfternoonEnabled(data.afternoon_enabled ?? true);
+        } else if (!data) {
+          // Create default preferences for new user
+          const { error: upsertError } = await supabase
+            .from("user_notification_preferences")
+            .upsert({
+              user_id: userId,
+              morning_time: "08:00:00",
+              afternoon_time: "19:00:00",
+              morning_enabled: true,
+              afternoon_enabled: true,
+              timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            }, {
+              onConflict: 'user_id'
+            });
+          if (upsertError) throw upsertError;
         }
-      } else {
-        console.log("❌ No browser subscription found");
-        setEnabled(false);
+      } catch (error) {
+        console.error("Error loading preferences:", error);
       }
+    };
 
-      // Load user preferences
-      await loadUserPreferences();
-    } catch (error) {
-      console.error("Error checking subscription:", error);
-    }
-  };
+    const checkExistingSubscription = async () => {
+      try {
+        console.log("🔍 Checking subscription status...");
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.getSubscription();
 
-  // Helper to renew/save subscription to database
-  const renewSubscription = async (subscription: PushSubscription) => {
-    try {
-      const json = subscription.toJSON();
+        if (subscription) {
+          console.log("📱 Found browser subscription:", subscription.endpoint);
 
-      await supabase.from("push_subscriptions").upsert({
-        user_id: userId!,
-        endpoint: json.endpoint!,
-        p256dh: json.keys?.p256dh!,
-        auth: json.keys?.auth!,
-      }, {
-        onConflict: 'endpoint,user_id'
-      });
+          // Check if subscription exists in database
+          const { data, error } = await supabase
+            .from("push_subscriptions")
+            .select("user_id, created_at")
+            .eq("endpoint", subscription.endpoint)
+            .eq("user_id", userId)
+            .maybeSingle();
 
-      console.log("💾 Subscription renewed in database");
-    } catch (error) {
-      console.error("Failed to renew subscription:", error);
-    }
-  };
+          if (!error && data) {
+            console.log("✅ Subscription valid in database");
+            setEnabled(true);
+          } else {
+            // Subscription exists in browser but not in DB - re-save it
+            console.log("⚠️ Subscription not in database, re-saving...");
+            await renewSubscription(subscription);
+            setEnabled(true);
+          }
+        } else {
+          console.log("❌ No browser subscription found");
+          setEnabled(false);
+        }
 
-  const loadUserPreferences = async () => {
-    if (!userId) return;
-
-    try {
-      const { data, error } = await supabase
-        .from("user_notification_preferences")
-        .select("*")
-        .eq("user_id", userId)
-        .maybeSingle();
-
-      if (!error && data) {
-        setMorningTime(data.morning_time?.substring(0, 5) || "08:00");
-        setAfternoonTime(data.afternoon_time?.substring(0, 5) || "19:00");
-        setMorningEnabled(data.morning_enabled ?? true);
-        setAfternoonEnabled(data.afternoon_enabled ?? true);
-      } else if (!data) {
-        // Create default preferences for new user
-        await saveUserPreferences();
+        // Load user preferences
+        await loadUserPreferences();
+      } catch (error) {
+        console.error("Error checking subscription:", error);
       }
-    } catch (error) {
-      console.error("Error loading preferences:", error);
-    }
-  };
+    };
+
+    checkExistingSubscription();
+  }, [notificationsSupported, userId]);
 
   const saveUserPreferences = async () => {
     if (!userId) return;

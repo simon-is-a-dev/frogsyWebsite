@@ -22,6 +22,15 @@ interface MedicationDiagnosis {
   diagnosis_id: string;
 }
 
+const formatDate = (dateStr: string | null) => {
+  if (!dateStr) return null;
+  // dateStr is YYYY-MM-DD; parse as local date to avoid timezone offset
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString(undefined, {
+    year: "numeric", month: "short", day: "numeric"
+  });
+};
+
 export default function DiagnosisManager({ userId }: { userId: string | null }) {
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
   const [medications, setMedications] = useState<Medication[]>([]);
@@ -201,14 +210,7 @@ export default function DiagnosisManager({ userId }: { userId: string | null }) 
   const getLinkedMedsForDiagnosis = (diagId: string) =>
     medications.filter(m => isLinked(m.id, diagId));
 
-  const formatDate = (dateStr: string | null) => {
-    if (!dateStr) return null;
-    // dateStr is YYYY-MM-DD; parse as local date to avoid timezone offset
-    const [y, m, d] = dateStr.split("-").map(Number);
-    return new Date(y, m - 1, d).toLocaleDateString(undefined, {
-      year: "numeric", month: "short", day: "numeric"
-    });
-  };
+
 
   // ---- RENDER ----
   if (loading) {

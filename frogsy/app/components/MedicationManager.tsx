@@ -31,33 +31,29 @@ export default function MedicationManager({ userId }: { userId: string | null })
   const [isSavingEdit, setIsSavingEdit] = useState(false);
 
   useEffect(() => {
-    if (userId) {
-      fetchMedications();
-    }
-  }, [userId]);
-
-  const fetchMedications = async () => {
     if (!userId) return;
-    setLoading(true);
-    // Fetch ONLY active medications for the manager list
-    const { data, error } = await supabase
-      .from("medications")
-      .select("*")
-      .eq("user_id", userId)
-      .is("archived_at", null) // Only show non-archived
-      .order("name");
 
-    if (error) {
-      console.error("Error fetching medications:", error);
-      // If error is about missing column, we might still want to show data?
-      // But we can't filter properly. Just show error or fallback?
-      // Assuming user adds the column.
-      setError("Failed to load medications. (Ensure 'archived_at' column exists)");
-    } else {
-      setMedications(data || []);
-    }
-    setLoading(false);
-  };
+    const fetchMedications = async () => {
+      setLoading(true);
+      // Fetch ONLY active medications for the manager list
+      const { data, error } = await supabase
+        .from("medications")
+        .select("*")
+        .eq("user_id", userId)
+        .is("archived_at", null) // Only show non-archived
+        .order("name");
+
+      if (error) {
+        console.error("Error fetching medications:", error);
+        setError("Failed to load medications. (Ensure 'archived_at' column exists)");
+      } else {
+        setMedications(data || []);
+      }
+      setLoading(false);
+    };
+
+    fetchMedications();
+  }, [userId]);
 
   const handleAddMedication = async (e: React.FormEvent) => {
     e.preventDefault();
