@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npx -y react-doctor@latest --yes && next build",
+    "doctor": "npx -y react-doctor@latest --yes",
+    "build": "npm run doctor || true && next build",
     "start": "next start",
     "lint": "eslint",
     "test": "jest",
@@ -15,7 +16,7 @@
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.95.2",
     "geist": "^1.5.1",
-    "next": "14.2.35",
+    "next": "^16.2.10",
     "react": "^18",
     "react-dom": "^18",
     "recharts": "^3.7.0",

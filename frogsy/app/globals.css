@@ -581,8 +581,8 @@ textarea::placeholder {
   object-fit: contain;
   image-rendering: pixelated;
   position: relative;
-  z-index: 2;
-  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.2));
+  z-index: 42;
+ 
   transform: scale(1.35); /* Keep frog bigger */
 }
 
@@ -3897,4 +3897,16 @@ textarea::placeholder {
   padding: 1px 6px;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+
+.frog-sprite {
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  animation-name: frog-play;
+}
+
+@keyframes frog-play {
+  from { background-position: 0 0; }
+  to   { background-position: var(--sprite-end) 0; }
 }

@@ -5,19 +5,106 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "../supabaseClient";
 import NotificationManager from "../components/NotificationManager";
 
-const painImages: Record<number, string> = {
-  0: "/level0.png",
-  1: "/level1 .png",
-  2: "/level2.png",
-  3: "/level3.png",
-  4: "/level4.png",
-  5: "/level5.png",
-  6: "/level6.png",
-  7: "/level7.png",
-  8: "/level8.png",
-  9: "/level9.png",
-  10: "/level10.png",
+type SpriteConfig = {
+  src: string;
+  frameWidth: number;
+  frameHeight: number;
+  columns: number; // how many frames per row in the sheet's grid
+  sheetRows: number; // total rows in the sheet's grid
+  frameCount: number;
+  fps: number;
+  loop: boolean;
 };
+
+const DISPLAY_SIZE = 350;
+
+const painSprites: Record<number, SpriteConfig> = {
+  0: { src: "/level0.png", frameWidth: 48, frameHeight: 48, columns: 3, sheetRows: 3, frameCount: 7, fps: 8, loop: true },
+  1: { src: "/level1.png", frameWidth: 48, frameHeight: 48, columns: 3, sheetRows: 3, frameCount: 7, fps: 8, loop: true },
+  2: { src: "/level2.png", frameWidth: 48, frameHeight: 48, columns: 3, sheetRows: 3, frameCount: 7, fps: 8, loop: true },
+  3: { src: "/level3.png", frameWidth: 48, frameHeight: 48, columns: 3, sheetRows: 3, frameCount: 7, fps: 8, loop: true },
+  4: { src: "/level4.png", frameWidth: 48, frameHeight: 48, columns: 3, sheetRows: 3, frameCount: 8, fps: 8, loop: true },
+  5: { src: "/level5.png", frameWidth: 48, frameHeight: 48, columns: 3, sheetRows: 3, frameCount: 8, fps: 8, loop: true },
+  6: { src: "/level6.png", frameWidth: 48, frameHeight: 48, columns: 3, sheetRows: 3, frameCount: 8, fps: 8, loop: true },
+  7: { src: "/level7.png", frameWidth: 48, frameHeight: 48, columns: 3, sheetRows: 3, frameCount: 8, fps: 8, loop: true },
+  8: { src: "/level8.png", frameWidth: 48, frameHeight: 48, columns: 3, sheetRows: 3, frameCount: 8, fps: 8, loop: true },
+  9: { src: "/level9.png", frameWidth: 48, frameHeight: 48, columns: 3, sheetRows: 3, frameCount: 8, fps: 8, loop: true },
+  10: { src: "/level10.png", frameWidth: 48, frameHeight: 48, columns: 3, sheetRows: 3, frameCount: 9, fps: 8, loop: true },
+};
+
+function AnimatedFrog({
+  level,
+  sprite,
+  onClick,
+}: {
+  level: number;
+  sprite: SpriteConfig;
+  onClick?: () => void;
+}) {
+  const n = sprite.frameCount;
+  const duration = n / sprite.fps;
+  const animName = `frog-play-${level}`;
+  const className = `frog-sprite-${level}`;
+
+  // Scale factor to go from the sheet's real pixel size up to DISPLAY_SIZE.
+  const scale = DISPLAY_SIZE / sprite.frameWidth;
+  const scaledFrameW = sprite.frameWidth * scale;
+  const scaledFrameH = sprite.frameHeight * scale;
+  const sheetW = sprite.columns * scaledFrameW;
+  const sheetH = sprite.sheetRows * scaledFrameH;
+
+  // Build one keyframe stop per actual frame, using both column (x) and
+  // row (y) offsets, scaled up to match the enlarged background-size.
+  const keyframeStops = Array.from({ length: n }, (_, i) => {
+    const col = i % sprite.columns;
+    const row = Math.floor(i / sprite.columns);
+    const x = -(col * scaledFrameW);
+    const y = -(row * scaledFrameH);
+    const pct = n > 1 ? (i / (n - 1)) * 100 : 0;
+    return `${pct.toFixed(4)}% { background-position: ${x}px ${y}px; animation-timing-function: steps(1); }`;
+  }).join("\n");
+
+  return (
+    <>
+      {/* Embedded here (not in a separate global CSS file) so the
+          animation can never silently fail to apply because a stylesheet
+          edit didn't get saved/picked up. Keyed to the level so each
+          level gets its own uniquely named animation/class. */}
+      <style>{`
+        .${className} {
+          background-repeat: no-repeat;
+          image-rendering: pixelated;
+          animation-name: ${animName};
+        }
+        @keyframes ${animName} {
+          ${keyframeStops}
+        }
+      `}</style>
+      <div
+        key={level} // forces remount so the animation restarts every time the level changes
+        role="img"
+        aria-label={`Frog illustration for pain level ${level}`}
+        onClick={onClick}
+        className={className}
+        style={{
+          width: scaledFrameW,
+          height: scaledFrameH,
+          backgroundImage: `url(${sprite.src})`,
+          backgroundSize: `${sheetW}px ${sheetH}px`,
+          animationDuration: `${duration}s`,
+          animationIterationCount: sprite.loop ? "infinite" : 1,
+          animationFillMode: sprite.loop ? "none" : "forwards",
+          cursor: onClick ? "pointer" : "default",
+          position: "relative",
+          zIndex: 42, // matches the original .frog-image's z-index so it
+                      // renders above .frog-image-frame::before (the
+                      // semi-transparent pond ripple overlay), instead of
+                      // underneath it
+        }}
+      />
+    </>
+  );
+}
 
 function MainPageContent() {
   const [painLevel, setPainLevel] = useState<number | null>(null);
@@ -62,7 +149,7 @@ function MainPageContent() {
         // Check if user has initialized their diagnosis
         if (!user.user_metadata?.diagnosis_initialized) {
           const mainDiagnosis = user.user_metadata?.main_diagnosis || "Fibromyalgia";
-          
+
           // Insert the diagnosis
           await supabase.from("diagnoses").insert([{
             user_id: user.id,
@@ -149,7 +236,7 @@ function MainPageContent() {
   };
 
   const displayedPainLevel = painLevel ?? 0;
-  const frogImageSrc = painImages[displayedPainLevel];
+  const displayedSprite = painSprites[displayedPainLevel];
 
   if (checkingAuth) {
     return (
@@ -205,10 +292,9 @@ function MainPageContent() {
               </span>
             </div>
             <div className="frog-image-frame">
-              <img
-                src={frogImageSrc}
-                alt={`Frog illustration for pain level ${displayedPainLevel}`}
-                className="frog-image"
+              <AnimatedFrog
+                level={displayedPainLevel}
+                sprite={displayedSprite}
                 onClick={() => {
                   if (painLevel === 2) {
                     const newCount = clickCount + 1;
@@ -219,7 +305,6 @@ function MainPageContent() {
                     }
                   }
                 }}
-                style={{ cursor: painLevel === 2 ? 'pointer' : 'default' }}
               />
             </div>
           </div>
@@ -330,7 +415,7 @@ function MainPageContent() {
               </button>
             </div>
           </div>
-          
+
         </div>
       </div>
     </div>
