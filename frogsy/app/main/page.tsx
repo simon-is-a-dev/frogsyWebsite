@@ -16,7 +16,8 @@ type SpriteConfig = {
   loop: boolean;
 };
 
-const DISPLAY_SIZE = 350;
+
+const FROG_DISPLAY_SIZE = "clamp(110px, 40vw, 240px)";
 
 const painSprites: Record<number, SpriteConfig> = {
   0: { src: "/level0.png", frameWidth: 48, frameHeight: 48, columns: 3, sheetRows: 3, frameCount: 7, fps: 8, loop: true },
@@ -46,32 +47,26 @@ function AnimatedFrog({
   const animName = `frog-play-${level}`;
   const className = `frog-sprite-${level}`;
 
-  // Scale factor to go from the sheet's real pixel size up to DISPLAY_SIZE.
-  const scale = DISPLAY_SIZE / sprite.frameWidth;
-  const scaledFrameW = sprite.frameWidth * scale;
-  const scaledFrameH = sprite.frameHeight * scale;
-  const sheetW = sprite.columns * scaledFrameW;
-  const sheetH = sprite.sheetRows * scaledFrameH;
 
-  // Build one keyframe stop per actual frame, using both column (x) and
-  // row (y) offsets, scaled up to match the enlarged background-size.
+  const bgSizeX = sprite.columns * 100;
+  const bgSizeY = sprite.sheetRows * 100;
+
   const keyframeStops = Array.from({ length: n }, (_, i) => {
     const col = i % sprite.columns;
     const row = Math.floor(i / sprite.columns);
-    const x = -(col * scaledFrameW);
-    const y = -(row * scaledFrameH);
+    const x = sprite.columns > 1 ? (col / (sprite.columns - 1)) * 100 : 0;
+    const y = sprite.sheetRows > 1 ? (row / (sprite.sheetRows - 1)) * 100 : 0;
     const pct = n > 1 ? (i / (n - 1)) * 100 : 0;
-    return `${pct.toFixed(4)}% { background-position: ${x}px ${y}px; animation-timing-function: steps(1); }`;
+    return `${pct.toFixed(4)}% { background-position: ${x}% ${y}%; animation-timing-function: steps(1); }`;
   }).join("\n");
 
   return (
     <>
-      {/* Embedded here (not in a separate global CSS file) so the
-          animation can never silently fail to apply because a stylesheet
-          edit didn't get saved/picked up. Keyed to the level so each
-          level gets its own uniquely named animation/class. */}
+     
       <style>{`
         .${className} {
+          width: ${FROG_DISPLAY_SIZE};
+          aspect-ratio: ${sprite.frameWidth} / ${sprite.frameHeight};
           background-repeat: no-repeat;
           image-rendering: pixelated;
           animation-name: ${animName};
@@ -81,25 +76,20 @@ function AnimatedFrog({
         }
       `}</style>
       <div
-        key={level} // forces remount so the animation restarts every time the level changes
+        key={level} 
         role="img"
         aria-label={`Frog illustration for pain level ${level}`}
         onClick={onClick}
         className={className}
         style={{
-          width: scaledFrameW,
-          height: scaledFrameH,
           backgroundImage: `url(${sprite.src})`,
-          backgroundSize: `${sheetW}px ${sheetH}px`,
+          backgroundSize: `${bgSizeX}% ${bgSizeY}%`,
           animationDuration: `${duration}s`,
           animationIterationCount: sprite.loop ? "infinite" : 1,
           animationFillMode: sprite.loop ? "none" : "forwards",
           cursor: onClick ? "pointer" : "default",
           position: "relative",
-          zIndex: 42, // matches the original .frog-image's z-index so it
-                      // renders above .frog-image-frame::before (the
-                      // semi-transparent pond ripple overlay), instead of
-                      // underneath it
+          zIndex: 42, 
         }}
       />
     </>
