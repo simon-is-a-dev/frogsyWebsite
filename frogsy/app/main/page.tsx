@@ -4,6 +4,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "../supabaseClient";
 import NotificationManager from "../components/NotificationManager";
+import AnnouncementBanner from "../components/AnnouncementBanner";
 
 type SpriteConfig = {
   src: string;
@@ -237,8 +238,10 @@ function MainPageContent() {
   }
 
   return (
-    <div className="container">
-      <div className="card">
+    <>
+      <AnnouncementBanner userId={userId} />
+      <div className="container">
+        <div className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
           <div>
             <h2>Log Your Pain Level</h2>
@@ -407,8 +410,9 @@ function MainPageContent() {
           </div>
 
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

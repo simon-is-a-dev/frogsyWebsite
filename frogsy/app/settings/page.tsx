@@ -7,22 +7,13 @@ import NotificationManager from "../components/NotificationManager";
 import MedicationManager from "../components/MedicationManager";
 import DiagnosisManager from "../components/DiagnosisManager";
 
-type SettingsTab = "medications" | "health" | "account" | "data";
-
-const TABS: { id: SettingsTab; label: string; icon: string }[] = [
-  { id: "medications", label: "Medications", icon: "💊" },
-  { id: "health",      label: "Health",       icon: "🩺" },
-  { id: "account",     label: "Account",      icon: "👤" },
-  { id: "data",        label: "Data",         icon: "🗂" },
-];
+const DEVELOPER_EMAIL = "simonswart91@gmail.com";
+const GMAIL_COMPOSE_URL = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(DEVELOPER_EMAIL)}&su=${encodeURIComponent("Frogsy feedback")}`;
 
 function SettingsPageContent() {
   const [userId, setUserId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const [activeTab, setActiveTab] = useState<SettingsTab>("medications");
-
-  // Data tab state
   const [exporting, setExporting] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
@@ -143,93 +134,93 @@ function SettingsPageContent() {
   return (
     <div className="container">
       <div className="card">
-        {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "1.5rem",
-          }}
-        >
-          <h2>Settings</h2>
+        <div className="settings-header settings-dashboard-header">
+          <div>
+            <div className="settings-eyebrow">FROGSY CONTROL ROOM</div>
+            <h2>Settings</h2>
+            <p className="settings-intro">Manage your care routine, reminders, account, and data.</p>
+          </div>
           <button
             onClick={() => router.push("/main")}
             className="btn-secondary"
-            style={{ fontSize: "var(--text-xs)", padding: "5px 15px" }}
+            style={{ fontSize: "var(--text-xs)", padding: "5px 15px", flexShrink: 0 }}
           >
-            Back
+            Back to log
           </button>
         </div>
 
-        {/* Tab Bar */}
-        <div className="settings-tabs">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              className={`settings-tab-btn${activeTab === tab.id ? " active" : ""}`}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              <span className="settings-tab-icon">{tab.icon}</span>
-              <span className="settings-tab-label">{tab.label}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Tab Content */}
-        <div className="settings-tab-content">
-
-          {/* ── Medications ── */}
-          {activeTab === "medications" && (
-            <div>
-              <MedicationManager userId={userId} />
-              <div
-                className="mt-lg pt-md"
-                style={{ borderTop: "1px solid rgba(0,0,0,0.08)", marginTop: "2rem" }}
-              >
-                <DiagnosisManager userId={userId} />
+        <div className="settings-dashboard">
+          <section className="settings-section" aria-labelledby="treatment-heading">
+            <div className="settings-section-heading">
+              <span className="settings-section-number">01</span>
+              <div>
+                <h3 id="treatment-heading">Treatment</h3>
+                <p>Keep your medications and diagnoses up to date.</p>
               </div>
             </div>
-          )}
-
-          {/* ── Health ── */}
-          {activeTab === "health" && (
-            <div>
-              <NotificationManager userId={userId} key={userId || "anonymous"} />
+            <MedicationManager userId={userId} />
+            <div className="settings-subsection">
+              <DiagnosisManager userId={userId} />
             </div>
-          )}
+          </section>
 
-          {/* ── Account ── */}
-          {activeTab === "account" && (
-            <div>
-              <h3 style={{ marginBottom: "0.75rem" }}>Account</h3>
-              <p className="text-muted" style={{ fontSize: "var(--text-sm)", marginBottom: "1.25rem" }}>
-                Signed in as <strong>{userEmail}</strong>.
-              </p>
+          <section className="settings-section" aria-labelledby="reminders-heading">
+            <div className="settings-section-heading">
+              <span className="settings-section-number">02</span>
+              <div>
+                <h3 id="reminders-heading">Daily reminders</h3>
+                <p>Choose whether Frogsy reminds you to check in.</p>
+              </div>
+            </div>
+            <NotificationManager userId={userId} key={userId || "anonymous"} />
+          </section>
+
+          <section className="settings-section" aria-labelledby="account-heading">
+            <div className="settings-section-heading">
+              <span className="settings-section-number">03</span>
+              <div>
+                <h3 id="account-heading">Account</h3>
+                <p>Your account details and a direct line to the developer.</p>
+              </div>
+            </div>
+            <div className="settings-info-row">
+              <span className="settings-info-label">Signed in as</span>
+              <strong>{userEmail}</strong>
+            </div>
+            <div className="settings-contact-block">
+              <div>
+                <h4>Contact the developer</h4>
+                <p>Questions, ideas, or something not working right?</p>
+                <p className="settings-contact-address">{DEVELOPER_EMAIL}</p>
+              </div>
               <button
-                onClick={async () => {
-                  await supabase.auth.signOut();
-                  router.push("/login");
-                }}
+                type="button"
                 className="btn-secondary"
-                style={{ color: "var(--color-error)" }}
+                onClick={() => window.open(GMAIL_COMPOSE_URL, "_blank", "noopener,noreferrer")}
               >
-                Sign Out
+                Open Gmail
               </button>
             </div>
-          )}
+            <button
+              onClick={async () => {
+                await supabase.auth.signOut();
+                router.push("/login");
+              }}
+              className="btn-secondary settings-sign-out"
+            >
+              Sign Out
+            </button>
+          </section>
 
-          {/* ── Data ── */}
-          {activeTab === "data" && (
-            <div>
-              <h3 style={{ marginBottom: "0.5rem" }}>Data &amp; Privacy</h3>
-              <p
-                className="text-muted"
-                style={{ fontSize: "var(--text-xs)", marginBottom: "1.25rem" }}
-              >
-                Manage your personal data.
-              </p>
-              <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+          <section className="settings-section settings-section-last" aria-labelledby="privacy-heading">
+            <div className="settings-section-heading">
+              <span className="settings-section-number">04</span>
+              <div>
+                <h3 id="privacy-heading">Privacy &amp; data</h3>
+                <p>Take your records with you or permanently remove your account.</p>
+              </div>
+            </div>
+            <div className="settings-data-actions">
                 <button
                   onClick={handleExportCSV}
                   disabled={exporting}
@@ -250,9 +241,8 @@ function SettingsPageContent() {
                 >
                   Delete Account
                 </button>
-              </div>
             </div>
-          )}
+          </section>
         </div>
       </div>
 
